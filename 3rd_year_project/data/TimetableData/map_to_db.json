@@ -1,0 +1,31 @@
+{
+	"G23 Computer Cluster" : "Kilburn_G23",
+	"G36" : "Kilburn_G36",
+	"G41 Collaborative Space": "Kilburn_G41",
+	
+	
+	"LF5" : "Kilburn_LF5",
+	"LF6" : "Kilburn_LF6",
+	"LF8 Quiet Lab" : "Kilburn_LF8",
+	"LF9 Tooltill 0" : "Kilburn_Tootill 0",
+	"LF16 Tooltill 1" : "Kilburn_Tootill 1",
+	"LF31" : "Kilburn_LF31",
+	"LF34 Collab 2" : "Kilburn_Collab 2",
+	"LF39 Collab 1" : "Kilburn_Collab 1",
+	
+	"Lecture Theatre 1.1" : "Kilburn_TH 1.1",
+	"Lecture Theatre 1.3" : "Kilburn_TH 1.3",
+	"Lecture Theatre 1.4" : "Kilburn_TH 1.4",
+	"Lecture Theatre 1.5" : "Kilburn_TH 1.5",
+	"Computer Cluster 1.8" : "Kilburn_1.8",
+	"1.10 Meeting Room" : "Kilburn_1.10",
+	"1.18A Atlas 1" : "Kilburn_Atlas 1",
+	"1.18B Atlas 2" : "Kilburn_Atlas 2",
+	"1.19 Mercury" : "Kilburn_Mercury",
+	
+	"2.11" : "Kilburn_2.11",
+	"2.15 MSc Teaching" : "Kilburn_2.15",
+	"2.19 MSc Teaching" : "Kilburn_2.19",
+	"2.25A Computer Cluster MSc" : "Kilburn_2.25A",
+	"2.25B Computer Cluster MSc" : "Kilburn_2.25B"
+}

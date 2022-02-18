@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "Kilburn_2_structure_centroids",
+"features": [
+{ "type": "Feature", "properties": { "fid": 1, "id": null, "type": "womens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.234058050709628, 53.467730314337501 ] } },
+{ "type": "Feature", "properties": { "fid": 2, "id": null, "type": "mens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.234030814046425, 53.46770011863962 ] } },
+{ "type": "Feature", "properties": { "fid": 3, "id": null, "type": "accessible_lift" }, "geometry": { "type": "Point", "coordinates": [ -2.233962485523279, 53.467708387946558 ] } },
+{ "type": "Feature", "properties": { "fid": 4, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -2.233953824571397, 53.467732101247492 ] } },
+{ "type": "Feature", "properties": { "fid": 5, "id": null, "type": "accessible_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.233636350091826, 53.467785751352473 ] } },
+{ "type": "Feature", "properties": { "fid": 6, "id": null, "type": "mens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.233667025844586, 53.467816395504379 ] } },
+{ "type": "Feature", "properties": { "fid": 7, "id": null, "type": "mens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.233328385992688, 53.467442131246358 ] } },
+{ "type": "Feature", "properties": { "fid": 8, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -2.233410311377956, 53.467412562733941 ] } },
+{ "type": "Feature", "properties": { "fid": 9, "id": null, "type": "lift" }, "geometry": { "type": "Point", "coordinates": [ -2.233587852921609, 53.467309386576972 ] } },
+{ "type": "Feature", "properties": { "fid": 10, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -2.23416313919912, 53.467116612572383 ] } },
+{ "type": "Feature", "properties": { "fid": 11, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -2.234133759148058, 53.467125966781694 ] } },
+{ "type": "Feature", "properties": { "fid": 12, "id": null, "type": "womens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.234089010794863, 53.467163764584157 ] } },
+{ "type": "Feature", "properties": { "fid": 13, "id": null, "type": "mens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -2.234113359575277, 53.467190910861646 ] } },
+{ "type": "Feature", "properties": { "fid": 14, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -2.234512117222879, 53.467507436454497 ] } },
+{ "type": "Feature", "properties": { "fid": 15, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -2.23448275863824, 53.467516260277776 ] } }
+]
+}

@@ -1,0 +1,26 @@
+{
+    "Kilburn_G_rooms" : "ckznf23ez05442dnnk9k5be0n",
+    "Kilburn_LF_rooms" : "ckznf2kdw00ux28o99pbihtel",
+    "Kilburn_1_rooms" : "ckznf2wcy2kc929qwdg97xh8q",
+    "Kilburn_2_rooms" : "ckznf3ae304kp21sgirt36b6b",
+
+    "Kilburn_G_room_centroids" : "ckzrblrdv0sl528qhoxtutucm",
+    "Kilburn_LF_room_centroids" : "ckzrblwk20gkg22qv47t3jnnu",
+    "Kilburn_1_room_centroids" : "ckzrbl8t900cj28pm71heh0fp",
+    "Kilburn_2_room_centroids" : "ckzrblhm80h6q28p2pimfmffa",
+
+    "Kilburn_G_corridors" : "ckzrbpbar0dva28pef7ylh4li",
+    "Kilburn_LF_corridors" : "ckzrbpkrt1xzu20tg1lg1lewk",
+    "Kilburn_1_corridors" : "ckzrbmzsc0h7528p2xpg1l0o2",
+    "Kilburn_2_corridors" : "ckzrbosvq3hr929qwx0tu61as",
+
+    "Kilburn_G_structures" : "ckzrbpg1l3xrm2bppdqaxonph",
+    "Kilburn_LF_structures" : "ckzrbpovq087p27k7sujly7ed",
+    "Kilburn_1_structures" : "ckzrbqdky00dx28pmmumrv1uz",
+    "Kilburn_2_structures" : "ckzrbp3bx00s021mm55jgj75m",
+
+    "Kilburn_G_structure_centroids" : "ckzrbmlmz00o627mmrmpfc53l",
+    "Kilburn_LF_structure_centroids" : "ckzrbmr073l2w28lr0f3lzwoy",
+    "Kilburn_1_structure_centroids" : "ckzrbm9hy00cs28pmif0fcxab",
+    "Kilburn_2_structure_centroids" : "ckzrbmg3a0grg22p2ez59znm4"
+}
