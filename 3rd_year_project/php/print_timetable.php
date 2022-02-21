@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title></title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    
-</head>
-<body>
 <?php
     main();
 
@@ -201,7 +191,8 @@
             die("Connection failed: " . $conn->connect_error . "<br>");
         }
         else{
-            echo "Connected successfully<br>";
+            //echo "Connected successfully<br>";
+            ;
         }
         return $conn;
     }

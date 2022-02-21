@@ -1,6 +1,10 @@
 //global variables, use with caution!
 var selected_room_name = "";
 var selected_week = 0;
+//change these according to the year
+const SEM_1_NUM_WEEKS = 13;
+const SEM_2_NUM_WEEKS = 24;
+const SEMESTER_OFFSET = 20;
 
 async function init(){  
     //get the room name from the URL
@@ -15,33 +19,32 @@ async function init(){
         "zoom" : 18.8,
         "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA"
     }
+    
+    
     //create HTML elements
-    {
-        //create map div
-        createMapDiv();
-        //picker for semester & link it to showTimetable()
-        createSemesterPicker();
-        //picker for week & link it to showTimetable()
-        createWeekPicker();
-        //timetable div
-        createTimetableDiv();  
-    }
-
+    //create map div
+    createMapDiv();
+    //picker for semester & link it to showTimetable()
+    createSemesterPicker();
+    //picker for week & link it to showTimetable()
+    createWeekPicker();
+    //timetable div
+    createTimetableDiv(); 
+    
     //create map
     var map = createMap(initial_map_attributes);
-    //load map
-    await loadMap(map, floor_name);
-    //button to show availability of rooms
-    createToggleAvailabilityButton(map);
-    //set up on click event to call the php code
-    setOnClickMap(map, floor_name);
     //add navigation control - zoom, pan
     addNavigationControl(map);
     //reset button to reset the position of the map
     createResetPositionButton(map, initial_map_attributes);
+    //load map
+    await loadMap(map, floor_name);
+    //button to show availability of rooms
+    //createToggleAvailabilityButton(map);   
 }
 
-async function getJsonDataFromFile(file_path){
+//can be used for cloud or local files
+async function getJsonDataFromURL(file_path){
     //load files locally
     return fetch(file_path)
     .then(response => {
@@ -64,13 +67,7 @@ async function getJsonDataFromCloud(dataset_ids, dataset_name){
         +"?access_token="
         +mapboxgl.accessToken;
     //return dataset from cloud
-    return fetch(url)
-    .then(response => {
-        if(!response.ok){
-            throw new Error("URL not found at, " + url);
-        }
-        return response.json();
-    });
+    return await getJsonDataFromURL(url);
 }
 
 async function showTimetable(str, week_number){
@@ -81,11 +78,10 @@ async function showTimetable(str, week_number){
         return;
     }
     //find the correct name in the json file
-    const name_mappings = await getJsonDataFromFile(path_to_root + "/data/TimetableData/map_to_db.json");
-    var db_name = name_mappings[str]
-    if (db_name == null){
-        db_name = "";
-    }
+    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
+    var db_name = name_mappings[str];
+    //if there is no mapping - no data in database about the room
+    if (db_name == null){ db_name = ""; }
     //load php script
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
@@ -107,10 +103,9 @@ function getFloorName(){
 
 //change this semester_offset according to the teaching year
 function getWeekNumber(){
-    const semester_offset = 20;
     const semester_num = parseInt(document.getElementById("semester_picker").value);
     const week_num = parseInt(document.getElementById("week_picker").value);
-    const real_week_num = (semester_num-1)*semester_offset + week_num;
+    const real_week_num = (semester_num-1)*SEMESTER_OFFSET + week_num;
     selected_week = real_week_num;
     return real_week_num;
 }
@@ -118,7 +113,6 @@ function getWeekNumber(){
 function createMap(initial_map_attributes){
     //sk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdzlxMjlzdjBiamwydnFsczFzcWh6NG4ifQ.Rykts7uD3lREfUElWufoQQ
     mapboxgl.accessToken = initial_map_attributes["token"];
-    
     var map = new mapboxgl.Map({
         container: 'map', // container ID
         style: 'mapbox://styles/vhdang/ckw9zkrqr7es315mi4atlpunw', // style URL
@@ -126,7 +120,6 @@ function createMap(initial_map_attributes){
         zoom: initial_map_attributes["zoom"], // starting zoom
         bearing:  initial_map_attributes["rotation_angle"]
     });
-
     return map;
 }
 
@@ -139,8 +132,9 @@ function addNavigationControl(map){
 
 async function loadMap(map, floor_name){
     map.on('load', async () => {
+        //get dataset ids from a file
         const path_to_root = "../";
-        const dataset_ids = await getJsonDataFromFile(path_to_root + "data/MapboxDatasetAPI/dataset_ids.json");
+        const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
         //load rooms polygons
         const rooms_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms"));
         //load points with labels (centroids of polygons)
@@ -152,7 +146,7 @@ async function loadMap(map, floor_name){
         //load structure centroid data
         const structure_centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
         /*---data sources---*/
-        const rooms_data_source = floor_name.concat("_polygon_data");
+        const rooms_data_source = floor_name.concat("_room_data");
         const labels_data_source = floor_name.concat("_label_data");
         const corridor_data_source = floor_name.concat("_corridor_data");
         const structures_data_source = floor_name.concat("_structure_data");
@@ -219,7 +213,7 @@ async function loadMap(map, floor_name){
                     'line-width': 3
                 }
             });
-        }  
+        }
 
         //adds layer for structures
         {
@@ -264,7 +258,7 @@ async function loadMap(map, floor_name){
                 }
             });   
         }
-        
+
         //adds layer for rooms
         {
             const layer_rooms_name = floor_name.concat("_rooms");
@@ -276,8 +270,22 @@ async function loadMap(map, floor_name){
                     'visibility' : "visible"
                 },
                 'paint': {
-                    'fill-color': '#0080ff', // blue color fill
-                    'fill-opacity': 0.5
+                    'fill-color': 'blue',
+                    'fill-opacity': 1
+                }
+            });
+
+            const search_layer_rooms_name = floor_name.concat("_rooms_search");
+            map.addLayer({
+                'id': search_layer_rooms_name,
+                'type': 'fill',
+                'source': rooms_data_source, // reference the data source
+                'layout': {
+                    'visibility' : "none"
+                },
+                'paint': {
+                    'fill-color': 'yellow',
+                    'fill-opacity': 1
                 }
             });
 
@@ -307,9 +315,25 @@ async function loadMap(map, floor_name){
                 'source': structure_label_data_source,
                 'layout':{
                     'visibility': "visible",
-                    'text-field': ['get', 'type'],
+                    'icon-image': 
+                        ['match', ['get', 'type'],
+                                'exit', 'entrance',
+                                'stairs', 'rail',
+                                'mens_bathroom', 'mens_toilet',
+                                'womens_bathroom', 'scooter',
+                                'accessible_bathroom', 'star',
+                                'lift', 'village',
+                                'accessible_lift', 'water',
+                                ''
+                        ],
+                    'text-field':
+                        ['match', ['get', 'type'],
+                                'IT Services', 'IT Services',
+                                ''
+                        ],
                     //when the text overlaps, only one is displayed
-                    'text-ignore-placement' : true,
+                    //'text-ignore-placement' : true,
+                    'icon-allow-overlap' : true,
                     'text-justify' : "center",
                     'text-size' : 12,
                     //rotation of the text can be locked
@@ -329,7 +353,8 @@ async function loadMap(map, floor_name){
                                     '.', '',
                                     ['get', 'name']],
                     //when the text overlaps, only one is displayed
-                    'text-ignore-placement' : true,
+                    //'text-ignore-placement' : true,
+                    'text-allow-overlap' : false,
                     'text-justify' : "center",
                     'text-size' : 12,
                     //rotation of the text can be locked
@@ -338,10 +363,19 @@ async function loadMap(map, floor_name){
             });
         }
 
+        /* depends on the loaded data */
+        setUpAfterLoadMap(map, floor_name);
     });
 }
 
-function setOnClickMap(map, floor_name){
+function setUpAfterLoadMap(map, floor_name){
+    //set up on click event to call the php code
+    setOnRoomClick(map, floor_name);
+    //create search bar
+    createSearchBar(map, floor_name);
+}
+
+function setOnRoomClick(map, floor_name){
     //on click shows the name
     const layer_rooms_name = floor_name.concat("_rooms");
     map.on('click', layer_rooms_name, async (e) => {
@@ -359,21 +393,29 @@ function setOnClickMap(map, floor_name){
 }
 
 function createMapDiv(){
-    //create menu
-    var menu_nav = document.createElement('nav');
-    menu_nav.id = "menu";
-    menu_nav.className = "menu";
-    document.getElementById("main_div").appendChild(menu_nav);
+    //create outer map div
+    var outer_map_div = document.createElement('div');
+    outer_map_div.id = "outer_map_div";
+
+    //add search bar
+    var search_bar = document.createElement('input');
+    search_bar.type = "text";
+    search_bar.id = "search_bar";
+
+    var search_bar_div = document.createElement('div');
+    search_bar_div.className = "filter-ctrl";
+    search_bar_div.appendChild(search_bar);
+    outer_map_div.appendChild(search_bar_div);
+
     //create div for a map
     var map_div = document.createElement("div");
     map_div.id = "map";
-    document.getElementById("main_div").appendChild(map_div);
+    outer_map_div.appendChild(map_div);
+
+    document.getElementById("main_div").appendChild(outer_map_div);
 }
 
 function createSemesterPicker(){
-    //static values:
-    const sem1_max_num_weeks = 13;
-    const sem2_max_num_weeks = 24;
     //create select html element
     var semester_picker = document.createElement('select');
     semester_picker.id = "semester_picker";
@@ -390,10 +432,10 @@ function createSemesterPicker(){
     var max_num_weeks = 0;
     semester_picker.onchange = async function(){
         if(semester_picker.value == 1){
-            max_num_weeks = sem1_max_num_weeks;
+            max_num_weeks = SEM_1_NUM_WEEKS;
         }
         else{
-            max_num_weeks = sem2_max_num_weeks;
+            max_num_weeks = SEM_2_NUM_WEEKS;
         }
         var week_picker = document.getElementById("week_picker");
         week_picker.innerHTML = "";
@@ -410,8 +452,8 @@ function createSemesterPicker(){
 
 function createWeekPicker(){
     var week_picker = document.createElement("select");
-    week_picker.id ="week_picker";
-    const max_num_weeks = 13;
+    week_picker.id = "week_picker";
+    const max_num_weeks = SEM_1_NUM_WEEKS;
     for(var i=1; i<= max_num_weeks; i++){
         var week_num = document.createElement("option");
         week_num.value = i;
@@ -420,7 +462,6 @@ function createWeekPicker(){
     }
 
     week_picker.onchange = async function(){
-        //call showTimetable()
         await showTimetable(selected_room_name, getWeekNumber());
     }
     document.getElementById("main_div").appendChild(week_picker);
@@ -429,7 +470,6 @@ function createWeekPicker(){
 function createTimetableDiv(){
     var timetable_div = document.createElement("div");
     timetable_div.id = "timetable";
-    timetable_div.float = "right";
     document.getElementById("main_div").appendChild(timetable_div);
 }
 
@@ -449,6 +489,21 @@ function createResetPositionButton(map, initial_map_attributes){
     map.addControl(ctrlLine, "bottom-right");
 }
 
+function createSearchBar(map, floor_name){
+    var search_bar = document.getElementById("search_bar");
+    search_bar.onkeyup = function (){
+        const input_text = document.getElementById("search_bar").value;
+        const layer_name = floor_name.concat("_rooms_search");
+        map.getLayer(layer_name).visibility = "visible";
+        if(input_text == ""){
+            map.setFilter(layer_name, false);
+            return;
+        }
+        map.setFilter(layer_name, false);
+        map.setFilter(layer_name, ["in", input_text.toLowerCase(), ["downcase", ["get", "name"]]]);
+    }
+}
+
 function createToggleAvailabilityButton(map){
     var availability_button = document.createElement("input");
     availability_button.id = "show_availability";
@@ -457,6 +512,8 @@ function createToggleAvailabilityButton(map){
     availability_button.onclick = toggleRoomAvailability(map);
     document.getElementById("main_div").appendChild(availability_button);
     document.getElementById("main_div").appendChild(document.createElement('br'));
+
+    availability_button.onclick = toggleRoomAvailability(map);
 }
 
 function toggleRoomAvailability(map){
@@ -473,7 +530,6 @@ function toggleRoomAvailability(map){
 
     //create a layer on top
     const floor_name = getFloorName();
-    map.getSource(floor_name.concat("_polygon_data"));
     //map.addLayer();
     //map.removeLayer();
 }
@@ -489,7 +545,7 @@ class MapboxGLButtonControl {
       this._eventHandler = eventHandler;
     }
   
-    onAdd(map) {
+    onAdd() {
       this._btn = document.createElement("button");
       this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
       this._btn.type = "button";

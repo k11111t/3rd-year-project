@@ -7,33 +7,25 @@ async function init(){
         "rotation_angle" : -28.55,
         "zoom" : 18.9,
     }
-
+    //html
+    {
     //create menu
     createMapMenu();
-
     //create map div
     createMapDiv();
-    
-    //create search bar
-    createSearchBar()
-
-    //create button
-    createSearchButton();
-    
+    }
     //hard coded room names
     var all_floor_names = ["Kilburn_2", "Kilburn_1", "Kilburn_LF", "Kilburn_G"];
 
     //create map
     var map = createMap(initial_map_attributes);
-
     //create navigation controls
     addNavigationControl(map);   
-    
     //create reset button
     createResetPositionButton(map, initial_map_attributes);
 
     //load map
-    loadMap(map, all_floor_names);
+    await loadMap(map, all_floor_names);
 }
 
 //load file stuff
@@ -51,6 +43,7 @@ async function getJsonDataFromFile(file_path){
 async function getJsonDataFromCloud(dataset_ids, dataset_name){
     //get dataset id
     const dataset_id = dataset_ids[dataset_name];
+    
     if(dataset_id == null){
         console.log("id not found " + dataset_name)
     }
@@ -89,40 +82,43 @@ function createMap(initial_map_attributes){
 async function loadMap(map, all_floor_names){
     map.on('load', async () => {
         const path_to_root = "../";
-        const dataset_ids = await getJsonDataFromFile(path_to_root + "data/MapboxDatasetAPI/dataset_ids.json");
+        const dataset_ids = await getJsonDataFromFile(path_to_root + "data/MapboxAPI/dataset_ids.json");
         //load all the data
         var all_floors_geojson_data = {};
         var all_floors_rooms_centroid_data = {};
         var all_floors_corridor_data = {};
         var all_floors_structure_data = {};
         var all_floors_structures_centroid_data = {};
-        {
-            for (const floor_name of all_floor_names){
-                // var file_name = path_to_root.concat("data/GeoJsonData/").concat(floor_name).concat("-final.geojson");
-                // all_floors_geojson_data[floor_name] = await getJsonData(file_name);
-                all_floors_geojson_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms")); 
+        //load json data
+        for (const floor_name of all_floor_names){
+            //load room data
+            // var file_name = path_to_root.concat("data/GeoJsonData/").concat(floor_name).concat("-final.geojson");
+            // all_floors_geojson_data[floor_name] = await getJsonData(file_name);
+            all_floors_geojson_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms")); 
 
-                // file_name = path_to_root.concat("data/GeoJsonCentroidData/").concat(floor_name).concat("_centroids.geojson");
-                // all_floors_rooms_centroid_data[floor_name] = await getJsonData(file_name);
-                all_floors_rooms_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids")); 
+            //load room centroids
+            // file_name = path_to_root.concat("data/GeoJsonCentroidData/").concat(floor_name).concat("_centroids.geojson");
+            // all_floors_rooms_centroid_data[floor_name] = await getJsonData(file_name);
+            all_floors_rooms_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids")); 
 
-                // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_corridors.geojson");
-                // all_floors_corridor_data[floor_name] = await getJsonData(file_name);
-                all_floors_corridor_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
+            //load corridors
+            // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_corridors.geojson");
+            // all_floors_corridor_data[floor_name] = await getJsonData(file_name);
+            all_floors_corridor_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
 
-                // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_structures.geojson");
-                // all_floors_structure_data[floor_name] = await getJsonData(file_name);
-                all_floors_structure_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
+            //load structures
+            // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_structures.geojson");
+            // all_floors_structure_data[floor_name] = await getJsonData(file_name);
+            all_floors_structure_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
 
-                // file_name = path_to_root.concat("data/GeoJsonStructureCentroidData/").concat(floor_name).concat("_structure_centroids.geojson");
-                // all_floors_structures_centroid_data[floor_name] = await getJsonData(file_name);
-                all_floors_structures_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
-            }
+            //load structure centroids
+            // file_name = path_to_root.concat("data/GeoJsonStructureCentroidData/").concat(floor_name).concat("_structure_centroids.geojson");
+            // all_floors_structures_centroid_data[floor_name] = await getJsonData(file_name);
+            all_floors_structures_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
         }
 
         //set to the first layer - inital value
         var _visibility = "visible";
-
         //add layers for each floor
         for (const floor_name of all_floor_names){
             //Kilburn_G_polygon_data - stores the GeoJSON data about the polygons
@@ -313,11 +309,12 @@ async function loadMap(map, all_floor_names){
             //visible_layer = floor_name;
         }
 
-        console.log("finished loading");
-        addMapMenuButtons(map, all_floor_names);
+        setUpAfterLoadMap(map, all_floor_names);
     });
+}
 
-    
+function setUpAfterLoadMap(map, all_floor_names){
+    addMapMenuButtons(map, all_floor_names);
 }
 
 function addMapMenuButtons(map, all_floor_names){
@@ -348,12 +345,12 @@ function addMapMenuButtons(map, all_floor_names){
             // Show or hide layer when the toggle is clicked.
             link.onclick = function (e) {
                 //_layer, outline, labels
-                const clickedLayer = this.id;
-                e.preventDefault();
-                e.stopPropagation();
+                const chosen_layer = this.id;
+                // e.preventDefault();
+                // e.stopPropagation();
                 
                 const visibility = map.getLayoutProperty(
-                    clickedLayer.concat("_rooms"),
+                    chosen_layer.concat("_rooms"),
                     'visibility'
                 );
                 
@@ -365,35 +362,29 @@ function addMapMenuButtons(map, all_floor_names){
                 //if the layer is not visible, set other floors to invisible and set itself to visible
                 } else {
                     for(const other_floor of all_floor_names){
-                        map.setLayoutProperty(other_floor.concat("_corridors"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_corridor_outlines"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_structures"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_structure_outlines"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_rooms"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_room_outlines"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_structure_labels"), 'visibility', 'none');
-                        map.setLayoutProperty(other_floor.concat("_room_labels"), 'visibility', 'none');
-
+                        setVisibility(map, other_floor, "none");
                         const other_button = document.getElementById(other_floor);
                         other_button.className = '';
                     }
-                    
                     this.className = 'active';
-                    map.setLayoutProperty(clickedLayer.concat("_corridors"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_corridor_outlines"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_structures"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_structure_outlines"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_rooms"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_room_outlines"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_structure_labels"), 'visibility', 'visible');
-                    map.setLayoutProperty(clickedLayer.concat("_room_labels"), 'visibility', 'visible');
+                    setVisibility(map, chosen_layer, "visible");
                 }
             };
-            
             const map_menu = document.getElementById('menu');
             map_menu.appendChild(link);
         }
     });
+}
+
+function setVisibility(map, layer_name, visibility){
+    map.setLayoutProperty(layer_name.concat("_corridors"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_corridor_outlines"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_structures"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_structure_outlines"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_rooms"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_room_outlines"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_structure_labels"), 'visibility', visibility);
+    map.setLayoutProperty(layer_name.concat("_room_labels"), 'visibility', visibility);
 }
 
 function addNavigationControl(map){
@@ -412,13 +403,13 @@ function createResetPositionButton(map, initial_map_attributes){
         map.setPitch(0, 0);
     }
 
-    const ctrlLine = new MapboxGLButtonControl({
+    const reset_button = new MapboxGLButtonControl({
         className: "mapbox-gl-draw_polygon",
         title: "Reset Position",
         eventHandler: resetPosition
       });
 
-    map.addControl(ctrlLine, "bottom-right");
+    map.addControl(reset_button, "bottom-right");
 }
 
 //HTML stuff
@@ -434,81 +425,6 @@ function createMapMenu(){
     menu_nav.id = "menu";
     menu_nav.className = "menu";
     document.getElementById("main_div").appendChild(menu_nav);
-}
-
-function createSearchBar(){
-    var search_bar = document.createElement('input');
-    search_bar.type = "text";
-    search_bar.id = "search_bar";
-    document.getElementById("main_div").appendChild(search_bar);
-}
-
-function createSearchButton(){
-    var search_button = document.createElement('input');
-    search_button.type = "button";
-    search_button.id = "search_button";
-    search_button.onclick = searchRoom(document.getElementById("search_bar").value);
-    document.getElementById("main_div").appendChild(search_button);
-    document.getElementById("search_button").value = "Search";
-}
-
-function searchRoom(input_string){
-    //NLP task to find the desired room
-}
-
-async function getAllFloorRoomData(all_floor_names){
-    const path_to_root = "../";
-    var all_floors_geojson_data = {};
-    for (const floor_name of all_floor_names){
-        const file_name = path_to_root.concat("data/GeoJsonData/").concat(floor_name).concat("-final.geojson");
-        const geojson_data = await getJsonData(file_name);
-        all_floors_geojson_data[floor_name] = geojson_data;
-    }
-    return all_floors_geojson_data;
-}
-
-async function getAllFloorCentroidData(all_floor_names){
-    const path_to_root = "../";
-    var all_floors_centroids_data = {};
-    for(const floor_name of all_floor_names){
-        const file_name = path_to_root.concat("data/GeoJsonCentroidData/").concat(floor_name).concat("_centroids.geojson");
-        const centroid_data = await getJsonData(file_name);
-        all_floors_centroids_data[floor_name] = centroid_data;
-    }
-    return all_floors_centroids_data;
-}
-
-async function getAllFloorCorridorData(all_floor_names){
-    const path_to_root = "../";
-    var all_floors_corridor_data = {};
-    for(const floor_name of all_floor_names){
-        const file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_corridors.geojson");
-        const centroid_data = await getJsonData(file_name);
-        all_floors_corridor_data[floor_name] = centroid_data;
-    }
-    return all_floors_corridor_data;
-} 
-
-async function getAllFloorStructureData(all_floor_names){
-    const path_to_root = "../";
-    var all_floors_structure_data = {};
-    for(const floor_name of all_floor_names){
-        const file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_structures.geojson");
-        const centroid_data = await getJsonData(file_name);
-        all_floors_structure_data[floor_name] = centroid_data;
-    }
-    return all_floors_structure_data;
-}
-
-async function getAllFloorStructuresCentroidData(all_floor_names){
-    const path_to_root = "../";
-    var all_floors_structures_centroid_data = {};
-    for(const floor_name of all_floor_names){
-        const file_name = path_to_root.concat("data/GeoJsonStructureCentroidData/").concat(floor_name).concat("_structure_centroids.geojson");
-        const centroid_data = await getJsonData(file_name);
-        all_floors_structures_centroid_data[floor_name] = centroid_data;
-    }
-    return all_floors_structures_centroid_data;
 }
 
 class MapboxGLButtonControl {

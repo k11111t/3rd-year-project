@@ -16,7 +16,7 @@
 		$path_to_root = "../";
 		$dbname = "kilburn_timetables";
 		$connection = connectToDatabase($dbname);
-		$file_path = $path_to_root."data/TimetableData/KilburnActivities.csv";
+		$file_path = $path_to_root."data/TimetableData/sheets/KilburnActivities.csv";
 		readCSVandInsertIntoDB($connection, $file_path);
 
 		$connection->close();
