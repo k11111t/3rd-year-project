@@ -8,7 +8,7 @@
 <body>
 
 <?php
-	$GLOBALS["DATABASE_ACCESS"] = FALSE;
+	$GLOBALS["DATABASE_ACCESS"] = TRUE;
 
 	main();
 
@@ -199,8 +199,7 @@
 			echo "Failed to fetch rooms: " .$e->getMessage();
 		}
 		
-		if($result->num_rows == 0){
-			return;}
+		if($result->num_rows != 0){return;}
 
 		//insert the room, if not unique exception is caught
 		$sql_insert_request = "INSERT INTO rooms (room_name, size) VALUES ('$room_name', '$room_size')";

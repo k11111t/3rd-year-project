@@ -28,6 +28,8 @@ async function init(){
     createSemesterPicker();
     //picker for week & link it to showTimetable()
     createWeekPicker();
+    //create room picker
+    createRoomPicker();
     //timetable div
     createTimetableDiv(); 
     
@@ -71,12 +73,14 @@ async function getJsonDataFromCloud(dataset_ids, dataset_name){
 }
 
 async function showTimetable(str, week_number){
+    selected_room_name = str;
     const path_to_root = "../";
     if(str==""){
         var timetable = document.getElementById("timetable");
         timetable.innerHTML = "";
         return;
     }
+    
     //find the correct name in the json file
     const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
     var db_name = name_mappings[str];
@@ -89,6 +93,18 @@ async function showTimetable(str, week_number){
     }
     xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + str);
     xhttp.send();
+
+    //update the room selector
+    var room_picker = document.getElementById("room_picker");
+    var counter = 0;
+    for(var option of room_picker.options){
+        if(option.value === str){
+            room_picker.selectedIndex = counter;
+            break;
+        }
+        room_picker.selectedIndex = 0;
+        counter++;
+    }
 }
 
 function getFloorName(){
@@ -373,6 +389,8 @@ function setUpAfterLoadMap(map, floor_name){
     setOnRoomClick(map, floor_name);
     //create search bar
     createSearchBar(map, floor_name);
+    //populate room picker with data
+    insertDataIntoRoomPicker(map, floor_name);
 }
 
 function setOnRoomClick(map, floor_name){
@@ -380,8 +398,7 @@ function setOnRoomClick(map, floor_name){
     const layer_rooms_name = floor_name.concat("_rooms");
     map.on('click', layer_rooms_name, async (e) => {
         //show the timetable
-        selected_room_name = e.features[0].properties.name;
-        await showTimetable(selected_room_name, getWeekNumber());
+        await showTimetable(e.features[0].properties.name, getWeekNumber());
     });
     //change mouse icon
     map.on('mouseenter', layer_rooms_name, () => {
@@ -390,6 +407,48 @@ function setOnRoomClick(map, floor_name){
     map.on('mouseleave', layer_rooms_name, () => {
         map.getCanvas().style.cursor = '';
     });
+}
+
+function createSearchBar(map, floor_name){
+    var search_bar = document.getElementById("search_bar");
+    search_bar.onkeyup = function (){
+        const input_text = document.getElementById("search_bar").value;
+        const layer_name = floor_name.concat("_rooms_search");
+        map.getLayer(layer_name).visibility = "visible";
+        if(input_text == ""){
+            map.setFilter(layer_name, false);
+            return;
+        }
+        map.setFilter(layer_name, false);
+        map.setFilter(layer_name, ["in", input_text.toLowerCase(), ["downcase", ["get", "name"]]]);
+    }
+}
+
+async function insertDataIntoRoomPicker(map, floor_name){
+    var room_picker = document.getElementById("room_picker");
+    var rooms_source = map.getSource(floor_name.concat("_label_data"));
+    var list_of_features = rooms_source._data.features;
+
+    const path_to_root = "../";
+    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
+ 
+    var list_of_rooms = [];
+    for(var f of list_of_features){
+        const room_name = f.properties.name;
+        // if(name_mappings[room_name] != null){
+        //     list_of_rooms.push(room_name);
+        // }
+        if(room_name != ".") list_of_rooms.push(room_name);
+    }
+    list_of_rooms.push("");
+    list_of_rooms.sort();
+
+    for(var room_name of list_of_rooms){
+        var room_option = document.createElement("option");
+        room_option.value = room_name;
+        room_option.innerHTML = room_name;
+        room_picker.appendChild(room_option);
+    }
 }
 
 function createMapDiv(){
@@ -467,6 +526,17 @@ function createWeekPicker(){
     document.getElementById("main_div").appendChild(week_picker);
 }
 
+function createRoomPicker(){
+    var room_picker = document.createElement("select");
+    room_picker.id = "room_picker";
+    document.getElementById("main_div").appendChild(room_picker);
+
+    room_picker.onchange = async function(){
+        //console.log(room_picker.value);
+        await showTimetable(room_picker.value, selected_week);
+    }
+}
+
 function createTimetableDiv(){
     var timetable_div = document.createElement("div");
     timetable_div.id = "timetable";
@@ -489,20 +559,7 @@ function createResetPositionButton(map, initial_map_attributes){
     map.addControl(ctrlLine, "bottom-right");
 }
 
-function createSearchBar(map, floor_name){
-    var search_bar = document.getElementById("search_bar");
-    search_bar.onkeyup = function (){
-        const input_text = document.getElementById("search_bar").value;
-        const layer_name = floor_name.concat("_rooms_search");
-        map.getLayer(layer_name).visibility = "visible";
-        if(input_text == ""){
-            map.setFilter(layer_name, false);
-            return;
-        }
-        map.setFilter(layer_name, false);
-        map.setFilter(layer_name, ["in", input_text.toLowerCase(), ["downcase", ["get", "name"]]]);
-    }
-}
+
 
 function createToggleAvailabilityButton(map){
     var availability_button = document.createElement("input");
@@ -545,7 +602,7 @@ class MapboxGLButtonControl {
       this._eventHandler = eventHandler;
     }
   
-    onAdd() {
+    onAdd(map) {
       this._btn = document.createElement("button");
       this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
       this._btn.type = "button";

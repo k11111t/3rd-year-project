@@ -10,9 +10,11 @@
         $displayed_room_name = $_GET['room_name'];
         // $week_number = 12;
         // $room_name = "Kilburn_TH 1.1";
-        echo $displayed_room_name . "<br>";
+        
         $connection = connectToDatabase();
         $activity_ids = getActivityIDs($connection, $week_number, $db_room_name);
+        echo $displayed_room_name . "<br>";
+        echo "room size: " . getRoomSize($connection, $db_room_name) . "<br>";
         buildVerticalTimetable($connection, $activity_ids);
         //buildHorizontalTimetable($connection, $activity_ids);
     }
@@ -160,7 +162,7 @@
 		$sql_get_room_id = "SELECT room_id FROM rooms WHERE rooms.room_name='$room_name'";
 		$room_id_row = $connection->query($sql_get_room_id);
 		if($room_id_row->num_rows == 0) {
-			echo "Timetable not found (Room ID not in Database) <br>";
+			echo "Timetable not found <br>";
 			exit(0);
 		}
 		$room_id = $room_id_row->fetch_assoc()["room_id"];
@@ -175,6 +177,18 @@
         }
 
         return $activity_ids_list;
+    }
+
+    function getRoomSize($connection, $room_name){
+        $sql_get_room_id = "SELECT room_id, size FROM rooms WHERE rooms.room_name='$room_name'";
+		$room_id_row = $connection->query($sql_get_room_id);
+		if($room_id_row->num_rows == 0) {
+            return "";
+			exit(0);
+		}
+        $row = $room_id_row->fetch_assoc();
+        $room_size = $row["size"];
+        return $room_size;
     }
 
     function connectToDatabase(){
