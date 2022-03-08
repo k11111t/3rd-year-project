@@ -391,6 +391,8 @@ function addNavigationControl(map){
     const nav = new mapboxgl.NavigationControl({
         visualizePitch: true
         });
+        
+    map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
     map.addControl(nav, "bottom-right");
 }
 

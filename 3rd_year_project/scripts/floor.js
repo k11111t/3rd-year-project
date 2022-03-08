@@ -143,57 +143,69 @@ function addNavigationControl(map){
     const nav = new mapboxgl.NavigationControl({
         visualizePitch: true
         });
+        map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
     map.addControl(nav, "bottom-right");
+}
+
+async function addDataSources(map, floor_name){
+//get dataset ids from a file
+    const path_to_root = "../";
+    const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
+    //load rooms polygons
+    const rooms_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms"));
+    //load points with labels (centroids of polygons)
+    const centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
+    //load corridor data
+    const corridor_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
+    //load structure data
+    const structure_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
+    //load structure centroid data
+    const structure_centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
+
+    /*---data sources---*/
+    const rooms_data_source = floor_name.concat("_room_data");
+    const labels_data_source = floor_name.concat("_label_data");
+    const corridor_data_source = floor_name.concat("_corridor_data");
+    const structures_data_source = floor_name.concat("_structure_data");
+    const structure_label_data_source = floor_name.concat("_structure_label_data");
+    {
+        //Kilburn_G_polygon_data - stores the GeoJSON data about the polygons
+        map.addSource(rooms_data_source, {
+            'type': 'geojson',
+            'data': rooms_data
+        });
+        //Kilburn_G_label_data - stores the centroid positions of polygons
+        map.addSource(labels_data_source, {
+            'type': 'geojson',
+            'data': centroid_data
+        });
+        //Kilburn_G_corridor_data
+        map.addSource(corridor_data_source, {
+            'type': 'geojson',
+            'data': corridor_data
+        });
+        //Kilburn_G_structure_data - stores the data of structures
+        map.addSource(structures_data_source, {
+            'type': 'geojson',
+            'data': structure_data
+        });
+        //Kilburn_G_structure_label_data contains the data of labels for structures
+        map.addSource(structure_label_data_source, {
+            'type': 'geojson',
+            'data': structure_centroid_data
+        });
+    }
 }
 
 async function loadMap(map, floor_name){
     map.on('load', async () => {
-        //get dataset ids from a file
-        const path_to_root = "../";
-        const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
-        //load rooms polygons
-        const rooms_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms"));
-        //load points with labels (centroids of polygons)
-        const centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
-        //load corridor data
-        const corridor_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
-        //load structure data
-        const structure_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
-        //load structure centroid data
-        const structure_centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
         /*---data sources---*/
         const rooms_data_source = floor_name.concat("_room_data");
         const labels_data_source = floor_name.concat("_label_data");
         const corridor_data_source = floor_name.concat("_corridor_data");
         const structures_data_source = floor_name.concat("_structure_data");
         const structure_label_data_source = floor_name.concat("_structure_label_data");
-        {
-            //Kilburn_G_polygon_data - stores the GeoJSON data about the polygons
-            map.addSource(rooms_data_source, {
-                'type': 'geojson',
-                'data': rooms_data
-            });
-            //Kilburn_G_label_data - stores the centroid positions of polygons
-            map.addSource(labels_data_source, {
-                'type': 'geojson',
-                'data': centroid_data
-            });
-            //Kilburn_G_corridor_data
-            map.addSource(corridor_data_source, {
-                'type': 'geojson',
-                'data': corridor_data
-            });
-            //Kilburn_G_structure_data - stores the data of structures
-            map.addSource(structures_data_source, {
-                'type': 'geojson',
-                'data': structure_data
-            });
-            //Kilburn_G_structure_label_data contains the data of labels for structures
-            map.addSource(structure_label_data_source, {
-                'type': 'geojson',
-                'data': structure_centroid_data
-            });
-        }
+        await addDataSources(map, floor_name);
 
         /*---layers---*/
         //add layer for corridors
@@ -214,8 +226,8 @@ async function loadMap(map, floor_name){
                     'fill-opacity': 1
                 }
             });
-            
-            //add layer for corridor outlines
+
+            //adds layer for outline of structures
             const layer_corridors_lines_name = floor_name.concat("_corridor_outlines");
             map.addLayer({
                 'id': layer_corridors_lines_name,
@@ -233,6 +245,7 @@ async function loadMap(map, floor_name){
 
         //adds layer for structures
         {
+            //add layers for structures 
             const layer_structures_name = floor_name.concat("_structures");
             map.addLayer({
                 'id': layer_structures_name,
@@ -272,11 +285,12 @@ async function loadMap(map, floor_name){
                                     'white'],
                     'line-width': 3
                 }
-            });   
+            });  
         }
 
         //adds layer for rooms
         {
+            //layer with actual rooms
             const layer_rooms_name = floor_name.concat("_rooms");
             map.addLayer({
                 'id': layer_rooms_name,
@@ -286,11 +300,12 @@ async function loadMap(map, floor_name){
                     'visibility' : "visible"
                 },
                 'paint': {
-                    'fill-color': 'blue',
-                    'fill-opacity': 1
-                }
+                    'fill-color': "blue",
+                    'fill-opacity': 1,
+                },
             });
 
+            //layer that highlights the searched rooms
             const search_layer_rooms_name = floor_name.concat("_rooms_search");
             map.addLayer({
                 'id': search_layer_rooms_name,
@@ -303,7 +318,7 @@ async function loadMap(map, floor_name){
                     'fill-color': 'yellow',
                     'fill-opacity': 1
                 }
-            });
+            });  
 
             //adds layer for outline around the rooms
             const layer_rooms_lines_name = floor_name.concat("_room_outlines");
@@ -317,8 +332,85 @@ async function loadMap(map, floor_name){
                 'paint': {
                     'line-color': '#FFFFFF',
                     'line-width': 3
+                }                
+            }); 
+        }
+
+        //add extruded layers
+        {
+            //add layer for extruded corridors
+            const layer_corridors_extruded_name = floor_name.concat("_corridors_extruded");
+            map.addLayer({
+                'id': layer_corridors_extruded_name,
+                'type': 'fill-extrusion',
+                'source': corridor_data_source, // reference the data source
+                'layout': {
+                    'visibility' : "none"
+                },
+                'paint': {
+                    'fill-extrusion-color': ['match', ['get', 'type'],
+                                    'corridor', '#d5d5d5',
+                                    'wall', 'grey',
+                                    'grey'], 
+                    'fill-extrusion-opacity': 1,
+                    'fill-extrusion-height': ['match', ['get', 'type'],
+                                                'corridor', 0,
+                                                'wall', 3,
+                                                0
+                                            ]
                 }
-            });    
+            });
+
+            //add layer for extruded structures
+            const layer_structures_extruded_name = floor_name.concat("_structures_extruded");
+            map.addLayer({
+                'id': layer_structures_extruded_name,
+                'type': 'fill-extrusion',
+                'source': structures_data_source, // reference the data source
+                'layout': {
+                    'visibility' : "none"
+                },
+                'paint': {
+                    'fill-extrusion-color': ['match', ['get', 'type'],
+                                    'IT Services', 'transparent',
+                                    'exit', 'transparent',
+                                    'stairs', '#677578',
+                                    'mens_bathroom', 'blue',
+                                    'womens_bathroom', 'red',
+                                    'accessible_bathroom', 'green',
+                                    'lift', '#677578',
+                                    'accessible_lift', '#677578',
+                                    'grey'], 
+                    'fill-extrusion-height': ['match', ['get', 'type'],
+                                    'mens_bathroom', 3,
+                                    'womens_bathroom', 3,
+                                    'accessible_bathroom', 3,
+                                    'lift', 3,
+                                    'accessible_lift', 3,
+                                    0
+                                    ],
+
+                    'fill-extrusion-opacity': 1,
+                    'fill-extrusion-vertical-gradient' : true
+                }
+            });
+
+            //layer to show the extruded rooms
+            const layer_rooms_extruded_name = floor_name.concat("_rooms_extruded");
+            map.addLayer({
+                'id': layer_rooms_extruded_name,
+                'type': 'fill-extrusion',
+                'source': rooms_data_source, // reference the data source
+                'layout': {
+                    'visibility' : "none"
+                },
+                'paint': {
+                    'fill-extrusion-height': 3,
+                    'fill-extrusion-color': "blue",
+                    'fill-extrusion-opacity': 1,
+                    'fill-extrusion-vertical-gradient' : true
+                },
+            });
         }
 
         //add layer for labels and icons
@@ -353,12 +445,13 @@ async function loadMap(map, floor_name){
                     'text-justify' : "center",
                     'text-size' : 12,
                     //rotation of the text can be locked
-                    'text-rotation-alignment' : "map", 'text-rotate' : -28.55
+                    'text-rotation-alignment' : "viewport", 
+                    //'text-rotate' : -28.55
                 }
             });
 
             //adds layer for labels of rooms
-            const layer_lables_name = floor_name.concat("_labels");
+            const layer_lables_name = floor_name.concat("_room_labels");
             map.addLayer({
                 'id': layer_lables_name,
                 'type': 'symbol',
@@ -370,11 +463,16 @@ async function loadMap(map, floor_name){
                                     ['get', 'name']],
                     //when the text overlaps, only one is displayed
                     //'text-ignore-placement' : true,
-                    'text-allow-overlap' : false,
+                    'text-allow-overlap' : true,
                     'text-justify' : "center",
                     'text-size' : 12,
+                    'text-max-width': 1,
                     //rotation of the text can be locked
-                    'text-rotation-alignment' : "map", 'text-rotate' : -28.55
+                    'text-rotation-alignment' : "viewport", 
+                    //'text-rotate' : -28.55
+                },
+                'paint':{
+                    'text-color' : "white"
                 }
             });
         }
@@ -391,6 +489,14 @@ function setUpAfterLoadMap(map, floor_name){
     createSearchBar(map, floor_name);
     //populate room picker with data
     insertDataIntoRoomPicker(map, floor_name);
+
+    createChangeFontColour(map);
+    document.getElementById("main_div").appendChild(document.createElement('br'));
+    createChangeFontSize(map)
+    document.getElementById("main_div").appendChild(document.createElement('br'));
+    createChangeRoomColour(map);
+    document.getElementById("main_div").appendChild(document.createElement('br'));
+    createToggle3DButton(map)
 }
 
 function setOnRoomClick(map, floor_name){
@@ -411,9 +517,9 @@ function setOnRoomClick(map, floor_name){
 
 function createSearchBar(map, floor_name){
     var search_bar = document.getElementById("search_bar");
+    const layer_name = floor_name.concat("_rooms_search");
     search_bar.onkeyup = function (){
         const input_text = document.getElementById("search_bar").value;
-        const layer_name = floor_name.concat("_rooms_search");
         map.getLayer(layer_name).visibility = "visible";
         if(input_text == ""){
             map.setFilter(layer_name, false);
@@ -559,7 +665,90 @@ function createResetPositionButton(map, initial_map_attributes){
     map.addControl(ctrlLine, "bottom-right");
 }
 
+function createColourPicker(id, default_val){
+    var colour_picker = document.createElement("input");
+    colour_picker.type = "color";
+    colour_picker.id = id;
+    colour_picker.value = default_val;
+    return colour_picker;
+}
 
+function createChangeFontColour(map){
+    var colour_picker = createColourPicker("font-colour", "#ffffff");
+    var font_colour_label = document.createElement("label");
+    font_colour_label.innerHTML = "Change Font colour ";
+    document.getElementById("main_div").appendChild(font_colour_label);
+    document.getElementById("main_div").appendChild(colour_picker);
+    
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_room_labels");
+    colour_picker.onchange = function(){    
+        map.setPaintProperty(layer_name, 'text-color', colour_picker.value);
+    }
+}
+
+function createChangeFontSize(map){
+    var slider = document.createElement("input");
+    slider.type = "range";
+    slider.min = 10;
+    slider.max = 40;
+    slider.value = 20;
+    slider.id = "font-size";
+
+    var font_size_label = document.createElement("label");
+    font_size_label.innerHTML = "Change Font Size ";
+    document.getElementById("main_div").appendChild(font_size_label);
+    document.getElementById("main_div").appendChild(slider);
+
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_room_labels");
+
+    slider.onchange = function(){
+        map.setLayoutProperty(layer_name, 'text-size', parseInt(slider.value));
+    }
+}
+
+function createChangeRoomColour(map){
+    var colour_picker = createColourPicker("room-colour", "#ffffff");
+    var room_colour_label = document.createElement("label");
+    room_colour_label.innerHTML = "Change Room colour ";
+    document.getElementById("main_div").appendChild(room_colour_label);
+    document.getElementById("main_div").appendChild(colour_picker);
+    
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_rooms");
+    const layer_name_extruded = floor_name.concat("_rooms_extruded");
+    colour_picker.onchange = function(){    
+        map.setPaintProperty(layer_name, 'fill-color', colour_picker.value);
+        map.setPaintProperty(layer_name_extruded, 'fill-extrusion-color', colour_picker.value);
+    }
+}
+
+function createToggle3DButton(map){
+    const floor_name = getFloorName();
+    const room_layer_name = floor_name.concat("_rooms_extruded");
+    const structure_layer_name = floor_name.concat("_structures_extruded");
+    const corridors_layer_name = floor_name.concat("_corridors_extruded");
+
+    var toggle_button = document.createElement("input");
+    toggle_button.type = "checkbox";
+    toggle_button.id = "toggle-3d";
+    document.getElementById("main_div").appendChild(toggle_button);
+
+    toggle_button.onclick = function(){
+        if(toggle_button.checked == true){
+            map.setLayoutProperty(room_layer_name, "visibility", "visible");
+            map.setLayoutProperty(structure_layer_name, "visibility", "visible");
+            map.setLayoutProperty(corridors_layer_name, "visibility", "visible");
+        }
+        else{
+            map.setLayoutProperty(room_layer_name, "visibility", "none");
+            map.setLayoutProperty(structure_layer_name, "visibility", "none");
+            map.setLayoutProperty(corridors_layer_name, "visibility", "none");
+        }
+        
+    }
+}
 
 function createToggleAvailabilityButton(map){
     var availability_button = document.createElement("input");
@@ -568,7 +757,6 @@ function createToggleAvailabilityButton(map){
     availability_button.type = "button";
     availability_button.onclick = toggleRoomAvailability(map);
     document.getElementById("main_div").appendChild(availability_button);
-    document.getElementById("main_div").appendChild(document.createElement('br'));
 
     availability_button.onclick = toggleRoomAvailability(map);
 }
