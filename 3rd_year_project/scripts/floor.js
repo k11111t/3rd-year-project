@@ -1,9 +1,10 @@
 //global variables, use with caution!
-var selected_room_name = "";
-var selected_week = 0;
+var extruded = false;
 //change these according to the year
 const SEM_1_NUM_WEEKS = 13;
 const SEM_2_NUM_WEEKS = 24;
+//change this semester_offset according to the teaching year
+//offset=number of weeks between end of semester 1 and start of semester 2
 const SEMESTER_OFFSET = 20;
 
 async function init(){  
@@ -20,29 +21,17 @@ async function init(){
         "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA"
     }
     
-    
-    //create HTML elements
-    //create map div
-    createMapDiv();
-    //picker for semester & link it to showTimetable()
-    createSemesterPicker();
-    //picker for week & link it to showTimetable()
-    createWeekPicker();
-    //create room picker
-    createRoomPicker();
-    //timetable div
-    createTimetableDiv(); 
-    
     //create map
     var map = createMap(initial_map_attributes);
     //add navigation control - zoom, pan
     addNavigationControl(map);
     //reset button to reset the position of the map
-    createResetPositionButton(map, initial_map_attributes);
+    addResetPositionButton(map, initial_map_attributes);
+    addToggle3DButton(map);
     //load map
     await loadMap(map, floor_name);
     //button to show availability of rooms
-    //createToggleAvailabilityButton(map);   
+    //createToggleAvailabilityButton(map);
 }
 
 //can be used for cloud or local files
@@ -72,41 +61,6 @@ async function getJsonDataFromCloud(dataset_ids, dataset_name){
     return await getJsonDataFromURL(url);
 }
 
-async function showTimetable(str, week_number){
-    selected_room_name = str;
-    const path_to_root = "../";
-    if(str==""){
-        var timetable = document.getElementById("timetable");
-        timetable.innerHTML = "";
-        return;
-    }
-    
-    //find the correct name in the json file
-    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
-    var db_name = name_mappings[str];
-    //if there is no mapping - no data in database about the room
-    if (db_name == null){ db_name = ""; }
-    //load php script
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function(){
-        document.getElementById("timetable").innerHTML = this.responseText;
-    }
-    xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + str);
-    xhttp.send();
-
-    //update the room selector
-    var room_picker = document.getElementById("room_picker");
-    var counter = 0;
-    for(var option of room_picker.options){
-        if(option.value === str){
-            room_picker.selectedIndex = counter;
-            break;
-        }
-        room_picker.selectedIndex = 0;
-        counter++;
-    }
-}
-
 function getFloorName(){
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -117,13 +71,42 @@ function getFloorName(){
     return floor_from_url;
 }
 
-//change this semester_offset according to the teaching year
 function getWeekNumber(){
     const semester_num = parseInt(document.getElementById("semester_picker").value);
     const week_num = parseInt(document.getElementById("week_picker").value);
-    const real_week_num = (semester_num-1)*SEMESTER_OFFSET + week_num;
-    selected_week = real_week_num;
+    const real_week_num = (semester_num-1) * SEMESTER_OFFSET + week_num;
     return real_week_num;
+}
+function getSelectedRoom(){
+    const room_picker_value = document.getElementById("room_picker").value;
+    return room_picker_value;
+}
+
+async function updateTimetableContents(){
+    const week_number = getWeekNumber();
+    const selected_room_name = getSelectedRoom();
+
+    //if room name is empty set the timetable to empty
+    if(selected_room_name==""){
+        var timetable = document.getElementById("timetable");
+        timetable.innerHTML = "";
+        return;
+    }
+    
+    //find the correct name in the json file
+    const path_to_root = "../";
+    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
+    var db_name = name_mappings[selected_room_name];
+    //if there is no mapping - no data in database about the room
+    if (db_name == null){ db_name = ""; }
+
+    //load php script
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        document.getElementById("timetable").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + selected_room_name);
+    xhttp.send();
 }
 
 function createMap(initial_map_attributes){
@@ -137,14 +120,6 @@ function createMap(initial_map_attributes){
         bearing:  initial_map_attributes["rotation_angle"]
     });
     return map;
-}
-
-function addNavigationControl(map){
-    const nav = new mapboxgl.NavigationControl({
-        visualizePitch: true
-        });
-        map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
-    map.addControl(nav, "bottom-right");
 }
 
 async function addDataSources(map, floor_name){
@@ -434,6 +409,7 @@ async function loadMap(map, floor_name){
                                 'accessible_lift', 'water',
                                 ''
                         ],
+                    'icon-size': 1,
                     'text-field':
                         ['match', ['get', 'type'],
                                 'IT Services', 'IT Services',
@@ -476,36 +452,49 @@ async function loadMap(map, floor_name){
                 }
             });
         }
-
-        /* depends on the loaded data */
-        setUpAfterLoadMap(map, floor_name);
+        map.resize();
+        /* functions that depend on the loaded data */
+        setUpAfterLoadMap(map);
     });
 }
 
-function setUpAfterLoadMap(map, floor_name){
+function setUpAfterLoadMap(map){
     //set up on click event to call the php code
-    setOnRoomClick(map, floor_name);
+    onRoomClick(map);
     //create search bar
-    createSearchBar(map, floor_name);
+    onKeyUpSearchBar(map);
     //populate room picker with data
-    insertDataIntoRoomPicker(map, floor_name);
+    insertDataIntoRoomPicker(map);
 
-    createChangeFontColour(map);
-    document.getElementById("main_div").appendChild(document.createElement('br'));
-    createChangeFontSize(map)
-    document.getElementById("main_div").appendChild(document.createElement('br'));
-    createChangeRoomColour(map);
-    document.getElementById("main_div").appendChild(document.createElement('br'));
-    createToggle3DButton(map)
+    onChangeFontColour(map);
+    onChangeFontSize(map)
+    onChangeRoomColour(map);
+    
 }
 
-function setOnRoomClick(map, floor_name){
+function onRoomClick(map){
     //on click shows the name
-    const layer_rooms_name = floor_name.concat("_rooms");
+    const layer_rooms_name = getFloorName().concat("_rooms");
     map.on('click', layer_rooms_name, async (e) => {
+        //update the selected room
+        const selected_room_name = e.features[0].properties.name;
+        
+        //update the room selector
+        var room_picker = document.getElementById("room_picker");
+        var counter = 0;
+        for(var option of room_picker.options){
+            if(option.value === selected_room_name){
+                room_picker.selectedIndex = counter;
+                break;
+            }
+            room_picker.selectedIndex = 0;
+            counter++;
+        }
+
         //show the timetable
-        await showTimetable(e.features[0].properties.name, getWeekNumber());
+        await updateTimetableContents();
     });
+
     //change mouse icon
     map.on('mouseenter', layer_rooms_name, () => {
         map.getCanvas().style.cursor = 'pointer';
@@ -515,11 +504,11 @@ function setOnRoomClick(map, floor_name){
     });
 }
 
-function createSearchBar(map, floor_name){
+function onKeyUpSearchBar(map){
     var search_bar = document.getElementById("search_bar");
-    const layer_name = floor_name.concat("_rooms_search");
+    const layer_name = getFloorName().concat("_rooms_search");
     search_bar.onkeyup = function (){
-        const input_text = document.getElementById("search_bar").value;
+        const input_text = search_bar.value;
         map.getLayer(layer_name).visibility = "visible";
         if(input_text == ""){
             map.setFilter(layer_name, false);
@@ -530,20 +519,14 @@ function createSearchBar(map, floor_name){
     }
 }
 
-async function insertDataIntoRoomPicker(map, floor_name){
+async function insertDataIntoRoomPicker(map){
     var room_picker = document.getElementById("room_picker");
-    var rooms_source = map.getSource(floor_name.concat("_label_data"));
+    var rooms_source = map.getSource(getFloorName().concat("_label_data"));
     var list_of_features = rooms_source._data.features;
-
-    const path_to_root = "../";
-    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
  
     var list_of_rooms = [];
     for(var f of list_of_features){
         const room_name = f.properties.name;
-        // if(name_mappings[room_name] != null){
-        //     list_of_rooms.push(room_name);
-        // }
         if(room_name != ".") list_of_rooms.push(room_name);
     }
     list_of_rooms.push("");
@@ -557,186 +540,83 @@ async function insertDataIntoRoomPicker(map, floor_name){
     }
 }
 
-function createMapDiv(){
-    //create outer map div
-    var outer_map_div = document.createElement('div');
-    outer_map_div.id = "outer_map_div";
-
-    //add search bar
-    var search_bar = document.createElement('input');
-    search_bar.type = "text";
-    search_bar.id = "search_bar";
-
-    var search_bar_div = document.createElement('div');
-    search_bar_div.className = "filter-ctrl";
-    search_bar_div.appendChild(search_bar);
-    outer_map_div.appendChild(search_bar_div);
-
-    //create div for a map
-    var map_div = document.createElement("div");
-    map_div.id = "map";
-    outer_map_div.appendChild(map_div);
-
-    document.getElementById("main_div").appendChild(outer_map_div);
-}
-
-function createSemesterPicker(){
-    //create select html element
-    var semester_picker = document.createElement('select');
-    semester_picker.id = "semester_picker";
-    //set options - semester 1 and 2
-    var sem1 = document.createElement('option');
-    sem1.value = "1";
-    sem1.innerHTML = "Semester 1";
-    var sem2 = document.createElement('option');
-    sem2.value = "2";
-    sem2.innerHTML = "Semester 2";
-    semester_picker.appendChild(sem1);
-    semester_picker.appendChild(sem2);
-    //set on change - change week values
-    var max_num_weeks = 0;
-    semester_picker.onchange = async function(){
-        if(semester_picker.value == 1){
-            max_num_weeks = SEM_1_NUM_WEEKS;
-        }
-        else{
-            max_num_weeks = SEM_2_NUM_WEEKS;
-        }
-        var week_picker = document.getElementById("week_picker");
-        week_picker.innerHTML = "";
-        for(var i=1; i<= max_num_weeks; i++){
-            var week_num = document.createElement("option");
-            week_num.value = i;
-            week_num.innerHTML = i;
-            week_picker.appendChild(week_num);
-        }
-        await showTimetable(selected_room_name, getWeekNumber());
-    }
-    document.getElementById("main_div").appendChild(semester_picker);
-}
-
-function createWeekPicker(){
-    var week_picker = document.createElement("select");
-    week_picker.id = "week_picker";
+function onLoadWeekPicker(){
     const max_num_weeks = SEM_1_NUM_WEEKS;
+    var week_picker = document.getElementById("week_picker");
     for(var i=1; i<= max_num_weeks; i++){
         var week_num = document.createElement("option");
         week_num.value = i;
-        week_num.innerHTML = i;
+        week_num.innerHTML = "week " + i;
         week_picker.appendChild(week_num);
     }
+}
 
-    week_picker.onchange = async function(){
-        await showTimetable(selected_room_name, getWeekNumber());
+async function onChangeSemesterPicker(){
+    var max_num_weeks = 0;
+    if(this.value == 1){
+        max_num_weeks = SEM_1_NUM_WEEKS;
     }
-    document.getElementById("main_div").appendChild(week_picker);
-}
-
-function createRoomPicker(){
-    var room_picker = document.createElement("select");
-    room_picker.id = "room_picker";
-    document.getElementById("main_div").appendChild(room_picker);
-
-    room_picker.onchange = async function(){
-        //console.log(room_picker.value);
-        await showTimetable(room_picker.value, selected_week);
+    else{
+        max_num_weeks = SEM_2_NUM_WEEKS;
     }
+
+    //change the contents of week picker
+    var week_picker = document.getElementById("week_picker");
+    week_picker.innerHTML = "";
+    for(var i=1; i<= max_num_weeks; i++){
+        var week_num = document.createElement("option");
+        week_num.value = i;
+        week_num.innerHTML = "week " + i;
+        week_picker.appendChild(week_num);
+    }
+    //show timetable
+    await updateTimetableContents();
 }
 
-function createTimetableDiv(){
-    var timetable_div = document.createElement("div");
-    timetable_div.id = "timetable";
-    document.getElementById("main_div").appendChild(timetable_div);
+async function onChangeWeekPicker(){
+    await updateTimetableContents();
 }
 
-function createResetPositionButton(map, initial_map_attributes){
+async function onChangeRoomPicker(){
+    await updateTimetableContents();
+}
+
+function addNavigationControl(map){
+    const nav = new mapboxgl.NavigationControl({
+        visualizePitch: true
+        });
+    map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
+    map.addControl(nav, "bottom-right");
+}
+
+function addResetPositionButton(map, initial_map_attributes){
     function resetPosition(){
         map.setCenter([initial_map_attributes["lng"], initial_map_attributes["lat"]]);
         map.setBearing(initial_map_attributes["rotation_angle"]);
         map.setZoom(initial_map_attributes["zoom"]);
         map.setPitch(0, 0);
+
+        console.log(map.getCenter());
+
     }
-    const ctrlLine = new MapboxGLButtonControl({
-        className: "mapbox-gl-draw_polygon",
+    const reset_button = new MapboxMapButtonControl({
+        icon: '<i class="bi bi-arrow-counterclockwise"></i>',
         title: "Reset Position",
         eventHandler: resetPosition
       });
 
-    map.addControl(ctrlLine, "bottom-right");
+    map.addControl(reset_button, "bottom-right");
 }
 
-function createColourPicker(id, default_val){
-    var colour_picker = document.createElement("input");
-    colour_picker.type = "color";
-    colour_picker.id = id;
-    colour_picker.value = default_val;
-    return colour_picker;
-}
+function addToggle3DButton(map){
+    function toggle3D(){
+        extruded = !extruded;
+        const floor_name = getFloorName();
+        const room_layer_name = floor_name.concat("_rooms_extruded");
+        const structure_layer_name = floor_name.concat("_structures_extruded");
+        const corridors_layer_name = floor_name.concat("_corridors_extruded");
 
-function createChangeFontColour(map){
-    var colour_picker = createColourPicker("font-colour", "#ffffff");
-    var font_colour_label = document.createElement("label");
-    font_colour_label.innerHTML = "Change Font colour ";
-    document.getElementById("main_div").appendChild(font_colour_label);
-    document.getElementById("main_div").appendChild(colour_picker);
-    
-    const floor_name = getFloorName();
-    const layer_name = floor_name.concat("_room_labels");
-    colour_picker.onchange = function(){    
-        map.setPaintProperty(layer_name, 'text-color', colour_picker.value);
-    }
-}
-
-function createChangeFontSize(map){
-    var slider = document.createElement("input");
-    slider.type = "range";
-    slider.min = 10;
-    slider.max = 40;
-    slider.value = 20;
-    slider.id = "font-size";
-
-    var font_size_label = document.createElement("label");
-    font_size_label.innerHTML = "Change Font Size ";
-    document.getElementById("main_div").appendChild(font_size_label);
-    document.getElementById("main_div").appendChild(slider);
-
-    const floor_name = getFloorName();
-    const layer_name = floor_name.concat("_room_labels");
-
-    slider.onchange = function(){
-        map.setLayoutProperty(layer_name, 'text-size', parseInt(slider.value));
-    }
-}
-
-function createChangeRoomColour(map){
-    var colour_picker = createColourPicker("room-colour", "#ffffff");
-    var room_colour_label = document.createElement("label");
-    room_colour_label.innerHTML = "Change Room colour ";
-    document.getElementById("main_div").appendChild(room_colour_label);
-    document.getElementById("main_div").appendChild(colour_picker);
-    
-    const floor_name = getFloorName();
-    const layer_name = floor_name.concat("_rooms");
-    const layer_name_extruded = floor_name.concat("_rooms_extruded");
-    colour_picker.onchange = function(){    
-        map.setPaintProperty(layer_name, 'fill-color', colour_picker.value);
-        map.setPaintProperty(layer_name_extruded, 'fill-extrusion-color', colour_picker.value);
-    }
-}
-
-function createToggle3DButton(map){
-    const floor_name = getFloorName();
-    const room_layer_name = floor_name.concat("_rooms_extruded");
-    const structure_layer_name = floor_name.concat("_structures_extruded");
-    const corridors_layer_name = floor_name.concat("_corridors_extruded");
-
-    var toggle_button = document.createElement("input");
-    toggle_button.type = "checkbox";
-    toggle_button.id = "toggle-3d";
-    document.getElementById("main_div").appendChild(toggle_button);
-
-    toggle_button.onclick = function(){
-        if(toggle_button.checked == true){
+        if(extruded == true){
             map.setLayoutProperty(room_layer_name, "visibility", "visible");
             map.setLayoutProperty(structure_layer_name, "visibility", "visible");
             map.setLayoutProperty(corridors_layer_name, "visibility", "visible");
@@ -747,6 +627,51 @@ function createToggle3DButton(map){
             map.setLayoutProperty(corridors_layer_name, "visibility", "none");
         }
         
+    
+    }
+    var toggle_3D_button = new MapboxMapButtonControl({
+        icon: '3D',
+        title: "Toggle 3D",
+        eventHandler: toggle3D
+    });
+    map.addControl(toggle_3D_button, "bottom-right");
+    
+}
+
+function createColourPicker(id, default_val){
+    var colour_picker = document.createElement("input");
+    colour_picker.type = "color";
+    colour_picker.id = id;
+    colour_picker.value = default_val;
+    return colour_picker;
+}
+
+function onChangeFontColour(map){
+    var colour_picker = document.getElementById("font_colour");
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_room_labels");
+    colour_picker.onchange = function(){    
+        map.setPaintProperty(layer_name, 'text-color', colour_picker.value);
+    }
+}
+
+function onChangeFontSize(map){
+    var font_size_slider = document.getElementById("font_size");
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_room_labels");
+    font_size_slider.onchange = function(){
+        map.setLayoutProperty(layer_name, 'text-size', parseInt(font_size_slider.value));
+    }
+}
+
+function onChangeRoomColour(map){
+    var colour_picker = document.getElementById("room_colour");
+    const floor_name = getFloorName();
+    const layer_name = floor_name.concat("_rooms");
+    const layer_name_extruded = floor_name.concat("_rooms_extruded");
+    colour_picker.onchange = function(){    
+        map.setPaintProperty(layer_name, 'fill-color', colour_picker.value);
+        map.setPaintProperty(layer_name_extruded, 'fill-extrusion-color', colour_picker.value);
     }
 }
 
@@ -779,29 +704,30 @@ function toggleRoomAvailability(map){
     //map.removeLayer();
 }
 
-class MapboxGLButtonControl {
+class MapboxMapButtonControl {
     constructor({
-      className = "",
+      icon = "",
       title = "",
       eventHandler = evtHndlr
     }) {
-      this._className = className;
+      this._icon = icon;
       this._title = title;
       this._eventHandler = eventHandler;
     }
   
     onAdd(map) {
-      this._btn = document.createElement("button");
-      this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
-      this._btn.type = "button";
-      this._btn.title = this._title;
-      this._btn.onclick = this._eventHandler;
-  
-      this._container = document.createElement("div");
-      this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
-      this._container.appendChild(this._btn);
-  
-      return this._container;
+        this.map = map;
+        this._btn = document.createElement("button");
+        this._btn.type = "button";
+        this._btn.innerHTML = this._icon;
+        this._btn.title = this._title;
+        this._btn.onclick = this._eventHandler;
+    
+        this._container = document.createElement("div");
+        this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+        this._container.appendChild(this._btn);
+    
+        return this._container;
     }
   
     onRemove() {

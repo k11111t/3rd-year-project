@@ -1,9 +1,9 @@
-function createNavbar(){
+async function createNavbar(){
     fetch("./navbar.html")
     .then(response => {
     return response.text()
     })
     .then(data => {
-    document.querySelector("header").innerHTML = data;
+    document.getElementById("navbar").innerHTML = data;
     });
 }

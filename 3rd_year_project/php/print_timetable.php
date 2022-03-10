@@ -12,8 +12,8 @@
         // $room_name = "Kilburn_TH 1.1";
         
         $connection = connectToDatabase();
-        $activity_ids = getActivityIDs($connection, $week_number, $db_room_name);
         echo $displayed_room_name . "<br>";
+        $activity_ids = getActivityIDs($connection, $week_number, $db_room_name);
         echo "room size: " . getRoomSize($connection, $db_room_name) . "<br>";
         buildVerticalTimetable($connection, $activity_ids);
         //buildHorizontalTimetable($connection, $activity_ids);
@@ -40,16 +40,17 @@
         $days_in_week = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         
         //print the timetable with information from $activities_info
-        echo "<table class='timetable'>";
+        echo "<table class='table table-bordered table-dark' style='table-layout: fixed;
+        word-wrap: break-word;'> ";
         for($i=0; $i < count($time_scale); $i++){
             echo "<tr>";
             for($j=0; $j< count($days_in_week); $j++){
                 if($i==0){
-                    echo "<td class='cell'>" . $days_in_week[$j] . "</td>";
+                    echo "<th scope='col'>" . $days_in_week[$j] . "</td>";
                 }
                 else{
                     if($j == 0) {
-                        echo "<td class='head_cell'>". $time_scale[$i] . ":00" ."</td>";
+                        echo "<td scope='row'>". $time_scale[$i] . ":00" ."</td>";
                         continue;
                     }
                     // when $i is n then the correct index is at $i
@@ -90,6 +91,61 @@
             echo "</tr>";
         }
         echo "</table>";
+    }
+
+    function getActivityIDs($connection, $week_number, $room_name){
+        //get room id
+		$sql_get_room_id = "SELECT room_id FROM rooms WHERE rooms.room_name='$room_name'";
+		$room_id_row = $connection->query($sql_get_room_id);
+		if($room_id_row->num_rows == 0) {
+			echo "Timetable not found <br>";
+			exit(0);
+		}
+		$room_id = $room_id_row->fetch_assoc()["room_id"];
+
+        //result array to return - returns all the activity ids associated with a room id and week number
+        $activity_ids_list = array();
+        $sql_get_activity_ids = "SELECT activity_id FROM timetables WHERE room_id=$room_id AND week_number=$week_number";
+        $activity_ids_rows = $connection->query($sql_get_activity_ids);
+        if($activity_ids_rows->num_rows > 0){
+            while($row = $activity_ids_rows->fetch_assoc()){
+                $activity_ids_list[] = $row["activity_id"];
+            }
+        }
+        return $activity_ids_list;
+    }
+
+    function getRoomSize($connection, $room_name){
+        //returns room size
+        $sql_get_room_id = "SELECT room_id, size FROM rooms WHERE rooms.room_name='$room_name'";
+		$room_id_row = $connection->query($sql_get_room_id);
+		if($room_id_row->num_rows == 0) {
+            return "";
+			exit(0);
+		}
+        $row = $room_id_row->fetch_assoc();
+        $room_size = $row["size"];
+        return $room_size;
+    }
+
+    function connectToDatabase(){
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "kilburn_timetables";
+
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error . "<br>");
+        }
+        else{
+            //echo "Connected successfully<br>";
+            ;
+        }
+        return $conn;
     }
 
     function buildHorizontalTimetable($connection, $activity_ids_list){
@@ -155,60 +211,6 @@
             echo "</tr>";
         }
         echo "</table>";
-    }
-
-    function getActivityIDs($connection, $week_number, $room_name){
-        //get room id
-		$sql_get_room_id = "SELECT room_id FROM rooms WHERE rooms.room_name='$room_name'";
-		$room_id_row = $connection->query($sql_get_room_id);
-		if($room_id_row->num_rows == 0) {
-			echo "Timetable not found <br>";
-			exit(0);
-		}
-		$room_id = $room_id_row->fetch_assoc()["room_id"];
-
-        $activity_ids_list = array();
-        $sql_get_activity_ids = "SELECT activity_id FROM timetables WHERE room_id=$room_id AND week_number=$week_number";
-        $activity_ids_rows = $connection->query($sql_get_activity_ids);
-        if($activity_ids_rows->num_rows > 0){
-            while($row = $activity_ids_rows->fetch_assoc()){
-                $activity_ids_list[] = $row["activity_id"];
-            }
-        }
-
-        return $activity_ids_list;
-    }
-
-    function getRoomSize($connection, $room_name){
-        $sql_get_room_id = "SELECT room_id, size FROM rooms WHERE rooms.room_name='$room_name'";
-		$room_id_row = $connection->query($sql_get_room_id);
-		if($room_id_row->num_rows == 0) {
-            return "";
-			exit(0);
-		}
-        $row = $room_id_row->fetch_assoc();
-        $room_size = $row["size"];
-        return $room_size;
-    }
-
-    function connectToDatabase(){
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "kilburn_timetables";
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error . "<br>");
-        }
-        else{
-            //echo "Connected successfully<br>";
-            ;
-        }
-        return $conn;
     }
 
 ?>
