@@ -1,5 +1,5 @@
 //global variables, use with caution!
-var extruded = false;
+//var extruded = false;
 //change these according to the year
 const SEM_1_NUM_WEEKS = 13;
 const SEM_2_NUM_WEEKS = 24;
@@ -18,16 +18,17 @@ async function init(){
         "lng" : -2.233885992091956,
         "rotation_angle" : -28.55,
         "zoom" : 18.8,
-        "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA"
+        "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA",
+        // "south_west_bounding_box" : [ -2.234651807845978, 53.467057454528579 ],
+        // "north_east_bounding_box" : [ -2.23311504310011,  53.467953309808209]
+        "south_west_bounding_box" : [ -2.234137140059635, 53.467059668074938 ],
+        "north_east_bounding_box" : [ -2.233617400269494, 53.467950914900705 ]
     }
     
     //create map
     var map = createMap(initial_map_attributes);
     //add navigation control - zoom, pan
-    addNavigationControl(map);
-    //reset button to reset the position of the map
-    addResetPositionButton(map, initial_map_attributes);
-    addToggle3DButton(map);
+    addMapButtons(map, initial_map_attributes);
     //load map
     await loadMap(map, floor_name);
     //button to show availability of rooms
@@ -115,10 +116,11 @@ function createMap(initial_map_attributes){
     var map = new mapboxgl.Map({
         container: 'map', // container ID
         style: 'mapbox://styles/vhdang/ckw9zkrqr7es315mi4atlpunw', // style URL
-        center: [initial_map_attributes["lng"], initial_map_attributes["lat"]], // starting position [lng, lat]
-        zoom: initial_map_attributes["zoom"], // starting zoom
-        bearing:  initial_map_attributes["rotation_angle"]
     });
+    map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
+        {padding : -100,
+         bearing : initial_map_attributes["rotation_angle"],
+         pitch : 0});
     return map;
 }
 
@@ -466,10 +468,10 @@ function setUpAfterLoadMap(map){
     //populate room picker with data
     insertDataIntoRoomPicker(map);
 
+    //set up side panel settings
     onChangeFontColour(map);
     onChangeFontSize(map)
     onChangeRoomColour(map);
-    
 }
 
 function onRoomClick(map){
@@ -556,7 +558,7 @@ async function onChangeSemesterPicker(){
     if(this.value == 1){
         max_num_weeks = SEM_1_NUM_WEEKS;
     }
-    else{
+    else if(this.value == 2){
         max_num_weeks = SEM_2_NUM_WEEKS;
     }
 
@@ -581,23 +583,31 @@ async function onChangeRoomPicker(){
     await updateTimetableContents();
 }
 
-function addNavigationControl(map){
+function addMapButtons(map, initial_map_attributes){
+    const buttons_position = "top-left";
+    addFullscreenButton(map, buttons_position);
+    addNavigationControl(map, buttons_position);
+    addResetPositionButton(map, buttons_position, initial_map_attributes);
+    addToggle3DViewButton(map, buttons_position);
+}
+
+function addFullscreenButton(map, buttons_position){
+    map.addControl(new mapboxgl.FullscreenControl(), buttons_position);
+}
+
+function addNavigationControl(map, buttons_position){
     const nav = new mapboxgl.NavigationControl({
         visualizePitch: true
         });
-    map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
-    map.addControl(nav, "bottom-right");
+    map.addControl(nav, buttons_position);
 }
 
-function addResetPositionButton(map, initial_map_attributes){
+function addResetPositionButton(map, buttons_position, initial_map_attributes){
     function resetPosition(){
-        map.setCenter([initial_map_attributes["lng"], initial_map_attributes["lat"]]);
-        map.setBearing(initial_map_attributes["rotation_angle"]);
-        map.setZoom(initial_map_attributes["zoom"]);
-        map.setPitch(0, 0);
-
-        console.log(map.getCenter());
-
+        map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
+        {padding: -100,
+         bearing : initial_map_attributes["rotation_angle"],
+         pitch : 0});
     }
     const reset_button = new MapboxMapButtonControl({
         icon: '<i class="bi bi-arrow-counterclockwise"></i>',
@@ -605,10 +615,11 @@ function addResetPositionButton(map, initial_map_attributes){
         eventHandler: resetPosition
       });
 
-    map.addControl(reset_button, "bottom-right");
+    map.addControl(reset_button, buttons_position);
 }
 
-function addToggle3DButton(map){
+function addToggle3DViewButton(map, buttons_position){
+    var extruded = false;
     function toggle3D(){
         extruded = !extruded;
         const floor_name = getFloorName();
@@ -627,23 +638,13 @@ function addToggle3DButton(map){
             map.setLayoutProperty(corridors_layer_name, "visibility", "none");
         }
         
-    
     }
     var toggle_3D_button = new MapboxMapButtonControl({
         icon: '3D',
         title: "Toggle 3D",
         eventHandler: toggle3D
     });
-    map.addControl(toggle_3D_button, "bottom-right");
-    
-}
-
-function createColourPicker(id, default_val){
-    var colour_picker = document.createElement("input");
-    colour_picker.type = "color";
-    colour_picker.id = id;
-    colour_picker.value = default_val;
-    return colour_picker;
+    map.addControl(toggle_3D_button, buttons_position);
 }
 
 function onChangeFontColour(map){
