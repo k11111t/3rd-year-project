@@ -13,10 +13,12 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body onload="onLoadWeekPicker()">
-
+    <!-- navbar -->
     <div id="navbar"></div>
+
+    
     <div>
-        
+        <!-- timetable selector -->
         <div class="container-fluid">
             <div id="main_div">
                 <h3>Select Room and Date</h3>
@@ -34,9 +36,25 @@
                 <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#timetableModal" onclick="onChangeRoomPicker()">
                     Show info
                 </button>
+
+                
             </div>
         </div>  
 
+        <!-- shortest path selector -->
+        <div class="container-fluid">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <select class="form-select bg-dark text-white" aria-label="Pick Room" style="width:auto;" id="start_position">
+                </select>
+                <select class="form-select bg-dark text-white" aria-label="Pick Room" style="width:auto;" id="end_position" >
+                </select>
+            </div>
+            <button type="button" class="btn btn-dark" id="find_path">
+                Find Path
+            </button>
+        </div>
+
+        <!-- map div -->
         <div class="container-fluid">
             <div class="map_div">
                 <div class="filter-ctrl">
@@ -47,6 +65,9 @@
             </div>
         </div>
     </div>
+
+    
+
 
     <!-- Modal -->
     <div class="modal fade" id="timetableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -481,7 +481,10 @@ function setUpAfterLoadMap(map){
     //create search bar
     onKeyUpSearchBar(map);
     //populate room picker with data
-    insertDataIntoRoomPicker(map);
+    insertDataIntoRoomPickers(map);
+
+    //set up search shortest path
+    onClickFindPath(map)
 
     //set up side panel settings
     onChangeFontColour(map);
@@ -536,8 +539,11 @@ function onKeyUpSearchBar(map){
     }
 }
 
-async function insertDataIntoRoomPicker(map){
+async function insertDataIntoRoomPickers(map){
     var room_picker = document.getElementById("room_picker");
+    var start_room_picker = document.getElementById("start_position");
+    var end_room_picker = document.getElementById("end_position");
+
     var rooms_source = map.getSource(getFloorName().concat("_label_data"));
     var list_of_features = rooms_source._data.features;
  
@@ -554,6 +560,20 @@ async function insertDataIntoRoomPicker(map){
         room_option.value = room_name;
         room_option.innerHTML = room_name;
         room_picker.appendChild(room_option);
+    }
+
+    for(var room_name of list_of_rooms){
+        var room_option = document.createElement("option");
+        room_option.value = room_name;
+        room_option.innerHTML = room_name;
+        start_room_picker.appendChild(room_option);
+    }
+
+    for(var room_name of list_of_rooms){
+        var room_option = document.createElement("option");
+        room_option.value = room_name;
+        room_option.innerHTML = room_name;
+        end_room_picker.appendChild(room_option);
     }
 }
 
@@ -692,16 +712,28 @@ function onChangeRoomColour(map){
 }
 
 function onClickFindPath(map){
-    //get data from dropdown 1
-    //get data from dropdown 2
     //get floor name
     const find_path_button = document.getElementById("find_path");
     find_path_button.onclick = function(){
         //send request to PHP - with the 2 inputs
-        //PHP script will return geojson data
-        const geojson_data = {};
-        drawPath(map, geojson_data);
+        getShortestPath(map);
     }
+}
+
+function getShortestPath(map){
+    const floor_name = getFloorName();
+    const start_node = document.getElementById("start_position").value;
+    const end_node = document.getElementById("end_position").value;
+    const path_to_root= "../"
+
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function() {
+      const geojson_obj = JSON.parse(this.responseText);
+      drawPath(map, geojson_obj);
+    }
+    xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
+    xmlhttp.send();
+    
 }
 
 function drawPath(map, geojson_input){
@@ -709,14 +741,21 @@ function drawPath(map, geojson_input){
     const search_layer_name = floor_name.concat("_search");
     const source_name = search_layer_name.concat("_source");
 
-    map.addSource(source_name, {
-        'type': 'geojson',
-        'data': geojson_input
-    });
-
     if(map.getLayer(search_layer_name) != null){
         map.removeLayer(search_layer_name);
     }
+    if(map.getSource(source_name) == null){
+        map.addSource(source_name, {
+            'type': 'geojson',
+            'data': geojson_input
+        });
+    }
+    else{
+        map.getSource(source_name).setData(geojson_input);
+    }
+    
+
+    
     map.addLayer({
         'id': search_layer_name,
         'type': 'line',
