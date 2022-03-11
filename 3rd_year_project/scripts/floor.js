@@ -47,11 +47,12 @@ async function getJsonDataFromURL(file_path){
     })
 }
 
-async function getJsonDataFromCloud(dataset_ids, dataset_name){
+async function getDatasetFromCloud(dataset_ids, dataset_name){
     //get dataset id
     const dataset_id = dataset_ids[dataset_name];
     if(dataset_id == null){
-        console.log("id not found " + dataset_name)
+        console.log("id not found " + dataset_name);
+        return null;
     }
     var url = "https://api.mapbox.com/datasets/v1/vhdang/"
         +dataset_id
@@ -60,6 +61,20 @@ async function getJsonDataFromCloud(dataset_ids, dataset_name){
         +mapboxgl.accessToken;
     //return dataset from cloud
     return await getJsonDataFromURL(url);
+}
+
+function getDatasetURL(dataset_ids, dataset_name){
+    const dataset_id = dataset_ids[dataset_name];
+    if(dataset_id == null){
+        console.log("id not found " + dataset_name);
+        return null;
+    }
+    var url = "https://api.mapbox.com/datasets/v1/vhdang/"
+        +dataset_id
+        +"/features"
+        +"?access_token="
+        +mapboxgl.accessToken;
+    return url;
 }
 
 function getFloorName(){
@@ -118,7 +133,7 @@ function createMap(initial_map_attributes){
         style: 'mapbox://styles/vhdang/ckw9zkrqr7es315mi4atlpunw', // style URL
     });
     map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
-        {padding : -100,
+        {padding : -50,
          bearing : initial_map_attributes["rotation_angle"],
          pitch : 0});
     return map;
@@ -129,15 +144,15 @@ async function addDataSources(map, floor_name){
     const path_to_root = "../";
     const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
     //load rooms polygons
-    const rooms_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms"));
+    const rooms_data =  getDatasetURL(dataset_ids, floor_name.concat("_rooms"));
     //load points with labels (centroids of polygons)
-    const centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
+    const centroid_data =  await getDatasetFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
     //load corridor data
-    const corridor_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
+    const corridor_data =  getDatasetURL(dataset_ids, floor_name.concat("_corridors"));
     //load structure data
-    const structure_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
+    const structure_data =  getDatasetURL(dataset_ids, floor_name.concat("_structures"));
     //load structure centroid data
-    const structure_centroid_data = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
+    const structure_centroid_data =  getDatasetURL(dataset_ids, floor_name.concat("_structure_centroids"));
 
     /*---data sources---*/
     const rooms_data_source = floor_name.concat("_room_data");
@@ -543,9 +558,8 @@ async function insertDataIntoRoomPicker(map){
 }
 
 function onLoadWeekPicker(){
-    const max_num_weeks = SEM_1_NUM_WEEKS;
     var week_picker = document.getElementById("week_picker");
-    for(var i=1; i<= max_num_weeks; i++){
+    for(var i=1; i<= SEM_1_NUM_WEEKS; i++){
         var week_num = document.createElement("option");
         week_num.value = i;
         week_num.innerHTML = "week " + i;
@@ -554,11 +568,12 @@ function onLoadWeekPicker(){
 }
 
 async function onChangeSemesterPicker(){
+    var semester_picker = document.getElementById("semester_picker");
     var max_num_weeks = 0;
-    if(this.value == 1){
+    if(parseInt(semester_picker.value) == 1){
         max_num_weeks = SEM_1_NUM_WEEKS;
     }
-    else if(this.value == 2){
+    else if(parseInt(semester_picker.value) == 2){
         max_num_weeks = SEM_2_NUM_WEEKS;
     }
 
@@ -605,7 +620,7 @@ function addNavigationControl(map, buttons_position){
 function addResetPositionButton(map, buttons_position, initial_map_attributes){
     function resetPosition(){
         map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
-        {padding: -100,
+        {padding: -50,
          bearing : initial_map_attributes["rotation_angle"],
          pitch : 0});
     }
@@ -676,33 +691,45 @@ function onChangeRoomColour(map){
     }
 }
 
-function createToggleAvailabilityButton(map){
-    var availability_button = document.createElement("input");
-    availability_button.id = "show_availability";
-    availability_button.value = "Toggle room availability";
-    availability_button.type = "button";
-    availability_button.onclick = toggleRoomAvailability(map);
-    document.getElementById("main_div").appendChild(availability_button);
-
-    availability_button.onclick = toggleRoomAvailability(map);
+function onClickFindPath(map){
+    //get data from dropdown 1
+    //get data from dropdown 2
+    //get floor name
+    const find_path_button = document.getElementById("find_path");
+    find_path_button.onclick = function(){
+        //send request to PHP - with the 2 inputs
+        //PHP script will return geojson data
+        const geojson_data = {};
+        drawPath(map, geojson_data);
+    }
 }
 
-function toggleRoomAvailability(map){
-    //get availability for the chosen semester and room
-    
-    //get list of all unavailable rooms
-
-    const d = new Date();
-    let current_time = d.getTime();
-    selected_room_name;
-    selected_week;
-
-    //call PHP script that returns the list
-
-    //create a layer on top
+function drawPath(map, geojson_input){
     const floor_name = getFloorName();
-    //map.addLayer();
-    //map.removeLayer();
+    const search_layer_name = floor_name.concat("_search");
+    const source_name = search_layer_name.concat("_source");
+
+    map.addSource(source_name, {
+        'type': 'geojson',
+        'data': geojson_input
+    });
+
+    if(map.getLayer(search_layer_name) != null){
+        map.removeLayer(search_layer_name);
+    }
+    map.addLayer({
+        'id': search_layer_name,
+        'type': 'line',
+        'source': source_name, // reference the data source
+        'layout': {
+            'visibility' : "visible",
+            'line-join' : "round",
+        },
+        'paint': {
+            'line-color': "green",
+            'line-width': 3
+        }
+    });
 }
 
 class MapboxMapButtonControl {

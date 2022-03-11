@@ -30,7 +30,7 @@ async function init(){
 
 //load file stuff
 
-async function getJsonDataFromFile(file_path){
+async function getJsonDataFromURL(file_path){
     return fetch(file_path)
     .then(response => {
         if(!response.ok){
@@ -53,13 +53,21 @@ async function getJsonDataFromCloud(dataset_ids, dataset_name){
         +"?access_token="
         +mapboxgl.accessToken;
 
-    return fetch(url)
-    .then(response => {
-        if(!response.ok){
-            throw new Error("URL not found at, " + url);
-        }
-        return response.json();
-    });
+    return getJsonDataFromURL(url);
+}
+
+function getDatasetURL(dataset_ids, dataset_name){
+    const dataset_id = dataset_ids[dataset_name];
+    if(dataset_id == null){
+        console.log("id not found " + dataset_name);
+        return null;
+    }
+    var url = "https://api.mapbox.com/datasets/v1/vhdang/"
+        +dataset_id
+        +"/features"
+        +"?access_token="
+        +mapboxgl.accessToken;
+    return url;
 }
 
 //map stuff
@@ -79,43 +87,58 @@ function createMap(initial_map_attributes){
     return map;
 }
 
+async function addSources(map, all_floor_names){
+    const path_to_root = "../";
+    const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
+
+    for (const floor_name of all_floor_names){
+        //load room data URL
+        const rooms_url = getDatasetURL(dataset_ids, floor_name.concat("_rooms")); 
+        //load room centroids URL
+        const rooms_centroid_url = getDatasetURL(dataset_ids, floor_name.concat("_room_centroids")); 
+        //load corridors URL
+        const corridors_url = getDatasetURL(dataset_ids, floor_name.concat("_corridors"));
+        //load structures URL
+        const structures_url = getDatasetURL(dataset_ids, floor_name.concat("_structures"));
+        //load structure centroids URL
+        const structures_centroid_url = getDatasetURL(dataset_ids, floor_name.concat("_structure_centroids"));
+
+        const room_data_source = floor_name.concat("_room_data");
+        const room_labels_data_source = floor_name.concat("_label_data");
+        const corridor_data_source = floor_name.concat("_corridor_data");
+        const structures_data_source = floor_name.concat("_structure_data");
+        const structure_label_data_source = floor_name.concat("_structure_label_data");
+        map.addSource(room_data_source, {
+            'type': 'geojson',
+            'data': rooms_url
+        });
+
+        map.addSource(room_labels_data_source, {
+            'type': 'geojson',
+            'data': rooms_centroid_url
+        });
+
+        map.addSource(corridor_data_source, {
+            'type': 'geojson',
+            'data': corridors_url
+        });
+
+        map.addSource(structures_data_source, {
+            'type': 'geojson',
+            'data': structures_url
+        });
+
+        map.addSource(structure_label_data_source, {
+            'type': 'geojson',
+            'data': structures_centroid_url
+        });
+    }
+}
+
 async function loadMap(map, all_floor_names){
     map.on('load', async () => {
-        const path_to_root = "../";
-        const dataset_ids = await getJsonDataFromFile(path_to_root + "data/MapboxAPI/dataset_ids.json");
         //load all the data
-        var all_floors_geojson_data = {};
-        var all_floors_rooms_centroid_data = {};
-        var all_floors_corridor_data = {};
-        var all_floors_structure_data = {};
-        var all_floors_structures_centroid_data = {};
-        //load json data
-        for (const floor_name of all_floor_names){
-            //load room data
-            // var file_name = path_to_root.concat("data/GeoJsonData/").concat(floor_name).concat("-final.geojson");
-            // all_floors_geojson_data[floor_name] = await getJsonData(file_name);
-            all_floors_geojson_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_rooms")); 
-
-            //load room centroids
-            // file_name = path_to_root.concat("data/GeoJsonCentroidData/").concat(floor_name).concat("_centroids.geojson");
-            // all_floors_rooms_centroid_data[floor_name] = await getJsonData(file_name);
-            all_floors_rooms_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_room_centroids")); 
-
-            //load corridors
-            // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_corridors.geojson");
-            // all_floors_corridor_data[floor_name] = await getJsonData(file_name);
-            all_floors_corridor_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_corridors"));
-
-            //load structures
-            // file_name = path_to_root.concat("data/GeoJsonStructureData/").concat(floor_name).concat("_structures.geojson");
-            // all_floors_structure_data[floor_name] = await getJsonData(file_name);
-            all_floors_structure_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structures"));
-
-            //load structure centroids
-            // file_name = path_to_root.concat("data/GeoJsonStructureCentroidData/").concat(floor_name).concat("_structure_centroids.geojson");
-            // all_floors_structures_centroid_data[floor_name] = await getJsonData(file_name);
-            all_floors_structures_centroid_data[floor_name] = await getJsonDataFromCloud(dataset_ids, floor_name.concat("_structure_centroids"));
-        }
+        await addSources(map, all_floor_names);
 
         //set to the first layer - inital value
         var _visibility = "visible";
@@ -127,32 +150,6 @@ async function loadMap(map, all_floor_names){
             const corridor_data_source = floor_name.concat("_corridor_data");
             const structures_data_source = floor_name.concat("_structure_data");
             const structure_label_data_source = floor_name.concat("_structure_label_data");
-            {
-                map.addSource(room_data_source, {
-                    'type': 'geojson',
-                    'data': all_floors_geojson_data[floor_name]
-                });
-
-                map.addSource(room_labels_data_source, {
-                    'type': 'geojson',
-                    'data': all_floors_rooms_centroid_data[floor_name]
-                });
-
-                map.addSource(corridor_data_source, {
-                    'type': 'geojson',
-                    'data': all_floors_corridor_data[floor_name]
-                });
-
-                map.addSource(structures_data_source, {
-                    'type': 'geojson',
-                    'data': all_floors_structure_data[floor_name]
-                });
-
-                map.addSource(structure_label_data_source, {
-                    'type': 'geojson',
-                    'data': all_floors_structures_centroid_data[floor_name]
-                });
-            }
             
             //add layer for corridors
             {
