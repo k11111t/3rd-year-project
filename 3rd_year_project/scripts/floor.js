@@ -712,10 +712,8 @@ function onChangeRoomColour(map){
 }
 
 function onClickFindPath(map){
-    //get floor name
     const find_path_button = document.getElementById("find_path");
     find_path_button.onclick = function(){
-        //send request to PHP - with the 2 inputs
         getShortestPath(map);
     }
 }
@@ -753,22 +751,7 @@ function drawPath(map, geojson_input){
     else{
         map.getSource(source_name).setData(geojson_input);
     }
-    
 
-    
-    map.addLayer({
-        'id': search_layer_name,
-        'type': 'line',
-        'source': source_name, // reference the data source
-        'layout': {
-            'visibility' : "visible",
-            'line-join' : "round",
-        },
-        'paint': {
-            'line-color': "green",
-            'line-width': 3
-        }
-    });
 }
 
 class MapboxMapButtonControl {

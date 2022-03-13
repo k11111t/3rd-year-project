@@ -24,13 +24,22 @@
         $start_node = $_GET["start"];
         //get end node
         $end_node = $_GET["end"];
-        $file_path = "../data/GraphsData/".$floor."/graph.json";
-        $graph = loadGraphFromFile($file_path);
-        $shortest_path = executeDijkstra($start_node, $end_node, $graph);
-        $coordinates_array = getCoordinatesFromPath($shortest_path, $graph);
-        $mapbox_obj = createGeoJSONStringLineObject($coordinates_array);
+        try{
+            $file_path = "../data/GraphsData/".$floor."/graph.json";
+            $graph = loadGraphFromFile($file_path);
+            $shortest_path = executeDijkstra($start_node, $end_node, $graph);
+            if(empty($shortest_path)){
+                echo createGeoJSONStringLineObject([]);
+            }
+            else{
+                $coordinates_array = getCoordinatesFromPath($shortest_path, $graph);
+                $mapbox_obj = createGeoJSONStringLineObject($coordinates_array);
+                echo $mapbox_obj;
+            }
+        }catch (Exception $e){
+            echo createGeoJSONStringLineObject([]);
+        }
         
-        echo $mapbox_obj;
     }
 
     function loadGraphFromFile($file_path){
@@ -42,9 +51,6 @@
         $json_data = json_decode($json_file, null);
 
         return $json_data;
-        // echo "<pre>";
-        // var_dump($json_data, true);
-        // echo "</pre>";
     }
 
     function executeDijkstra($start_node_name, $end_node_name, $graph){
@@ -53,9 +59,6 @@
         $tentative_distances = initialiseTentativeDistances($start_node_name, $list_of_nodes);
         $predecessor_map = initialisePredecessorMap($start_node_name, $list_of_nodes);
         $finished_nodes = initialiseFinishedNodes($list_of_nodes);
-        // echo "<pre>" ;
-        // var_dump($list_of_nodes, true) ;
-        // echo "</pre>";
 
         //this should be PQ
         $unfinished_nodes = array();
@@ -65,7 +68,7 @@
             $current_node_name = array_pop($unfinished_nodes);
             if($current_node_name == null){
                 //there is no path
-                break;
+                return array();
             }
 
             if($current_node_name == $end_node_name){
