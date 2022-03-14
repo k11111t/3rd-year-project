@@ -723,7 +723,7 @@ function onClickFindPath(map){
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
         var geojson_obj = this.responseText;
-        console.log(geojson_obj);
+        //console.log(geojson_obj);
         geojson_obj = JSON.parse(geojson_obj);
         drawPath(map, geojson_obj);
         }

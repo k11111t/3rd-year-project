@@ -102,7 +102,7 @@
             $this->assertEquals([$end_node_name, $node1, $node2, $start_node_name], $path);
         }
 
-        public function testExecuteDijkstraAcyclicGraph(){
+        public function testExecuteDijkstraNormalPath(){
             $list_of_nodes = $this->graph->getListOfNodes();
             $start_node = $this->list_of_node_names[0];
             $end_node = $this->list_of_node_names[self::$NUM_OF_NODES-1];

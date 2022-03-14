@@ -1,10 +1,8 @@
 <?php
     namespace App\PHP;
     
-    include_once "Graph.php";
     include_once "Node.php";
 
-    use \App\PHP\Graph as Graph;
     use \App\PHP\Node as Node;
     
 
@@ -32,6 +30,8 @@
         public $unfinished_nodes;
 
         function __construct($start_node, $end_node, $graph){
+            //in case user passes in Graph class
+            $graph = json_decode(json_encode($graph));
             $this->start_node_name = $start_node;
             $this->end_node_name = $end_node;
             $this->graph = $graph;
@@ -47,8 +47,8 @@
         static function returnGraphFromFile($file_path){
             if(!file_exists($file_path)){
                 //file not found
-                echo "File not found at: " . $file_path;
-                die(createGeoJSONStringLineObject([]));
+                //echo "File not found at: " . $file_path;
+                die(self::createGeoJSONStringLineObject([]));
             }
     
             $json_file = file_get_contents($file_path);
