@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title></title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body onload="adjustWidth()">
+    <input type="text" id="path" value="../data/GraphsData/">
+    <input type="text" id="floor" value="Kilburn_G">
+    <input type="button" onclick="onClickParseGraph()" value="parse Graph">
+    <br>
+    <input type="text" id="csv" value="../data/TimetableData/sheets/KilburnActivities.csv" onkeypress="adjustWidth()">
+    <input type="button" onclick="onClickParseCSV()" value="parse CSV">
+    <div id="parse_result"></div>
+</body>
+
+<script>
+    function adjustWidth(){
+        const csv_input = document.getElementById("csv");
+        csv_input.style.width = ((csv_input.value.length + 1) * 8) + 'px';
+    }
+
+    function onClickParseGraph(){
+        var floor_value= document.getElementById("floor").value;
+        var path = document.getElementById("path").value;
+        //load php script
+        const path_to_root = "../";
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            console.log(this.responseText);
+            document.getElementById("parse_result").innerHTML = this.responseText;
+        }
+        xhttp.open("GET", path_to_root + "php/execute_parsers.php?floor="+floor_value+"&path="+path);
+        xhttp.send();
+    }
+
+    function onClickParseCSV(){
+        var csv_path= document.getElementById("csv").value;
+        //load php script
+        const path_to_root = "../";
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            document.getElementById("parse_result").innerHTML = this.responseText;
+        }
+        xhttp.open("GET", path_to_root + "php/execute_parsers.php?csv=" + csv_path);
+        xhttp.send();
+    }
+</script>
+</html>

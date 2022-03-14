@@ -3,6 +3,7 @@
     class TestDijkstra extends \PHPUnit\Framework\TestCase{
         public $graph;
         public $list_of_node_names;
+        //make sure the num of nodes is at least 3
         public static $NUM_OF_NODES = 6;
 
         protected function setUp() : void {            
@@ -101,7 +102,7 @@
             $this->assertEquals([$end_node_name, $node1, $node2, $start_node_name], $path);
         }
 
-        public function testExecuteDijkstraNormal(){
+        public function testExecuteDijkstraAcyclicGraph(){
             $list_of_nodes = $this->graph->getListOfNodes();
             $start_node = $this->list_of_node_names[0];
             $end_node = $this->list_of_node_names[self::$NUM_OF_NODES-1];
@@ -125,28 +126,34 @@
             $this->assertEquals([$end_node, $ideal_node, $start_node], $shortest_path);
         }
 
-        public function testExecuteDijkstraCyclic(){
+        public function testExecuteDijkstraNoPath(){
             $list_of_nodes = $this->graph->getListOfNodes();
             $start_node = $this->list_of_node_names[0];
             $end_node = $this->list_of_node_names[self::$NUM_OF_NODES-1];
-
-            $distance = 10;
-            for($i=1; $i<self::$NUM_OF_NODES-1; $i++){
-                $neighbour_name = $this->list_of_node_names[$i];
-                $this->graph->addNeighbourToNode($start_node, $neighbour_name, $distance);
-                $this->graph->addNeighbourToNode($neighbour_name, $end_node, $distance);
-            }
-
-            //overwrite the old distance
-            $ideal_node = $this->list_of_node_names[1];
-            $new_distance = 1;
-            $this->graph->updateNodeDistanceToNeighbour($ideal_node, $end_node, $new_distance);
 
             $dijkstra = new \App\PHP\Dijkstra($start_node, $end_node, $this->graph);
             
             $shortest_path = $dijkstra->executeDijkstra();
 
-            $this->assertEquals([$end_node, $ideal_node, $start_node], $shortest_path);
+            $this->assertEquals([], $shortest_path);
+        }
+
+        public function testExecuteDijkstraCyclicGraph(){
+            $list_of_nodes = $this->graph->getListOfNodes();
+            $start_node = $this->list_of_node_names[0];
+            $end_node = $this->list_of_node_names[self::$NUM_OF_NODES-1];
+
+            $node1 = $this->list_of_node_names[1];
+            $this->graph->addNeighbourToNode($start_node, $node1, 1);
+            $this->graph->addNeighbourToNode($node1, $start_node, 1);
+            $this->graph->addNeighbourToNode($node1, $end_node, 1);
+            $this->graph->addNeighbourToNode($start_node, $end_node, 3);
+
+            $dijkstra = new \App\PHP\Dijkstra($start_node, $end_node, $this->graph);
+            
+            $shortest_path = $dijkstra->executeDijkstra();
+
+            $this->assertEquals([$end_node, $node1, $start_node], $shortest_path);
         }
     }
 

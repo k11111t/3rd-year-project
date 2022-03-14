@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>read CSV into DB</title>
-</head>
-<body>
-
 <?php
 	$GLOBALS["DATABASE_ACCESS"] = TRUE;
+	$GLOBALS["VERBOSE"] = 0;
 
-	main();
-
-	function main(){
-		$path_to_root = "../";
+	function parseCSVToDatabaseFromFile($file_path){
 		$dbname = "kilburn_timetables";
 		$connection = connectToDatabase($dbname);
-		$file_path = $path_to_root."data/TimetableData/sheets/KilburnActivities.csv";
 		readCSVandInsertIntoDB($connection, $file_path);
-
 		$connection->close();
 	}
 
@@ -37,7 +24,7 @@
 
 		// Check connection
 		if ($conn->connect_error) {
-		  die("Database connection failed: " . $conn->connect_error . "<br>");
+		  	die("Database connection failed: " . $conn->connect_error . "<br>");
 		}
 		else{
 			echo "Connected to DB successfully<br>";
@@ -87,12 +74,10 @@
 		
 		//if there are more than rooms in the string
 		if(gettype($separated_room_names) == "array"){
-			// print_r($separated_room_names);
-			// echo "<br>";
 			foreach($separated_room_names as $r){
 				insertRoom($connection, $r, $room_size);
 				foreach($week_pattern as $week_number){
-					insertTimetable($connection, $r, $activity_name, $week_number);
+					insertTimetabledActivity($connection, $r, $activity_name, $week_number);
 				}
 			}
 		}
@@ -100,7 +85,7 @@
 		else if(gettype($separated_room_names) == "string"){
 			insertRoom($connection, $separated_room_names, $room_size);
 			foreach($week_pattern as $week_number){
-				insertTimetable($connection, $separated_room_names, $activity_name, $week_number);
+				insertTimetabledActivity($connection, $separated_room_names, $activity_name, $week_number);
 			}
 		}
 			
@@ -258,8 +243,10 @@
 		
 	}
 	
-	function insertTimetable($connection, $room_name, $activity_name, $week_number){
-		if($GLOBALS["DATABASE_ACCESS"] === FALSE) {return; }
+	function insertTimetabledActivity($connection, $room_name, $activity_name, $week_number){
+		if($GLOBALS["DATABASE_ACCESS"] === FALSE) {
+			return; 
+		}
 		//insert timetabled activity into the database
 		//timetabled activity == activity in a room at a certain week
 
@@ -299,4 +286,3 @@
 		
 	}
 ?>
-</body>

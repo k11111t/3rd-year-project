@@ -712,26 +712,24 @@ function onChangeRoomColour(map){
 }
 
 function onClickFindPath(map){
+    //get floor name
     const find_path_button = document.getElementById("find_path");
     find_path_button.onclick = function(){
-        getShortestPath(map);
-    }
-}
+        const floor_name = getFloorName();
+        const start_node = document.getElementById("start_position").value;
+        const end_node = document.getElementById("end_position").value;
+        const path_to_root= "../"
 
-function getShortestPath(map){
-    const floor_name = getFloorName();
-    const start_node = document.getElementById("start_position").value;
-    const end_node = document.getElementById("end_position").value;
-    const path_to_root= "../"
-
-    const xmlhttp = new XMLHttpRequest();
-    xmlhttp.onload = function() {
-      const geojson_obj = JSON.parse(this.responseText);
-      drawPath(map, geojson_obj);
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onload = function() {
+        var geojson_obj = this.responseText;
+        console.log(geojson_obj);
+        geojson_obj = JSON.parse(geojson_obj);
+        drawPath(map, geojson_obj);
+        }
+        xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
+        xmlhttp.send();
     }
-    xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
-    xmlhttp.send();
-    
 }
 
 function drawPath(map, geojson_input){
@@ -739,9 +737,6 @@ function drawPath(map, geojson_input){
     const search_layer_name = floor_name.concat("_search");
     const source_name = search_layer_name.concat("_source");
 
-    if(map.getLayer(search_layer_name) != null){
-        map.removeLayer(search_layer_name);
-    }
     if(map.getSource(source_name) == null){
         map.addSource(source_name, {
             'type': 'geojson',
@@ -752,6 +747,22 @@ function drawPath(map, geojson_input){
         map.getSource(source_name).setData(geojson_input);
     }
 
+    if(map.getLayer(search_layer_name) == null){
+        map.addLayer({
+            'id': search_layer_name,
+            'type': 'line',
+            'source': source_name, // reference the data source
+            'layout': {
+                'visibility' : "visible",
+                'line-join' : "round",
+            },
+            'paint': {
+                'line-color': "green",
+                'line-width': 3
+            }
+        });
+    }
+    
 }
 
 class MapboxMapButtonControl {
