@@ -49,21 +49,21 @@
             $corridor_nodes_file_path = $this->path.$floor_name."/corridor_nodes.geojson";
             $room_nodes_file_path = $this->path.$floor_name."/room_nodes.geojson";
 
-            $corridor_nodes_file = file_get_contents($corridor_nodes_file_path);
+            $corridor_nodes_file = @file_get_contents($corridor_nodes_file_path);
             if($corridor_nodes_file != false){
                 $corridor_nodes = self::getNodesFromFileContents($corridor_nodes_file);
             }
             else{
-                echo "Failed to get nodes, File not found at: " . $corridor_nodes_file_path;
+                echo "Failed to get nodes, File not found at: " . $corridor_nodes_file_path . "<br>";
                 $failure = true;
             }
 
-            $room_nodes_file = file_get_contents($room_nodes_file_path);
+            $room_nodes_file = @file_get_contents($room_nodes_file_path);
             if($room_nodes_file != false){
                 $room_nodes = self::getNodesFromFileContents($room_nodes_file);
             }
             else{
-                echo "Failed to get nodes, File not found at: " . $room_nodes_file_path;
+                echo "Failed to get nodes, File not found at: " . $room_nodes_file_path . "<br>";
                 $failure = true;
             }
         
@@ -99,18 +99,18 @@
             $corridor_eddes_file_path = $this->path.$floor_name."/corridor_edges.geojson";
             $room_edges_file_path = $this->path.$floor_name."/room_edges.geojson";
 
-            if($corridor_eddes_file = file_get_contents($corridor_eddes_file_path)){
+            if($corridor_eddes_file = @file_get_contents($corridor_eddes_file_path)){
                 self::addNeighboursToGraphFromFile($corridor_eddes_file, $graph);
             }
             else{
-                echo("Failed to set neighbours, File not found at: " . $corridor_eddes_file_path);
+                echo("Failed to set neighbours, File not found at: " . $corridor_eddes_file_path) . "<br>";
             }
 
-            if($room_edges_file = file_get_contents($room_edges_file_path)){
+            if($room_edges_file = @file_get_contents($room_edges_file_path)){
                 self::addNeighboursToGraphFromFile($room_edges_file, $graph);
             }
             else{
-                echo("Failed to set neighbours, File not found at: " . $room_edges_file_path);
+                echo("Failed to set neighbours, File not found at: " . $room_edges_file_path) . "<br>";
             }          
         }
 

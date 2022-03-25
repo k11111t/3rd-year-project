@@ -1,12 +1,12 @@
-
-
 <?php
     include_once "../php/GraphParser.php";
-    include_once "../php/Graph.php";
+    //include_once "../php/Graph.php";
     include_once "../php/timetable_CSV_parser.php";
+    include_once "../php/mappings_parser.php";
 
     use \App\PHP\GraphParser;
-    use \App\PHP\Graph;
+    use \App\PHP\MappingsParser;
+    //use \App\PHP\Graph;
 
     main();
 
@@ -32,8 +32,12 @@
     }
 
     function parseCSVintoDB($csv_path){
-        $_GLOBALS["VERBOSE"] = 0;
         parseCSVToDatabaseFromFile($csv_path);
+    }
+
+    function parseMappings($mappings_path){
+        $m = new MappingsParser();
+        MappingsParser::parseMappingsFromJSONFile($mappings_path);
     }
 
     function main(){
@@ -46,6 +50,10 @@
             else if(isset($_GET["csv"])){
                 $csv_path = $_GET["csv"];
                 parseCSVintoDB($csv_path);
+            }
+            else if(isset($_GET["mappings"])){
+                $mappings_path = $_GET["mappings"];
+                parseMappings($mappings_path);
             }
         }
         

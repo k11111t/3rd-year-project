@@ -87,19 +87,31 @@ function getFloorName(){
     return floor_from_url;
 }
 
-function getWeekNumber(){
+function getRealWeekNumber(){
     const semester_num = parseInt(document.getElementById("semester_picker").value);
     const week_num = parseInt(document.getElementById("week_picker").value);
     const real_week_num = (semester_num-1) * SEMESTER_OFFSET + week_num;
     return real_week_num;
 }
+
 function getSelectedRoom(){
     const room_picker_value = document.getElementById("room_picker").value;
     return room_picker_value;
 }
 
+function getDBname(selected_room_name, func){
+    const path_to_root = "../";
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function(){
+        const db_name = this.responseText;
+        func(db_name);
+    }
+    xmlhttp.open("GET", path_to_root + "php/return_DB_mapping.php?room_name=" + selected_room_name);
+    xmlhttp.send();
+}
+
 async function updateTimetableContents(){
-    const week_number = getWeekNumber();
+    const week_number = getRealWeekNumber();
     const selected_room_name = getSelectedRoom();
 
     //if room name is empty set the timetable to empty
@@ -111,18 +123,19 @@ async function updateTimetableContents(){
     
     //find the correct name in the json file
     const path_to_root = "../";
-    const name_mappings = await getJsonDataFromURL(path_to_root + "data/TimetableData/mappings/map_to_db.json");
-    var db_name = name_mappings[selected_room_name];
-    //if there is no mapping - no data in database about the room
-    if (db_name == null){ db_name = ""; }
 
-    //load php script
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function(){
-        document.getElementById("timetable").innerHTML = this.responseText;
-    }
-    xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + selected_room_name);
-    xhttp.send();
+    //wrapper function
+    getDBname(selected_room_name, function(db_name){
+            //load timetable
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function(){
+                document.getElementById("timetable").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + selected_room_name);
+            xhttp.send();   
+        }
+    );
+    
 }
 
 function createMap(initial_map_attributes){
@@ -297,6 +310,20 @@ async function loadMap(map, floor_name){
                 },
             });
 
+            const unavailable_rooms_layer_name = floor_name.concat("_rooms_avaiability");
+            map.addLayer({
+                'id' : unavailable_rooms_layer_name,
+                'type' : 'fill',
+                'source' : rooms_data_source,
+                'layout' : {
+                    'visibility' : 'visible'
+                },
+                'paint' : {
+                    'fill-color' : 'red',
+                    'fill-opacity' : 1
+                }
+            });
+
             //layer that highlights the searched rooms
             const search_layer_rooms_name = floor_name.concat("_rooms_search");
             map.addLayer({
@@ -307,7 +334,7 @@ async function loadMap(map, floor_name){
                     'visibility' : "none"
                 },
                 'paint': {
-                    'fill-color': 'yellow',
+                    'fill-color': '#006627',
                     'fill-opacity': 1
                 }
             });  
@@ -485,6 +512,9 @@ function setUpAfterLoadMap(map){
 
     //set up search shortest path
     onClickFindPath(map)
+
+    //set toggle availability
+    onClickToggleAvailability(map);
 
     //set up side panel settings
     onChangeFontColour(map);
@@ -722,10 +752,10 @@ function onClickFindPath(map){
 
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
-        var geojson_obj = this.responseText;
-        //console.log(geojson_obj);
-        geojson_obj = JSON.parse(geojson_obj);
-        drawPath(map, geojson_obj);
+            var geojson_obj = this.responseText;
+            //console.log(geojson_obj);
+            geojson_obj = JSON.parse(geojson_obj);
+            drawPath(map, geojson_obj);
         }
         xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
         xmlhttp.send();
@@ -762,7 +792,83 @@ function drawPath(map, geojson_input){
             }
         });
     }
-    
+}
+
+function onClickToggleAvailability(map){
+    document.getElementById("toggle_availability").onclick = function(){
+        const visbility = map.getLayoutProperty(layer_name, "visibility");
+
+        if(visbility == "visible"){
+            map.setLayoutProperty(layer_name, "visibility", "none");
+            console.log("off");
+        }
+        else{
+            console.log("on");
+            map.setLayoutProperty(layer_name, "visibility", "visible");
+            getUnavailableRooms(function(unavailable_rooms){
+                if(unavailable_rooms == []){
+                    map.setFilter(layer_name, false);
+                }
+                else{
+                    map.setFilter(layer_name, false);
+                    map.setFilter(layer_name, ["in", ["get", "name"], unavailable_rooms.join(", ")]);
+                }
+            });
+        }
+    };
+    const layer_name = getFloorName().concat("_rooms_avaiability");
+    map.setLayoutProperty(layer_name, "visibility", "none");
+}
+
+function getCurrentWeek(){
+    const date1 = new Date("09/20/2021");
+    const date2 = new Date();
+
+    var difference_time = date2.getTime() - date1.getTime();
+    var difference_days = Math.floor(difference_time / (1000 * 3600 * 24));
+
+    var difference_weeks = Math.floor(difference_days / 7);
+    var current_week = difference_weeks + 1;
+    return current_week;
+}
+
+function getWeekByIndex(id){
+    var week_day = [];
+    week_day[1]="Monday";
+    week_day[2]="Tuesday";
+    week_day[3]="Wednesday";
+    week_day[4]="Thursday";
+    week_day[5]="Friday";
+    week_day[6]="Saturday";
+    week_day[0]="Sunday";
+
+    return week_day[id];
+}
+
+function getUnavailableRooms(func){
+    const path_to_root = "../";
+    //issue, find a way to decode this
+    var current_week_num = getCurrentWeek();
+    var d = new Date();
+    var current_day_id = d.getUTCDay();
+    var current_hour = d.getUTCHours();
+    var today = getWeekByIndex(current_day_id);
+
+    //hard coded the values for demonstration:
+    current_week_num = 6;
+    today = "Tuesday";
+    current_hour = 10;
+
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function() {
+        var unavailable_rooms = this.responseText;
+        console.log(unavailable_rooms);
+        unavailable_rooms = JSON.parse(unavailable_rooms);
+        func(unavailable_rooms);
+        console.log(unavailable_rooms);
+    }
+    xmlhttp.open("GET", path_to_root + "php/return_unavailable_rooms.php?week_num="+current_week_num+"&day="+today+"&hour="+current_hour);
+    xmlhttp.send();
 }
 
 class MapboxMapButtonControl {

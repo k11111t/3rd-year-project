@@ -23,7 +23,15 @@ CREATE TABLE IF NOT EXISTS `timetables` (
   PRIMARY KEY (`room_id`, `activity_id`, `week_number`),
   FOREIGN KEY (`room_id`) REFERENCES `rooms`(`room_id`),
   FOREIGN KEY (`activity_id`) REFERENCES `activities`(`activity_id`)
-) 
+)
+
+CREATE TABLE IF NOT EXISTS `DBmappings` (
+                `mapping_id` int(255) NOT NULL AUTO_INCREMENT,
+                `room_name` varchar(255) NOT NULL UNIQUE,
+                `room_db_name` varchar(255) NOT NULL,
+                PRIMARY KEY (`mapping_id`)
+            );
+			
 
 
 --- DELETE ---

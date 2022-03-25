@@ -1,18 +1,18 @@
 <?php
 	$GLOBALS["DATABASE_ACCESS"] = TRUE;
-	$GLOBALS["VERBOSE"] = 0;
 
 	function parseCSVToDatabaseFromFile($file_path){
-		$dbname = "kilburn_timetables";
-		$connection = connectToDatabase($dbname);
+		
+		$connection = connectToDatabase();
 		readCSVandInsertIntoDB($connection, $file_path);
 		$connection->close();
 	}
 
-	function connectToDatabase($dbname){
+	function connectToDatabase(){
 		$servername = "localhost";
 		$username = "root";
 		$password = "";
+		$dbname = "kilburn_timetables";
 
 		// Create connection
 		try{
@@ -35,7 +35,7 @@
 	function readCSVandInsertIntoDB($connection, $file_path){
 		if(!file_exists($file_path)){
 			$connection->close();
-			die("File not found");
+			die("File not found at: " . $file_path);
 		}
 		
 		if(($open = fopen($file_path, "r")) !== FALSE){
@@ -184,7 +184,10 @@
 			echo "Failed to fetch rooms: " .$e->getMessage();
 		}
 		
-		if($result->num_rows != 0){return;}
+		if($result->num_rows != 0){
+			echo "Room insertion failed, duplicate of ". $room_name ." found<br>";
+			return;
+		}
 
 		//insert the room, if not unique exception is caught
 		$sql_insert_request = "INSERT INTO rooms (room_name, size) VALUES ('$room_name', '$room_size')";

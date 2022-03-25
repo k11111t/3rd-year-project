@@ -7,12 +7,15 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 <body onload="adjustWidth()">
-    <input type="text" id="path" value="../data/GraphsData/">
+    <input type="text" id="graph" value="../data/GraphsData/">
     <input type="text" id="floor" value="Kilburn_G">
     <input type="button" onclick="onClickParseGraph()" value="parse Graph">
     <br>
     <input type="text" id="csv" value="../data/TimetableData/sheets/KilburnActivities.csv" onkeypress="adjustWidth()">
     <input type="button" onclick="onClickParseCSV()" value="parse CSV">
+    <br>
+    <input type="text" id="mappings" value="../data/TimetableData/mappings/map_to_db.json">
+    <input type="button" onclick="onClickMappings()" value="parse DB mappings">
     <div id="parse_result"></div>
 </body>
 
@@ -20,11 +23,14 @@
     function adjustWidth(){
         const csv_input = document.getElementById("csv");
         csv_input.style.width = ((csv_input.value.length + 1) * 8) + 'px';
+
+        const mappings_input = document.getElementById("mappings");
+        mappings_input.style.width = ((mappings_input.value.length + 1) * 8) + 'px';
     }
 
     function onClickParseGraph(){
         var floor_value= document.getElementById("floor").value;
-        var path = document.getElementById("path").value;
+        var path = document.getElementById("graph").value;
         //load php script
         const path_to_root = "../";
 
@@ -48,5 +54,18 @@
         xhttp.open("GET", path_to_root + "php/execute_parsers.php?csv=" + csv_path);
         xhttp.send();
     }
+
+    function onClickMappings(){
+        var mappings_path= document.getElementById("mappings").value;
+        //load php script
+        const path_to_root = "../";
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            document.getElementById("parse_result").innerHTML = this.responseText;
+        }
+        xhttp.open("GET", path_to_root + "php/execute_parsers.php?mappings=" + mappings_path);
+        xhttp.send();
+    }
+
 </script>
 </html>
