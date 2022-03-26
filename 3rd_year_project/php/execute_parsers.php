@@ -2,10 +2,12 @@
     include_once "../php/GraphParser.php";
     //include_once "../php/Graph.php";
     include_once "../php/timetable_CSV_parser.php";
-    include_once "../php/mappings_parser.php";
+    include_once "../php/MappingsParser.php";
+    include_once "../php/EncodingsParser.php";
 
     use \App\PHP\GraphParser;
     use \App\PHP\MappingsParser;
+    use \App\PHP\EncodingsParser;
     //use \App\PHP\Graph;
 
     main();
@@ -36,8 +38,11 @@
     }
 
     function parseMappings($mappings_path){
-        $m = new MappingsParser();
         MappingsParser::parseMappingsFromJSONFile($mappings_path);
+    }
+
+    function parseEncodings($encodings_path){
+        EncodingsParser::parseEncodingsFromJSONFile($encodings_path);
     }
 
     function main(){
@@ -54,6 +59,10 @@
             else if(isset($_GET["mappings"])){
                 $mappings_path = $_GET["mappings"];
                 parseMappings($mappings_path);
+            }
+            else if(isset($_GET["encodings"])){
+                $encodings_path = $_GET["encodings"];
+                parseEncodings($encodings_path);
             }
         }
         

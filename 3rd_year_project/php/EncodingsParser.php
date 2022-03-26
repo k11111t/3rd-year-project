@@ -1,9 +1,9 @@
 <?php
     namespace App\PHP;
 
-    class MappingsParser{
+    class EncodingsParser{
 
-        static function parseMappingsFromJSONFile($file_path){
+        static function parseEncodingsFromJSONFile($file_path){
             $connection = connectToDatabase();
             self::readJSONFileIntoDB($connection, $file_path);
             $connection->close();
@@ -43,29 +43,29 @@
             $json_data = json_decode($json_file, null);
 
             foreach($json_data as $key=>$value){
-                $sql_select_mapping = 
-                "SELECT * FROM DBmappings WHERE room_name='$key'";
+                $sql_select_encoding = 
+                "SELECT * FROM mapbox_encodings WHERE layer_name='$key'";
                 try{
-                    $result = $connection->query($sql_select_mapping);
+                    $result = $connection->query($sql_select_encoding);
                 }
                 catch (Exception $e){
-                    echo "Failed to fetch mapping: " .$e->getMessage();
+                    echo "Failed to fetch encoding: " .$e->getMessage();
                 }
                 
                 if($result->num_rows != 0){
-                    echo "Mapping insertion failed, duplicate of ". $key ." found<br>";
+                    echo "Encoding insertion failed, duplicate of ". $key ." found<br>";
                     continue;
                 }
 
-                $sql_insert_mapping = 
-                "INSERT INTO DBmappings (room_name, room_db_name) VALUES ('$key', '$value')
+                $sql_insert_encoding = 
+                "INSERT INTO mapbox_encodings (layer_name, `encoding`) VALUES ('$key', '$value')
                 ";
                 try{
-                    if($connection->query($sql_insert_mapping) === TRUE){
-                        echo "Successful mapping insertion<br>";
+                    if($connection->query($sql_insert_encoding) === TRUE){
+                        echo "Successful encoding insertion<br>";
                     }
                     else{
-                        echo "SQL Error: " . $sql_insert_mapping . "<br>" . $connection->error;
+                        echo "SQL Error: " . $sql_insert_encoding . "<br>" . $connection->error;
                     }
                 }
                 catch (Exception $e){

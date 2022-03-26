@@ -1,10 +1,9 @@
 //global variables, use with caution!
-//var extruded = false;
 //change these according to the year
 const SEM_1_NUM_WEEKS = 13;
 const SEM_2_NUM_WEEKS = 24;
 //change this semester_offset according to the teaching year
-//offset=number of weeks between end of semester 1 and start of semester 2
+//offset=number of weeks between start of semester 1 and start of semester 2
 const SEMESTER_OFFSET = 20;
 
 async function init(){  
@@ -19,8 +18,6 @@ async function init(){
         "rotation_angle" : -28.55,
         "zoom" : 18.8,
         "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA",
-        // "south_west_bounding_box" : [ -2.234651807845978, 53.467057454528579 ],
-        // "north_east_bounding_box" : [ -2.23311504310011,  53.467953309808209]
         "south_west_bounding_box" : [ -2.234137140059635, 53.467059668074938 ],
         "north_east_bounding_box" : [ -2.233617400269494, 53.467950914900705 ]
     }
@@ -30,9 +27,7 @@ async function init(){
     //add navigation control - zoom, pan
     addMapButtons(map, initial_map_attributes);
     //load map
-    await loadMap(map, floor_name);
-    //button to show availability of rooms
-    //createToggleAvailabilityButton(map);
+    await loadEverything(map);
 }
 
 //can be used for cloud or local files
@@ -152,65 +147,83 @@ function createMap(initial_map_attributes){
     return map;
 }
 
-async function addDataSources(map, floor_name){
-//get dataset ids from a file
+function getMapboxEncoding(func){
     const path_to_root = "../";
-    const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
-    //load rooms polygons
-    const rooms_data =  getDatasetURL(dataset_ids, floor_name.concat("_rooms"));
-    //load points with labels (centroids of polygons)
-    const centroid_data =  await getDatasetFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
-    //load corridor data
-    const corridor_data =  getDatasetURL(dataset_ids, floor_name.concat("_corridors"));
-    //load structure data
-    const structure_data =  getDatasetURL(dataset_ids, floor_name.concat("_structures"));
-    //load structure centroid data
-    const structure_centroid_data =  getDatasetURL(dataset_ids, floor_name.concat("_structure_centroids"));
-
-    /*---data sources---*/
-    const rooms_data_source = floor_name.concat("_room_data");
-    const labels_data_source = floor_name.concat("_label_data");
-    const corridor_data_source = floor_name.concat("_corridor_data");
-    const structures_data_source = floor_name.concat("_structure_data");
-    const structure_label_data_source = floor_name.concat("_structure_label_data");
-    {
-        //Kilburn_G_polygon_data - stores the GeoJSON data about the polygons
-        map.addSource(rooms_data_source, {
-            'type': 'geojson',
-            'data': rooms_data
-        });
-        //Kilburn_G_label_data - stores the centroid positions of polygons
-        map.addSource(labels_data_source, {
-            'type': 'geojson',
-            'data': centroid_data
-        });
-        //Kilburn_G_corridor_data
-        map.addSource(corridor_data_source, {
-            'type': 'geojson',
-            'data': corridor_data
-        });
-        //Kilburn_G_structure_data - stores the data of structures
-        map.addSource(structures_data_source, {
-            'type': 'geojson',
-            'data': structure_data
-        });
-        //Kilburn_G_structure_label_data contains the data of labels for structures
-        map.addSource(structure_label_data_source, {
-            'type': 'geojson',
-            'data': structure_centroid_data
-        });
+    const floor_name = getFloorName();
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function() {
+        var mapbox_encodings = this.responseText;
+        mapbox_encodings = JSON.parse(mapbox_encodings);
+        func(mapbox_encodings);
     }
+    xmlhttp.open("GET", path_to_root + "php/return_mapbox_encodings.php?floor_name="+floor_name);
+    xmlhttp.send();
 }
 
-async function loadMap(map, floor_name){
-    map.on('load', async () => {
+async function loadEverything(map){
+    const floor_name = getFloorName();
+    /*---data sources---*/
+    //get encodings from a database
+    getMapboxEncoding(async function(dataset_ids){
+        //load rooms polygons
+        const rooms_data =  getDatasetURL(dataset_ids, floor_name.concat("_rooms"));
+        //load points with labels (centroids of polygons)
+        const centroid_data =  await getDatasetFromCloud(dataset_ids, floor_name.concat("_room_centroids"));
+        //load corridor data
+        const corridor_data =  getDatasetURL(dataset_ids, floor_name.concat("_corridors"));
+        //load structure data
+        const structure_data =  getDatasetURL(dataset_ids, floor_name.concat("_structures"));
+        //load structure centroid data
+        const structure_centroid_data =  getDatasetURL(dataset_ids, floor_name.concat("_structure_centroids"));
+
         /*---data sources---*/
         const rooms_data_source = floor_name.concat("_room_data");
         const labels_data_source = floor_name.concat("_label_data");
         const corridor_data_source = floor_name.concat("_corridor_data");
         const structures_data_source = floor_name.concat("_structure_data");
         const structure_label_data_source = floor_name.concat("_structure_label_data");
-        await addDataSources(map, floor_name);
+        {
+            //Kilburn_G_polygon_data - stores the GeoJSON data about the polygons
+            map.addSource(rooms_data_source, {
+                'type': 'geojson',
+                'data': rooms_data
+            });
+            //Kilburn_G_label_data - stores the centroid positions of polygons
+            map.addSource(labels_data_source, {
+                'type': 'geojson',
+                'data': centroid_data
+            });
+            //Kilburn_G_corridor_data
+            map.addSource(corridor_data_source, {
+                'type': 'geojson',
+                'data': corridor_data
+            });
+            //Kilburn_G_structure_data - stores the data of structures
+            map.addSource(structures_data_source, {
+                'type': 'geojson',
+                'data': structure_data
+            });
+            //Kilburn_G_structure_label_data contains the data of labels for structures
+            map.addSource(structure_label_data_source, {
+                'type': 'geojson',
+                'data': structure_centroid_data
+            });
+        }
+
+        //load map after sources were loaded
+        loadMap(map);
+    });
+}
+
+function loadMap(map){
+    const floor_name = getFloorName();
+    //draw all the layers of the map
+    map.on('load', async () => {
+        const rooms_data_source = floor_name.concat("_room_data");
+        const labels_data_source = floor_name.concat("_label_data");
+        const corridor_data_source = floor_name.concat("_corridor_data");
+        const structures_data_source = floor_name.concat("_structure_data");
+        const structure_label_data_source = floor_name.concat("_structure_label_data");
 
         /*---layers---*/
         //add layer for corridors
@@ -316,7 +329,7 @@ async function loadMap(map, floor_name){
                 'type' : 'fill',
                 'source' : rooms_data_source,
                 'layout' : {
-                    'visibility' : 'visible'
+                    'visibility' : 'none'
                 },
                 'paint' : {
                     'fill-color' : 'red',
@@ -795,33 +808,56 @@ function drawPath(map, geojson_input){
 }
 
 function onClickToggleAvailability(map){
-    document.getElementById("toggle_availability").onclick = function(){
-        const visbility = map.getLayoutProperty(layer_name, "visibility");
+    const layer_name = getFloorName().concat("_rooms_avaiability");
+    map.setLayoutProperty(layer_name, "visibility", "visible");
+    map.setFilter(layer_name, false);
+    var availability_visibile = false;
 
-        if(visbility == "visible"){
-            map.setLayoutProperty(layer_name, "visibility", "none");
-            console.log("off");
+    var modal = document.getElementById('unavailable_rooms_modal');
+    window.onclick = function(event) {
+        if (event.target == modal) {
+          closeModal();
+        }
+      }
+
+    document.getElementById("toggle_availability").onclick = function(){ 
+        if(availability_visibile){
+            map.setFilter(layer_name, false);
+            availability_visibile = false;
+            //console.log("was visible, now invisible");
         }
         else{
-            console.log("on");
-            map.setLayoutProperty(layer_name, "visibility", "visible");
             getUnavailableRooms(function(unavailable_rooms){
-                if(unavailable_rooms == []){
+                if(unavailable_rooms === undefined || unavailable_rooms.length == 0){
                     map.setFilter(layer_name, false);
+                    openModal();
+                    availability_visibile = false;
                 }
                 else{
-                    map.setFilter(layer_name, false);
-                    map.setFilter(layer_name, ["in", ["get", "name"], unavailable_rooms.join(", ")]);
+                    map.setFilter(layer_name, ['match', ['get', 'name'], unavailable_rooms.map((feature) => {return feature}), true, false])
                 }
             });
+            availability_visibile = true;
+            //console.log("was invisible, now visible");
         }
     };
-    const layer_name = getFloorName().concat("_rooms_avaiability");
-    map.setLayoutProperty(layer_name, "visibility", "none");
+}
+
+function openModal() {
+    // document.getElementById("backdrop").style.display = "block"
+    document.getElementById("unavailable_rooms_modal").style.display = "block"
+    document.getElementById("unavailable_rooms_modal").classList.add("show")
+}
+
+function closeModal() {
+    // document.getElementById("backdrop").style.display = "none"
+    document.getElementById("unavailable_rooms_modal").style.display = "none"
+    document.getElementById("unavailable_rooms_modal").classList.remove("show")
 }
 
 function getCurrentWeek(){
-    const date1 = new Date("09/20/2021");
+    const start_date = "2021-09-20";
+    const date1 = new Date(start_date);
     const date2 = new Date();
 
     var difference_time = date2.getTime() - date1.getTime();
@@ -862,14 +898,16 @@ function getUnavailableRooms(func){
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
         var unavailable_rooms = this.responseText;
-        console.log(unavailable_rooms);
         unavailable_rooms = JSON.parse(unavailable_rooms);
         func(unavailable_rooms);
-        console.log(unavailable_rooms);
     }
     xmlhttp.open("GET", path_to_root + "php/return_unavailable_rooms.php?week_num="+current_week_num+"&day="+today+"&hour="+current_hour);
     xmlhttp.send();
 }
+
+
+
+
 
 class MapboxMapButtonControl {
     constructor({

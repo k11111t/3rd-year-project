@@ -16,6 +16,10 @@
     <br>
     <input type="text" id="mappings" value="../data/TimetableData/mappings/map_to_db.json">
     <input type="button" onclick="onClickMappings()" value="parse DB mappings">
+    <br>
+    <input type="text" id="encodings" value="../data/MapboxAPI/dataset_ids.json">
+    <input type="button" onclick="onClickEncodings()" value="parse Mapbox encodings">
+    <br>
     <div id="parse_result"></div>
 </body>
 
@@ -26,6 +30,9 @@
 
         const mappings_input = document.getElementById("mappings");
         mappings_input.style.width = ((mappings_input.value.length + 1) * 8) + 'px';
+
+        const encodings_input = document.getElementById("encodings");
+        encodings_input.style.width = ((encodings_input.value.length + 1) * 8) + 'px';
     }
 
     function onClickParseGraph(){
@@ -64,6 +71,18 @@
             document.getElementById("parse_result").innerHTML = this.responseText;
         }
         xhttp.open("GET", path_to_root + "php/execute_parsers.php?mappings=" + mappings_path);
+        xhttp.send();
+    }
+
+    function onClickEncodings(){
+        var encodings_path= document.getElementById("encodings").value;
+        //load php script
+        const path_to_root = "../";
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            document.getElementById("parse_result").innerHTML = this.responseText;
+        }
+        xhttp.open("GET", path_to_root + "php/execute_parsers.php?encodings=" + encodings_path);
         xhttp.send();
     }
 

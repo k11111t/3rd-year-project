@@ -55,7 +55,7 @@
         </div>
 
         <div class="container-fluid">
-            <button type="button" class="btn btn-primary" id="toggle_availability">Toggle Availability</button>
+            <button type="button" class="btn btn-primary" id="toggle_availability">Show Currently Unavailable rooms</button>
         </div>
 
         <!-- map div -->
@@ -70,11 +70,8 @@
         </div>
     </div>
 
-    
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="timetableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal for timetable -->
+    <div class="modal fade" id="timetableModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
@@ -86,9 +83,27 @@
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
             </div>
           </div>
+        </div>
+    </div>
+
+    <!-- Modal for other stuff -->
+    <div class="modal fade" id="unavailable_rooms_modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel1">Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                All of the rooms are avaiable!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
+            </div>
+            </div>
         </div>
     </div>
 
