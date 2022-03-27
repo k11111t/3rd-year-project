@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 50 50"
+   height="50"
+   width="50"
+   version="1.1"
+   id="svg115"
+   sodipodi:docname="elevator.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs119" />
+  <sodipodi:namedview
+     id="namedview117"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:zoom="16.16"
+     inkscape:cx="29.610149"
+     inkscape:cy="26.361386"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg115">
+    <inkscape:grid
+       type="xygrid"
+       id="grid218" />
+  </sodipodi:namedview>
+  <title
+     id="title109">elevator.svg</title>
+  <rect
+     fill="none"
+     x="0"
+     y="0"
+     width="19"
+     height="19"
+     id="rect111" />
+  <path
+     fill="#000000"
+     d="m 37.964048,1.0865718 h -25.9875 c -2.0503587,0 -3.712501,1.6621428 -3.712501,3.7125 V 45.636572 c 0,2.050357 1.6621423,3.7125 3.712501,3.7125 h 25.9875 c 2.050357,0 3.7125,-1.662143 3.7125,-3.7125 V 4.7990718 c 0,-2.0503572 -1.662143,-3.7125 -3.7125,-3.7125 z m -12.99375,42.6937502 -7.425,-14.85 h 14.85 z m -7.425,-22.275 7.425,-14.8500002 7.425,14.8500002 z"
+     id="path113"
+     style="stroke-width:3.7125"
+     sodipodi:nodetypes="ssssssssscccccccc" />
+  <metadata
+     id="metadata121">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>elevator.svg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

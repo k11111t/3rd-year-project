@@ -7,26 +7,26 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     </head>
     <body>
-        <nav class="navbar fixed-top navbar-expand-lg bg-dark navbar-dark" >
+        <nav class="navbar sticky-top navbar-expand-lg bg-dark navbar-dark" >
           <div class="container-fluid justify-content-center">
             <div class="row" style="width:100%;">
               <div class="col"></div>
               <div class="col-6">
                   <ul class="navbar-nav justify-content-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index1.html">Home</a>
+                    <li class="nav-item px-3 ">
+                        <a class="nav-link" href="index1.html"><h6>Home</h6></a>
                     </li> 
-                    <li class="nav-item">
-                      <a class="nav-link" href="floor.html?floor=Kilburn_G">Kilburn G</a>
+                    <li class="nav-item px-3">
+                      <a class="nav-link" href="floor.html?floor=Kilburn_G"><h6>Kilburn G</h6></a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="floor.html?floor=Kilburn_LF">Kilburn LF</a>
+                    <li class="nav-item px-3">
+                      <a class="nav-link" href="floor.html?floor=Kilburn_LF"><h6>Kilburn LF</h6></a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="floor.html?floor=Kilburn_1">Kilburn 1</a>
+                    <li class="nav-item px-3">
+                      <a class="nav-link" href="floor.html?floor=Kilburn_1"><h6>Kilburn 1</h6></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="floor.html?floor=Kilburn_2">Kilburn 2</a>
+                    <li class="nav-item px-3">
+                        <a class="nav-link" href="floor.html?floor=Kilburn_2"><h6>Kilburn 2</h6></a>
                       </li>
                   </ul>
               </div>
@@ -42,20 +42,25 @@
           <!--sidebar -->
           <div class="offcanvas offcanvas-end" data-bs-backdrop="false" id="sidebar">
             <div class="offcanvas-header">
-              <h5 class="offcanvas-title">Customise</h5>
+              <h4 class="offcanvas-title">Accessibility options</h4>
               <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body">
-              <p>Change font colour
-                <input type="color" class="form-control form-control-color" id="font_colour" title="Change font colour">
+              <p><h5>Rooms colour</h5>
+                <input type="color" class="form-control form-control-color" id="room_colour" title="Change room colour" value="#660099">
               </p>
-              <p>Change font size
-                <input type="range" min="10" max="40"class="form-range" id="font_size">
+              <p><h5>Font colour</h5>
+                <input type="color" class="form-control form-control-color" id="font_colour" title="Change font colour" value="#ffffff">
               </p>
-              <p>Change room colour
-                <input type="color" class="form-control form-control-color" id="room_colour" title="Change room colour">
+              <p><h5>Font size</h5>
+                <input type="range" min="10" max="40"class="form-range" id="font_size" value="12">
               </p>
-              
+              <p><h5>Icon size</h5>
+                <input type="range" min="2" max="10"class="form-range" id="icon_size" value="4">
+              </p>
+              <p>
+                <button class="btn btn-outline-dark btn-lg" id="reset_settings">Reset settings</button>
+              </p>
             </div>
           </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

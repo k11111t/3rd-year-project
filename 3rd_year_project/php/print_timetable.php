@@ -12,9 +12,9 @@
         // $room_name = "Kilburn_TH 1.1";
         
         $connection = connectToDatabase();
-        echo $displayed_room_name . "<br>";
+        echo "<h3>". $displayed_room_name ."</h3>";
         $activity_ids = getActivityIDs($connection, $week_number, $db_room_name);
-        echo "room size: " . getRoomSize($connection, $db_room_name) . "<br>";
+        echo "<p>room size: " . getRoomSize($connection, $db_room_name) . "<p>";
         buildVerticalTimetable($connection, $activity_ids);
         //buildHorizontalTimetable($connection, $activity_ids);
     }
@@ -40,7 +40,7 @@
         $days_in_week = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         
         //print the timetable with information from $activities_info
-        echo "<table class='table table-bordered table-dark' style='table-layout: fixed;
+        echo "<table class='table table-bordered table-light' style='table-layout: fixed;
         word-wrap: break-word;'> ";
         for($i=0; $i < count($time_scale); $i++){
             echo "<tr>";

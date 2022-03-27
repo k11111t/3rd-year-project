@@ -1,13 +1,20 @@
+body{
+	margin: 0px 0px 0px 0px;
+}
+
 #main_div{
     margin:left;
+	width: 100%;
 	padding: 0px 0px 0px 0px;
+	height: 100vh;
+	position:absolute;
 }
 
 #map{
     float:left;
     width: 100%;
 	position: relative;
-    height: 800px;
+    height: calc(100vh - 60px);
 }
 
 #menu {

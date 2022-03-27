@@ -14,60 +14,80 @@
 <body onload="onLoadWeekPicker()">
     <!-- navbar -->
     <div id="navbar"></div>
-    <br>
-    <br>
-    <br>
     <div>
-        <!-- timetable selector -->
-        <div class="container-fluid">
-            <div id="main_div">
-                <h3>Select Room and Date</h3>
-                <div class="btn-group" role="group" aria-label="show Timetable">
-                    <select class="form-select bg-dark text-white" aria-label="Pick Semester" style="width:auto;" id="semester_picker" onchange="onChangeSemesterPicker()">
-                        <option value="1">Semester 1</option>
-                        <option value="2">Semester 2</option>
-                    </select>
-                    <select class="form-select bg-dark text-white" aria-label="Pick Week" style="width:auto;" id="week_picker" onchange="onChangeWeekPicker()" >
-                    </select>
-                    <select class="form-select bg-dark text-white" aria-label="Pick Room" style="width:auto;" id="room_picker" onchange="onChangeRoomPicker()" >
-                    </select>                
-                    
-                </div>
-                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#timetableModal" onclick="onChangeRoomPicker()">
-                    Show info
-                </button>
-
-                
-            </div>
-        </div>  
-
-        <!-- shortest path selector -->
-        <div class="container-fluid">
-            <div class="btn-group" role="group" aria-label="Search path">
-                <select class="form-select bg-dark text-white" aria-label="Pick Room" style="width:auto;" id="start_position">
-                </select>
-                <select class="form-select bg-dark text-white" aria-label="Pick Room" style="width:auto;" id="end_position" >
-                </select>
-            </div>
-            <button type="button" class="btn btn-dark" id="find_path">
-                Find Path
-            </button>
-        </div>
-
-        <div class="container-fluid">
-            <button type="button" class="btn btn-primary" id="toggle_availability">Show Currently Unavailable rooms</button>
-        </div>
-
-        <!-- map div -->
-        <div class="container-fluid">
+        <div class="container bg-light mt-4 p-4">
+            <center><h3 id="floor_name_title"></h3></center>
+            <!-- map div -->
             <div class="map_div">
                 <div class="filter-ctrl">
-                    <input id="search_bar" type="text" placeholder="Enter room name">
+                    <input id="search_bar" type="text" placeholder="Search">
                 </div>
                 <div id="map">
                 </div>
             </div>
+
+
+            <div id="main_div">
+                <div class="mt-2">
+                    <h5>Select Room and Date</h5>
+                    <div class="btn-group" role="group" aria-label="show Timetable">
+                        <select class="form-select bg-light text-black" aria-label="Pick Semester" style="width:auto;" id="semester_picker" onchange="onChangeSemesterPicker()">
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                        </select>
+
+                        <select class="form-select bg-light text-black" aria-label="Pick Week" style="width:auto;" id="week_picker" onchange="onChangeWeekPicker()" >
+                        </select>
+
+                        <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="room_picker" onchange="onChangeRoomPicker()" >
+                        </select>  
+                    </div>               
+                    <div class="btn-group" role="group" aria-label="show Timetable">
+                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#timetableModal" onclick="onChangeRoomPicker()">
+                            Show info
+                        </button>   
+                    </div>
+                </div>
+
+                <!-- shortest path selector -->
+                <div class="mt-2">
+                    <h5>Find Shortest path</h5>
+                    <div class="btn-group" role="group" aria-label="Search path">
+                        <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="start_position">
+                        </select>
+                   
+                        <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="end_position" >
+                        </select>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="show Timetable">
+                        <button type="button" class="btn btn-outline-dark" id="find_path">
+                            Find Path
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <h5>Show Currently Unavailable rooms</h5>
+                    <div class="btn-group" role="group" aria-label="show Timetable">
+                        <button type="button" class="btn btn-outline-dark" id="toggle_availability">
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
+    </div>
+    <div class="container">
+        <footer class="my-4 pt-4 text-muted text-center text-small">
+            <!-- <p class="mb-1">© 2021-2022 University of Manchester </p> -->
+            <!-- <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Privacy</a></li>
+                <li class="list-inline-item"><a href="#">Terms</a></li>
+                <li class="list-inline-item"><a href="#">Support</a></li>
+              </ul> -->
+        </footer>
     </div>
 
     <!-- Modal for timetable -->
@@ -78,12 +98,12 @@
               <h5 class="modal-title" id="modalLabel">Room information</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <div id="timetable">
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>

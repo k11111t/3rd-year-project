@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 19 19"
+   height="19"
+   width="19"
+   version="1.1"
+   id="svg15"
+   sodipodi:docname="womens-toilet.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs19" />
+  <sodipodi:namedview
+     id="namedview17"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:zoom="30.073963"
+     inkscape:cx="12.635514"
+     inkscape:cy="10.607182"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg15">
+    <inkscape:grid
+       type="xygrid"
+       id="grid101" />
+  </sodipodi:namedview>
+  <title
+     id="title9">toilet.svg</title>
+  <rect
+     fill="none"
+     x="0"
+     y="0"
+     width="19"
+     height="19"
+     id="rect11" />
+  <path
+     fill="#000000"
+     d="M 9.5,5.8 C 8.6716,5.8 8,5.1284 8,4.3 8,3.4716 8.6716,2.8 9.5,2.8 10.3284,2.8 11,3.4716 11,4.3 11,5.1284 10.3284,5.8 9.5,5.8 Z m 4.36,3.64 v 0 L 11.38,6.95 v 0 C 11.2798,6.8492 11.142,6.7949 11,6.8 H 8 C 7.8697,6.8003 7.7445,6.8503 7.65,6.94 v 0 L 5.14,9.43 c -0.2261,0.177 -0.2659,0.5039 -0.0889,0.73 0.177,0.2261 0.5039,0.2659 0.73,0.0889 C 5.8142,10.223 5.8441,10.1931 5.87,10.16 L 8,8 6,13.8 h 2 v 3.33 c -0.0075,0.0497 -0.0075,0.1003 0,0.15 0.0555,0.2761 0.3244,0.455 0.6005,0.3995 C 8.802,17.639 8.9595,17.4815 9,17.28 v 0 -3.48 h 1 v 3.5 0 c 0.0555,0.2761 0.3244,0.455 0.6005,0.3995 C 10.802,17.659 10.9595,17.5015 11,17.3 c 0.0075,-0.0497 0.0075,-0.1003 0,-0.15 V 13.8 h 2 L 11,8 l 2.14,2.16 v 0 c 0.0967,0.1081 0.2349,0.17 0.38,0.17 C 13.7954,10.3088 14.0061,10.0761 14,9.8 14.0023,9.6663 13.9521,9.537 13.86,9.44 Z"
+     id="path13"
+     sodipodi:nodetypes="ssssssccsccsccsccccccccsccccscccccccsccs" />
+  <metadata
+     id="metadata1316">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>toilet.svg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
