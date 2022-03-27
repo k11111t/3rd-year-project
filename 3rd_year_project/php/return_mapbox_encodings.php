@@ -13,7 +13,12 @@
         }
         else if(isset($_GET["floor_name"])){
             $floor_name = $_GET["floor_name"];
-            echo getMapboxEncodingForFloor($connection, $floor_name);
+            if($floor_name == "all"){
+                echo getMapboxEncodingForAllFloors($connection);
+            }
+            else{
+                echo getMapboxEncodingForFloor($connection, $floor_name);
+            }
         }
         
         $connection->close();
@@ -68,6 +73,25 @@
         
         $sql_select = 
         "SELECT `layer_name`, `encoding` FROM mapbox_encodings WHERE `layer_name` IN (". "'" . implode("','", $layers_to_get). "'" .")";
+
+        $result = $connection->query($sql_select);
+        if($result->num_rows == 0){
+            //echo "No room unavailable";
+            return "";
+        }
+        else{
+            $layers_encodings = [];
+            while($row = $result->fetch_assoc()){
+                $layers_encodings[$row["layer_name"]] =$row["encoding"];
+            }
+        }
+
+        return json_encode($layers_encodings);
+    }
+
+    function getMapboxEncodingForAllFloors($connection){
+        $sql_select = 
+        "SELECT `layer_name`, `encoding` FROM mapbox_encodings";
 
         $result = $connection->query($sql_select);
         if($result->num_rows == 0){

@@ -144,6 +144,7 @@ function createMap(initial_map_attributes){
         {padding : -50,
          bearing : initial_map_attributes["rotation_angle"],
          pitch : 0});
+    
     return map;
 }
 
@@ -238,9 +239,9 @@ function loadMap(map){
                 },
                 'paint': {
                     'fill-color': ['match', ['get', 'type'],
-                                    'corridor', '#d5d5d5',
-                                    'wall', 'grey',
-                                    'grey'], 
+                                    'corridor', '#808080',
+                                    'wall', '#282828',
+                                    '#282828'], 
                     'fill-opacity': 1
                 }
             });
@@ -256,7 +257,7 @@ function loadMap(map){
                 },
                 'paint': {
                     'line-color': 'white',
-                    'line-width': 3
+                    'line-width': 2
                 }
             });
         }
@@ -276,14 +277,8 @@ function loadMap(map){
                     'fill-color': ['match', ['get', 'type'],
                                     'IT Services', 'transparent',
                                     'exit', 'transparent',
-                                    'stairs', '#677578',
-                                    'mens_bathroom', 'blue',
-                                    'womens_bathroom', 'red',
-                                    'accessible_bathroom', 'green',
-                                    'lift', '#677578',
-                                    'accessible_lift', '#677578',
-                                    'grey'], 
-                    'fill-opacity': 0.5
+                                    '#404040'], 
+                    'fill-opacity': 1
                 }
             });
 
@@ -301,7 +296,7 @@ function loadMap(map){
                                     'IT Services', 'transparent',
                                     'exit', ' transparent',
                                     'white'],
-                    'line-width': 3
+                    'line-width': 2
                 }
             });  
         }
@@ -318,7 +313,7 @@ function loadMap(map){
                     'visibility' : "visible"
                 },
                 'paint': {
-                    'fill-color': "blue",
+                    'fill-color': "#660099",
                     'fill-opacity': 1,
                 },
             });
@@ -332,7 +327,7 @@ function loadMap(map){
                     'visibility' : 'none'
                 },
                 'paint' : {
-                    'fill-color' : 'red',
+                    'fill-color' : '#999999',
                     'fill-opacity' : 1
                 }
             });
@@ -347,7 +342,7 @@ function loadMap(map){
                     'visibility' : "none"
                 },
                 'paint': {
-                    'fill-color': '#006627',
+                    'fill-color': '#FFCC33',
                     'fill-opacity': 1
                 }
             });  
@@ -363,7 +358,7 @@ function loadMap(map){
                 },
                 'paint': {
                     'line-color': '#FFFFFF',
-                    'line-width': 3
+                    'line-width': 2
                 }                
             }); 
         }
@@ -381,9 +376,9 @@ function loadMap(map){
                 },
                 'paint': {
                     'fill-extrusion-color': ['match', ['get', 'type'],
-                                    'corridor', '#d5d5d5',
-                                    'wall', 'grey',
-                                    'grey'], 
+                                    'corridor', '#808080',
+                                    'wall', '#282828',
+                                    '#282828',], 
                     'fill-extrusion-opacity': 1,
                     'fill-extrusion-height': ['match', ['get', 'type'],
                                                 'corridor', 0,
@@ -405,14 +400,9 @@ function loadMap(map){
                 'paint': {
                     'fill-extrusion-color': ['match', ['get', 'type'],
                                     'IT Services', 'transparent',
-                                    'exit', 'transparent',
-                                    'stairs', '#677578',
-                                    'mens_bathroom', 'blue',
-                                    'womens_bathroom', 'red',
-                                    'accessible_bathroom', 'green',
-                                    'lift', '#677578',
-                                    'accessible_lift', '#677578',
-                                    'grey'], 
+                                    'exit', '#808080',
+                                    'stairs', '#808080',
+                                    '#404040'], 
                     'fill-extrusion-height': ['match', ['get', 'type'],
                                     'mens_bathroom', 3,
                                     'womens_bathroom', 3,
@@ -438,7 +428,7 @@ function loadMap(map){
                 },
                 'paint': {
                     'fill-extrusion-height': 3,
-                    'fill-extrusion-color': "blue",
+                    'fill-extrusion-color': "#660099",
                     'fill-extrusion-opacity': 1,
                     'fill-extrusion-vertical-gradient' : true
                 },
@@ -457,16 +447,16 @@ function loadMap(map){
                     'visibility': "visible",
                     'icon-image': 
                         ['match', ['get', 'type'],
-                                'exit', 'entrance',
-                                'stairs', 'rail',
-                                'mens_bathroom', 'mens_toilet',
-                                'womens_bathroom', 'scooter',
-                                'accessible_bathroom', 'star',
-                                'lift', 'village',
-                                'accessible_lift', 'water',
+                                'exit', 'big-exit',
+                                'stairs', 'big-stairs-2',
+                                'mens_bathroom', 'big-mens-toilet',
+                                'womens_bathroom', 'big-womens-toilet',
+                                'accessible_bathroom', 'big-accessible-toilet',
+                                'lift', 'big-elevator',
+                                'accessible_lift', 'big-elevator',
                                 ''
                         ],
-                    'icon-size': 1,
+                    'icon-size': 0.4,
                     'text-field':
                         ['match', ['get', 'type'],
                                 'IT Services', 'IT Services',
@@ -480,6 +470,10 @@ function loadMap(map){
                     //rotation of the text can be locked
                     'text-rotation-alignment' : "viewport", 
                     //'text-rotate' : -28.55
+                },
+                "paint":{
+                    "icon-color" : "white" ,
+                    "text-color" : "white"
                 }
             });
 

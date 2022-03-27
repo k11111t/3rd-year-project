@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -12,13 +12,29 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
-    <header></header>
-    <div id="main_div"></div>
+    <!-- navbar -->
+    <div id="navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div>
+        <!-- map div -->
+        <div class="container-fluid">
+            <div class="map_div">
+                <!-- <div class="filter-ctrl">
+                    <input id="search_bar" type="text" placeholder="Enter room name">
+                </div> -->
+                <nav id="menu" class="menu"></nav>
+                <div id="map">
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
     createNavbar();
     init();
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 
 </html>

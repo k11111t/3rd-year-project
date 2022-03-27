@@ -1,6 +1,6 @@
 #main_div{
     margin:left;
-	padding: 0px 100px 0px 100px;
+	padding: 0px 0px 0px 0px;
 }
 
 #map{
@@ -17,6 +17,7 @@
     z-index: 1;
     border-radius: 3px;
     width: 120px;
+	right: 20px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     font-family: 'Open Sans', sans-serif;
     }
@@ -39,10 +40,10 @@
     }
      
 #menu a.active {
-    background-color: #3887be;
+    background-color: #660099;
     color: #ffffff;
     }
      
 #menu a.active:hover {
-    background: #3074a4;
+    background: #4e0075;
     }

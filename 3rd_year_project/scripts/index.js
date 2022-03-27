@@ -1,31 +1,24 @@
-async function init(){  
-    console.log("init start");
-    
+async function init(){    
     const initial_map_attributes = {
         "lat" : 53.46750771428495,
         "lng" : -2.233885992091956,
         "rotation_angle" : -28.55,
-        "zoom" : 18.9,
+        "zoom" : 18.8,
+        "token" : "pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA",
+        "south_west_bounding_box" : [ -2.234137140059635, 53.467059668074938 ],
+        "north_east_bounding_box" : [ -2.233617400269494, 53.467950914900705 ]
     }
-    //html
-    {
-    //create menu
-    createMapMenu();
-    //create map div
-    createMapDiv();
-    }
+
     //hard coded room names
     var all_floor_names = ["Kilburn_2", "Kilburn_1", "Kilburn_LF", "Kilburn_G"];
 
     //create map
     var map = createMap(initial_map_attributes);
-    //create navigation controls
-    addNavigationControl(map);   
-    //create reset button
-    createResetPositionButton(map, initial_map_attributes);
+
+    addMapButtons(map, initial_map_attributes);
 
     //load map
-    await loadMap(map, all_floor_names);
+    await loadEverything(map, all_floor_names);
 }
 
 //load file stuff
@@ -71,26 +64,74 @@ function getDatasetURL(dataset_ids, dataset_name){
 }
 
 //map stuff
-
 function createMap(initial_map_attributes){
     //sk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdzlxMjlzdjBiamwydnFsczFzcWh6NG4ifQ.Rykts7uD3lREfUElWufoQQ
-    mapboxgl.accessToken = 'pk.eyJ1IjoidmhkYW5nIiwiYSI6ImNrdnllMml5ODBxd2YydXFpaGZuM3VxZGEifQ.ATaKwz3pOdOc8Xtr0n7CfA';
-
+    mapboxgl.accessToken = initial_map_attributes["token"];
     var map = new mapboxgl.Map({
         container: 'map', // container ID
         style: 'mapbox://styles/vhdang/ckw9zkrqr7es315mi4atlpunw', // style URL
-        center: [initial_map_attributes["lng"], initial_map_attributes["lat"]], // starting position [lng, lat]
-        zoom: initial_map_attributes["zoom"], // starting zoom
-        bearing: initial_map_attributes["rotation_angle"]
     });
-
+    map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
+        {padding : -50,
+         bearing : initial_map_attributes["rotation_angle"],
+         pitch : 0});
     return map;
 }
 
-async function addSources(map, all_floor_names){
-    const path_to_root = "../";
-    const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
+function addMapButtons(map, initial_map_attributes){
+    const buttons_position = "top-left";
+    addFullscreenButton(map, buttons_position);
+    addNavigationControl(map, buttons_position);
+    addResetPositionButton(map, buttons_position, initial_map_attributes);
+}
 
+function addFullscreenButton(map, buttons_position){
+    map.addControl(new mapboxgl.FullscreenControl(), buttons_position);
+}
+
+function addNavigationControl(map, buttons_position){
+    const nav = new mapboxgl.NavigationControl({
+        visualizePitch: true
+        });
+    map.addControl(nav, buttons_position);
+}
+
+function addResetPositionButton(map, buttons_position, initial_map_attributes){
+    function resetPosition(){
+        map.fitBounds([initial_map_attributes["south_west_bounding_box"], initial_map_attributes["north_east_bounding_box"]], 
+        {padding: -50,
+         bearing : initial_map_attributes["rotation_angle"],
+         pitch : 0});
+    }
+    const reset_button = new MapboxMapButtonControl({
+        icon: '<i class="bi bi-arrow-counterclockwise"></i>',
+        title: "Reset Position",
+        eventHandler: resetPosition
+      });
+
+    map.addControl(reset_button, buttons_position);
+}
+
+async function getMapboxEncoding(floor_name, func){
+    const path_to_root = "../";
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function() {
+        var mapbox_encodings = this.responseText;
+        //console.log("json:", mapbox_encodings);
+        mapbox_encodings = JSON.parse(mapbox_encodings);
+        func(mapbox_encodings);
+    }
+    xmlhttp.open("GET", path_to_root + "php/return_mapbox_encodings.php?floor_name="+floor_name);
+    xmlhttp.send();
+}
+
+async function loadEverything(map, all_floor_names){
+    //const path_to_root = "../";
+    //const dataset_ids = await getJsonDataFromURL(path_to_root + "data/MapboxAPI/dataset_ids.json");
+    await getMapboxEncoding("all", async function(dataset_ids){
+        map.on("style.load", async () => {
+
+        
     for (const floor_name of all_floor_names){
         //load room data URL
         const rooms_url = getDatasetURL(dataset_ids, floor_name.concat("_rooms")); 
@@ -108,6 +149,7 @@ async function addSources(map, all_floor_names){
         const corridor_data_source = floor_name.concat("_corridor_data");
         const structures_data_source = floor_name.concat("_structure_data");
         const structure_label_data_source = floor_name.concat("_structure_label_data");
+
         map.addSource(room_data_source, {
             'type': 'geojson',
             'data': rooms_url
@@ -133,13 +175,13 @@ async function addSources(map, all_floor_names){
             'data': structures_centroid_url
         });
     }
+    });
+    await loadMap(map, all_floor_names);
+    });
 }
 
 async function loadMap(map, all_floor_names){
     map.on('load', async () => {
-        //load all the data
-        await addSources(map, all_floor_names);
-
         //set to the first layer - inital value
         var _visibility = "visible";
         //add layers for each floor
@@ -163,9 +205,9 @@ async function loadMap(map, all_floor_names){
                     },
                     'paint': {
                         'fill-color': ['match', ['get', 'type'],
-                                        'corridor', '#d5d5d5',
-                                        'wall', 'grey',
-                                        'grey'], 
+                                        'corridor', '#808080',
+                                        'wall', '#282828',
+                                        '#282828'], 
                         'fill-opacity': 1
                     }
                 });
@@ -181,7 +223,7 @@ async function loadMap(map, all_floor_names){
                     },
                     'paint': {
                         'line-color': 'white',
-                        'line-width': 3
+                        'line-width': 2
                     }
                 });
             }
@@ -200,14 +242,8 @@ async function loadMap(map, all_floor_names){
                         'fill-color': ['match', ['get', 'type'],
                                         'IT Services', 'transparent',
                                         'exit', 'transparent',
-                                        'stairs', '#677578',
-                                        'mens_bathroom', 'blue',
-                                        'womens_bathroom', 'red',
-                                        'accessible_bathroom', 'green',
-                                        'lift', '#677578',
-                                        'accessible_lift', '#677578',
-                                        'grey'], 
-                        'fill-opacity': 0.5
+                                        '#404040'], 
+                        'fill-opacity': 1
                     }
                 });
 
@@ -225,7 +261,7 @@ async function loadMap(map, all_floor_names){
                                         'IT Services', 'transparent',
                                         'exit', ' transparent',
                                         'white'],
-                        'line-width': 3
+                        'line-width': 2
                     }
                 });
             }
@@ -241,8 +277,8 @@ async function loadMap(map, all_floor_names){
                         'visibility' : _visibility
                     },
                     'paint': {
-                        'fill-color': '#0080ff', // blue color fill
-                        'fill-opacity': 0.5
+                        'fill-color': '#660099', 
+                        'fill-opacity': 1
                     }
                 });
 
@@ -257,7 +293,7 @@ async function loadMap(map, all_floor_names){
                     },
                     'paint': {
                         'line-color': '#FFFFFF',
-                        'line-width': 3
+                        'line-width': 2
                     }
                 });
             }
@@ -271,14 +307,36 @@ async function loadMap(map, all_floor_names){
                     'type': 'symbol',
                     'source': structure_label_data_source,
                     'layout':{
-                        'visibility': _visibility,
-                        'text-field': ['get', 'type'],
+                        'visibility': _visibility ,
+                        'icon-image': 
+                            ['match', ['get', 'type'],
+                                    'exit', 'big-exit',
+                                    'stairs', 'big-stairs',
+                                    'mens_bathroom', 'big-mens-toilet',
+                                    'womens_bathroom', 'big-womens-toilet',
+                                    'accessible_bathroom', 'big-accessible-toilet',
+                                    'lift', 'big-elevator',
+                                    'accessible_lift', 'big-elevator',
+                                    ''
+                            ],
+                        'icon-size': 0.4,
+                        'text-field':
+                            ['match', ['get', 'type'],
+                                    'IT Services', 'IT Services',
+                                    ''
+                            ],
                         //when the text overlaps, only one is displayed
-                        'text-ignore-placement' : true,
+                        //'text-ignore-placement' : true,
+                        'icon-allow-overlap' : true,
                         'text-justify' : "center",
                         'text-size' : 12,
                         //rotation of the text can be locked
-                        'text-rotation-alignment' : "map", 'text-rotate' : -28.55
+                        'text-rotation-alignment' : "viewport", 
+                        //'text-rotate' : -28.55
+                    },
+                    "paint":{
+                        "icon-color" : "white" ,
+                        "text-color" : "white"
                     }
                 });
 
@@ -289,15 +347,22 @@ async function loadMap(map, all_floor_names){
                     'type': 'symbol',
                     'source': room_labels_data_source,
                     'layout':{
-                        'visibility': _visibility,
+                        'visibility': _visibility ,
                         'text-field': ['match', ['get', 'name'],
                                         '.', '',
                                         ['get', 'name']],
-                        'text-ignore-placement' : true,
+                        //when the text overlaps, only one is displayed
+                        //'text-ignore-placement' : true,
+                        'text-allow-overlap' : true,
                         'text-justify' : "center",
                         'text-size' : 12,
-                        'text-rotation-alignment' : "map",
-                        'text-rotate' : -28.5
+                        'text-max-width': 1,
+                        //rotation of the text can be locked
+                        'text-rotation-alignment' : "viewport", 
+                        //'text-rotate' : -28.55
+                    },
+                    'paint':{
+                        'text-color' : "white"
                     }
                 });
             }
@@ -312,6 +377,9 @@ async function loadMap(map, all_floor_names){
 
 function setUpAfterLoadMap(map, all_floor_names){
     addMapMenuButtons(map, all_floor_names);
+    onChangeFontColour(map, all_floor_names);
+    onChangeFontSize(map, all_floor_names);
+    onChangeRoomColour(map, all_floor_names);
 }
 
 function addMapMenuButtons(map, all_floor_names){
@@ -384,71 +452,64 @@ function setVisibility(map, layer_name, visibility){
     map.setLayoutProperty(layer_name.concat("_room_labels"), 'visibility', visibility);
 }
 
-function addNavigationControl(map){
-    const nav = new mapboxgl.NavigationControl({
-        visualizePitch: true
-        });
-        
-    map.addControl(new mapboxgl.FullscreenControl(), "bottom-right");
-    map.addControl(nav, "bottom-right");
-}
-
-function createResetPositionButton(map, initial_map_attributes){
-
-    function resetPosition(){
-        map.setCenter([initial_map_attributes["lng"], initial_map_attributes["lat"]]);
-        map.setBearing(initial_map_attributes["rotation_angle"]);
-        map.setZoom(initial_map_attributes["zoom"]);
-        map.setPitch(0, 0);
+function onChangeFontColour(map, all_floor_names){
+    var colour_picker = document.getElementById("font_colour");
+    
+    colour_picker.onchange = function(){
+        for(const floor_name of all_floor_names){
+            const layer_name = floor_name.concat("_room_labels");
+            map.setPaintProperty(layer_name, 'text-color', colour_picker.value);
+        }
     }
-
-    const reset_button = new MapboxGLButtonControl({
-        className: "mapbox-gl-draw_polygon",
-        title: "Reset Position",
-        eventHandler: resetPosition
-      });
-
-    map.addControl(reset_button, "bottom-right");
 }
 
-//HTML stuff
-
-function createMapDiv(){
-    var map_div = document.createElement('div');
-    map_div.id = "map";
-    document.getElementById("main_div").appendChild(map_div);
+function onChangeFontSize(map, all_floor_names){
+    var font_size_slider = document.getElementById("font_size");
+    
+    font_size_slider.onchange = function(){
+        for(const floor_name of all_floor_names){
+            const layer_name = floor_name.concat("_room_labels");
+            map.setLayoutProperty(layer_name, 'text-size', parseInt(font_size_slider.value));
+        }
+        
+    }
 }
 
-function createMapMenu(){
-    var menu_nav = document.createElement('nav');
-    menu_nav.id = "menu";
-    menu_nav.className = "menu";
-    document.getElementById("main_div").appendChild(menu_nav);
+function onChangeRoomColour(map, all_floor_names){
+    var colour_picker = document.getElementById("room_colour");
+    
+    colour_picker.onchange = function(){
+        for(const floor_name of all_floor_names){
+            const layer_name = floor_name.concat("_rooms");
+            map.setPaintProperty(layer_name, 'fill-color', colour_picker.value);
+        }
+    }
 }
 
-class MapboxGLButtonControl {
+class MapboxMapButtonControl {
     constructor({
-      className = "",
+      icon = "",
       title = "",
       eventHandler = evtHndlr
     }) {
-      this._className = className;
+      this._icon = icon;
       this._title = title;
       this._eventHandler = eventHandler;
     }
   
     onAdd(map) {
-      this._btn = document.createElement("button");
-      this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
-      this._btn.type = "button";
-      this._btn.title = this._title;
-      this._btn.onclick = this._eventHandler;
-  
-      this._container = document.createElement("div");
-      this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
-      this._container.appendChild(this._btn);
-  
-      return this._container;
+        this.map = map;
+        this._btn = document.createElement("button");
+        this._btn.type = "button";
+        this._btn.innerHTML = this._icon;
+        this._btn.title = this._title;
+        this._btn.onclick = this._eventHandler;
+    
+        this._container = document.createElement("div");
+        this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+        this._container.appendChild(this._btn);
+    
+        return this._container;
     }
   
     onRemove() {
