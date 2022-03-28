@@ -27,7 +27,7 @@
         ORDER BY activities.start_time";
         $activities_rows =$connection->query($sql_get_activities);
         if($activities_rows->num_rows == 0){
-            echo "Timetable not found<br>";
+            echo "<p>Timetable not found</p>";
             return;
         }
         else{
@@ -98,7 +98,7 @@
 		$sql_get_room_id = "SELECT room_id FROM rooms WHERE rooms.room_name='$room_name'";
 		$room_id_row = $connection->query($sql_get_room_id);
 		if($room_id_row->num_rows == 0) {
-			echo "Timetable not found <br>";
+			echo "<p> Timetable not found </p>";
 			exit(0);
 		}
 		$room_id = $room_id_row->fetch_assoc()["room_id"];
@@ -155,7 +155,7 @@
         ORDER BY activities.start_time";
         $activities_rows =$connection->query($sql_get_activities);
         if($activities_rows->num_rows == 0){
-            echo "Timetable not found<br>";
+            echo "<p>Timetable not found</p>";
             return;
         }
         else{

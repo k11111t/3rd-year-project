@@ -17,6 +17,15 @@
         }
     }
 
+    class PQ extends \SplPriorityQueue 
+    {
+        public function compare($priority1, $priority2)
+        {
+            if ($priority1 === $priority2) return 0;
+            return $priority1 > $priority2 ? -1 : 1;
+        }
+    } 
+
     class Dijkstra{
         public $start_node_name;
         public $end_node_name;
@@ -36,11 +45,7 @@
             $this->end_node_name = $end_node;
             $this->graph = $graph;
             $this->list_of_nodes = $graph->list_of_nodes;
-
-            $this->tentative_distances = self::initialiseTentativeDistances($this->start_node_name, $this->list_of_nodes);
-            $this->predecessor_map = self::initialisePredecessorMap($this->start_node_name, $this->list_of_nodes);
-            $this->finished_nodes = self::initialiseFinishedNodes($this->list_of_nodes);
-            $this->unfinished_nodes = array();
+            
         }
 
         //dont test
@@ -58,27 +63,38 @@
         }
 
         function executeDijkstra(){
+            //print_r((array) $this->list_of_nodes) ;
+            if(!array_key_exists($this->start_node_name, (array) $this->list_of_nodes) || !array_key_exists($this->end_node_name, (array) $this->list_of_nodes)){
+                return [];
+            }
+
+            $this->tentative_distances = self::initialiseTentativeDistances($this->start_node_name, $this->list_of_nodes);
+            $this->predecessor_map = self::initialisePredecessorMap($this->start_node_name, $this->list_of_nodes);
+            $this->finished_nodes = self::initialiseFinishedNodes($this->list_of_nodes);
+            $this->unfinished_nodes = array();
+
             //this should be PQ
-            
-            array_push($this->unfinished_nodes, $this->start_node_name);
+            $this->unfinished_nodes = new PQ();
+            $this->unfinished_nodes->insert($this->start_node_name, 0);
+            //array_push($this->unfinished_nodes, );
     
             do{
-                $current_node_name = array_pop($this->unfinished_nodes);
+                $current_node_name = $this->unfinished_nodes->extract();
                 if($current_node_name == null){
                     //there is no path
                     return [];
                 }
     
                 // //include this only when there is PQ implementation
-                // if($current_node_name == $end_node_name){
-                //     //there is path
-                //     break;
-                // }
+                if($current_node_name == $this->end_node_name){
+                    //there is path
+                    break;
+                }
     
                 $this->finished_nodes[$current_node_name] = true;
                 $this->relaxFromNode($current_node_name);
             }
-            while(!empty($this->unfinished_nodes));
+            while(!$this->unfinished_nodes->isEmpty());
     
             $path = $this->returnPathFromPredecessorMap($this->start_node_name, $this->end_node_name, $this->predecessor_map);
     
@@ -93,17 +109,24 @@
             foreach($neighbours as $neighbour_name => $distance_to_neighbour){
                 $new_tentative_distance = $this->tentative_distances[$current_node_name] + $distance_to_neighbour;
 
-                if(!$this->finished_nodes[$neighbour_name]){
-                    //check if the neighbour is already in the unfinished nodes!!
-                    if(!in_array($neighbour_name, $this->unfinished_nodes, true)){
-                        array_push($this->unfinished_nodes, $neighbour_name);
-                    }
-                }
                 if($this->tentative_distances[$neighbour_name] > $new_tentative_distance){
                     $this->tentative_distances[$neighbour_name] = $new_tentative_distance;
                     $this->predecessor_map[$neighbour_name] = $current_node_name;
                 }
+
+                if(!$this->finished_nodes[$neighbour_name]){
+                    //check if the neighbour is already in the unfinished nodes!!
+                    // if(in_array($neighbour_name, iterator_to_array($this->unfinished_nodes))){
+                    //     continue;
+                    // }
+                    $heuristic = $this->tentative_distances[$neighbour_name] + $this->getDistanceBetween2NodesFast($neighbour_name, $this->end_node_name);
+                    $this->unfinished_nodes->insert($neighbour_name, $heuristic);
+                }
+
             }
+            // echo "<pre>";
+            // print_r($this->unfinished_nodes);
+            // echo "</pre>";
         }
 
         static function initialiseTentativeDistances($start_node_name, $list_of_nodes){
@@ -154,7 +177,7 @@
             array_push($path, $start_node_name);
     
             return $path;
-        }  
+        } 
 
         //dont test this
         function getCoordinatesFromPath($path){
@@ -168,6 +191,40 @@
             }
     
             return $coordinates_array;
+        }
+
+        function getDistanceBetween2NodesFast($node_1_name, $node_2_name){
+            $lat1 = $this->list_of_nodes->$node_1_name->latitude;
+            $lon1 = $this->list_of_nodes->$node_1_name->longitude;
+            $lat2 = $this->list_of_nodes->$node_2_name->latitude;
+            $lon2 = $this->list_of_nodes->$node_2_name->longitude;
+            $p = 0.017453292519943295; //pi / 180
+            $a = 0.5 - cos(($lat2 - $lat1) * $p) / 2 + cos($lat1 * $p) * cos($lat2 * $p) * (1 - cos(($lon2 - $lon1) * $p)) / 2;
+            return 12742 * asin(sqrt($a));
+        }
+
+        function getDistanceBetween2NodesAccurate($node_1_name, $node_2_name){
+            $lat1 = $this->list_of_nodes->$node_1_name->latitude;
+            $lon1 = $this->list_of_nodes->$node_1_name->longitude;
+            $lat2 = $this->list_of_nodes->$node_2_name->latitude;
+            $lon2 = $this->list_of_nodes->$node_2_name->longitude;
+            $p = 0.017453292519943295; //pi / 180
+            $R = 6371;
+
+            $dLat = ($lat2 - $lat1) * $p;
+            $dLon = ($lon2 - $lon1) * $p;
+            $a = sin($dLat/2) * sin($dLat/2) + cos($lat1 * $p) * cos($lat2 * $p) * sin($dLon/2) * sin($dLon / 2);
+            $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+            $d = $R * $c;
+            return $d;
+        }
+
+        function getDistanceBetween2NodesReallyFast($node_1_name, $node_2_name){
+            $lat1 = $this->list_of_nodes->$node_1_name->latitude;
+            $lon1 = $this->list_of_nodes->$node_1_name->longitude;
+            $lat2 = $this->list_of_nodes->$node_2_name->latitude;
+            $lon2 = $this->list_of_nodes->$node_2_name->longitude;
+            return sqrt(pow($lat1-$lat2, 2) + pow($lon1-$lon2, 2));
         }
 
         static function createGeoJSONStringLineObject($nodes_array){

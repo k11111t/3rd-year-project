@@ -885,6 +885,14 @@ function onClickFindPath(map){
     //get floor name
     const find_path_button = document.getElementById("find_path");
     find_path_button.onclick = function(){
+        var loading_icon = document.createElement("span");
+        loading_icon.className = "spinner-border spinner-border-sm";
+        loading_icon.role = "status";
+
+        find_path_button.disabled = true;
+        find_path_button.innerHTML = "Loading...";
+        find_path_button.appendChild(loading_icon);
+        
         const floor_name = getFloorName();
         const start_node = document.getElementById("start_position").value;
         const end_node = document.getElementById("end_position").value;
@@ -893,7 +901,10 @@ function onClickFindPath(map){
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
             var geojson_obj = this.responseText;
+            console.log(geojson_obj);
             geojson_obj = JSON.parse(geojson_obj);
+            find_path_button.disabled = false;
+            find_path_button.innerHTML = "Find Path";
             drawPath(map, geojson_obj);
         }
         xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
@@ -926,7 +937,7 @@ function drawPath(map, geojson_input){
                 'line-join' : "round",
             },
             'paint': {
-                'line-color': "green",
+                'line-color': "#39ff14",
                 'line-width': 3
             }
         });
@@ -1035,7 +1046,7 @@ function getUnavailableRooms(func){
     var today = getWeekByIndex(current_day_id);
 
     //hard coded the values for demonstration:
-    current_week_num = 6;
+    current_week_num = 69;
     today = "Tuesday";
     current_hour = 10;
 

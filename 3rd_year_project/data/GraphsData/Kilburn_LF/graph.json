@@ -1,0 +1,918 @@
+{
+    "list_of_nodes": {
+        "corridor0": {
+            "name": "corridor0",
+            "longitude": 53.467524147069184,
+            "latitude": -2.23446140311144,
+            "list_of_neighbours": {
+                "corridor1": 0.003808295911197901,
+                "corridor64": 0.008955479436407206,
+                "Lecture Theatre 1.1": 0.0023075615958939736
+            }
+        },
+        "corridor1": {
+            "name": "corridor1",
+            "longitude": 53.467533661847376,
+            "latitude": -2.234431156155022,
+            "list_of_neighbours": {
+                "corridor57": 0.005644679872818331,
+                "corridor0": 0.003808295911197901,
+                "corridor64": 0.00514720121239024
+            }
+        },
+        "corridor2": {
+            "name": "corridor2",
+            "longitude": 53.46757500758558,
+            "latitude": -2.234299190991063,
+            "list_of_neighbours": {
+                "corridor19": 0.007872071704165436,
+                "corridor56": 0.007505780594079445,
+                "corridor18": 0.0022172245612772294,
+                "corridor3": 0.0007517258827683316
+            }
+        },
+        "corridor3": {
+            "name": "corridor3",
+            "longitude": 53.46757685805821,
+            "latitude": -2.234293196167012,
+            "list_of_neighbours": {
+                "corridor56": 0.008257493468728358,
+                "corridor2": 0.0007517258827683316,
+                "corridor4": 0.004881817374365028
+            }
+        },
+        "corridor4": {
+            "name": "corridor4",
+            "longitude": 53.46759986352052,
+            "latitude": -2.234313923482992,
+            "list_of_neighbours": {
+                "corridor5": 0.0026235250598717658,
+                "corridor9": 0.00775601869084558,
+                "corridor6": 0.008167368019898006,
+                "corridor3": 0.004881817374365028
+            }
+        },
+        "corridor5": {
+            "name": "corridor5",
+            "longitude": 53.46760643964142,
+            "latitude": -2.234293105494823,
+            "list_of_neighbours": {
+                "corridor9": 0.005132493834489442,
+                "corridor4": 0.0026235250598717658,
+                "LF6": 0.00223621085951978
+            }
+        },
+        "corridor6": {
+            "name": "corridor6",
+            "longitude": 53.46763834560909,
+            "latitude": -2.234348620801172,
+            "list_of_neighbours": {
+                "corridor58": 0.005848941072709119,
+                "corridor4": 0.008167368019898006,
+                "LF8 Quiet Lab": 4.5667243824963646e-5
+            }
+        },
+        "corridor7": {
+            "name": "corridor7",
+            "longitude": 53.46769581187947,
+            "latitude": -2.234399170402366,
+            "list_of_neighbours": {
+                "corridor58": 0.006281680620833102,
+                "corridor59": 0.006460449047981966
+            }
+        },
+        "corridor8": {
+            "name": "corridor8",
+            "longitude": 53.46772622482252,
+            "latitude": -2.234302378199918,
+            "list_of_neighbours": {
+                "corridor59": 0.005723311098752321,
+                "LF7 Research Lab": 5.387103738980037e-5
+            }
+        },
+        "corridor9": {
+            "name": "corridor9",
+            "longitude": 53.467619316471186,
+            "latitude": -2.234252389005759,
+            "list_of_neighbours": {
+                "corridor5": 0.005132493834489442,
+                "corridor15": 0.007034831907589887,
+                "corridor4": 0.00775601869084558,
+                "LF5": 0.0022326322344459314
+            }
+        },
+        "corridor10": {
+            "name": "corridor10",
+            "longitude": 53.467680154640306,
+            "latitude": -2.234060114457773,
+            "list_of_neighbours": {
+                "corridor70": 0.0039747091652470486,
+                "corridor11": 0.002568290093728107
+            }
+        },
+        "corridor11": {
+            "name": "corridor11",
+            "longitude": 53.467692332052046,
+            "latitude": -2.234070782556733,
+            "list_of_neighbours": {
+                "corridor10": 0.002568290093728107,
+                "corridor13": 0.006417925598610325
+            }
+        },
+        "corridor12": {
+            "name": "corridor12",
+            "longitude": 53.46772133674524,
+            "latitude": -2.233978010562312,
+            "list_of_neighbours": {
+                "corridor13": 0.005247163633839494,
+                "LF1 Research Lab": 0.003823415593455703
+            }
+        },
+        "corridor13": {
+            "name": "corridor13",
+            "longitude": 53.46770823499582,
+            "latitude": -2.234019692561595,
+            "list_of_neighbours": {
+                "corridor12": 0.005247163633839494,
+                "corridor11": 0.006417925598610325
+            }
+        },
+        "corridor14": {
+            "name": "corridor14",
+            "longitude": 53.46765575329083,
+            "latitude": -2.234137329834145,
+            "list_of_neighbours": {
+                "corridor15": 0.007473166945803663,
+                "corridor70": 0.005757020826278942
+            }
+        },
+        "corridor15": {
+            "name": "corridor15",
+            "longitude": 53.46763695451791,
+            "latitude": -2.234196570836255,
+            "list_of_neighbours": {
+                "corridor9": 0.007034831907589887,
+                "corridor14": 0.007473166945803663
+            }
+        },
+        "corridor16": {
+            "name": "corridor16",
+            "longitude": 53.46746972522377,
+            "latitude": -2.234204314936612,
+            "list_of_neighbours": {
+                "corridor17": 0.0051359146278907395,
+                "corridor68": 0.007918578272514314,
+                "corridor66": 0.0014621531330662044,
+                "corridor55": 0.00474761654398403
+            }
+        },
+        "corridor17": {
+            "name": "corridor17",
+            "longitude": 53.467493920351686,
+            "latitude": -2.234226145589513,
+            "list_of_neighbours": {
+                "corridor65": 0.004686808399992224,
+                "corridor16": 0.0051359146278907395
+            }
+        },
+        "corridor18": {
+            "name": "corridor18",
+            "longitude": 53.46756455605669,
+            "latitude": -2.234289786144358,
+            "list_of_neighbours": {
+                "corridor19": 0.00565485088824751,
+                "corridor2": 0.0022172245612772294,
+                "Byte Cafe": 0.0016338127453907482
+            }
+        },
+        "corridor19": {
+            "name": "corridor19",
+            "longitude": 53.467537931298615,
+            "latitude": -2.234265702794616,
+            "list_of_neighbours": {
+                "corridor65": 0.004647396253721464,
+                "corridor18": 0.00565485088824751,
+                "corridor2": 0.007872071704165436
+            }
+        },
+        "corridor20": {
+            "name": "corridor20",
+            "longitude": 53.46748206123667,
+            "latitude": -2.234385737335279,
+            "list_of_neighbours": {
+                "corridor57": 0.005249190948019249,
+                "corridor69": 0.00566426277778815,
+                "corridor22": 0.0045525753228719025,
+                "corridor21": 0.002211832264592178
+            }
+        },
+        "corridor21": {
+            "name": "corridor21",
+            "longitude": 53.46747645119857,
+            "latitude": -2.23440322934276,
+            "list_of_neighbours": {
+                "corridor20": 0.002211832264592178,
+                "corridor22": 0.002340763106436002,
+                "LF10": 6.194486152689993e-5
+            }
+        },
+        "corridor22": {
+            "name": "corridor22",
+            "longitude": 53.46747057967924,
+            "latitude": -2.234421799878755,
+            "list_of_neighbours": {
+                "corridor23": 0.0024337606555270568,
+                "corridor20": 0.0045525753228719025,
+                "corridor21": 0.002340763106436002
+            }
+        },
+        "corridor23": {
+            "name": "corridor23",
+            "longitude": 53.46748205336813,
+            "latitude": -2.234432118727499,
+            "list_of_neighbours": {
+                "corridor22": 0.0024337606555270568,
+                "LF11": 0.0001262103557108098
+            }
+        },
+        "corridor24": {
+            "name": "corridor24",
+            "longitude": 53.46742361635053,
+            "latitude": -2.234162825981588,
+            "list_of_neighbours": {
+                "corridor54": 0.008208631344129696,
+                "corridor55": 0.005033941931968401,
+                "LF39 Collab 1": 0.009198024531368896
+            }
+        },
+        "corridor25": {
+            "name": "corridor25",
+            "longitude": 53.467362905533214,
+            "latitude": -2.234108366178465,
+            "list_of_neighbours": {
+                "corridor26": 0.0037938204590447664,
+                "corridor54": 0.004661756011647884,
+                "LF16 Tooltill 1": 0.001596235340428974
+            }
+        },
+        "corridor26": {
+            "name": "corridor26",
+            "longitude": 53.46734501304201,
+            "latitude": -2.23409230252069,
+            "list_of_neighbours": {
+                "corridor53": 0.006719705739758338,
+                "corridor25": 0.0037938204590447664,
+                "corridor54": 0.008455576372766383,
+                "LF34 Collab 2": 0.009173019023228667
+            }
+        },
+        "corridor27": {
+            "name": "corridor27",
+            "longitude": 53.467279802192195,
+            "latitude": -2.234033774930247,
+            "list_of_neighbours": {
+                "corridor28": 0.00020042388067923746,
+                "corridor53": 0.007106276917177095,
+                "corridor29": 0.0034716943460647563,
+                "corridor31": 0.0032873582472210793,
+                "corridor32": 0.0030439902861593006
+            }
+        },
+        "corridor28": {
+            "name": "corridor28",
+            "longitude": 53.46727929078865,
+            "latitude": -2.234035357186281,
+            "list_of_neighbours": {
+                "corridor27": 0.00020042388067923746,
+                "corridor51": 0.008885211085250713,
+                "corridor29": 0.0036721146018847714,
+                "corridor31": 0.0030869375289004856,
+                "corridor32": 0.00284357011296508
+            }
+        },
+        "corridor29": {
+            "name": "corridor29",
+            "longitude": 53.46728855951455,
+            "latitude": -2.234006275949485,
+            "list_of_neighbours": {
+                "corridor28": 0.0036721146018847714,
+                "corridor27": 0.0034716943460647563,
+                "corridor31": 0.006759052128617077,
+                "corridor32": 0.006515684555961883,
+                "LF31": 0.0025545198352590563
+            }
+        },
+        "corridor30": {
+            "name": "corridor30",
+            "longitude": 53.467239516573045,
+            "latitude": -2.234160067284566,
+            "list_of_neighbours": {
+                "corridor52": 0.006250843752825089,
+                "LF15 PGR Lab": 0.002468723310829615
+            }
+        },
+        "corridor31": {
+            "name": "corridor31",
+            "longitude": 53.46727149835732,
+            "latitude": -2.234059803459568,
+            "list_of_neighbours": {
+                "corridor28": 0.0030869375289004856,
+                "corridor27": 0.0032873582472210793,
+                "corridor29": 0.006759052128617077,
+                "corridor33": 0.005619164567768112,
+                "corridor52": 0.0064118468482147585,
+                "corridor63": 0.0024641926665480707,
+                "corridor32": 0.00024337185524911674
+            }
+        },
+        "corridor32": {
+            "name": "corridor32",
+            "longitude": 53.467272119347456,
+            "latitude": -2.234057882148669,
+            "list_of_neighbours": {
+                "corridor28": 0.00284357011296508,
+                "corridor27": 0.0030439902861593006,
+                "corridor29": 0.006515684555961883,
+                "corridor52": 0.0066552160643471815,
+                "corridor31": 0.00024337185524911674,
+                "LF17 PGR Space": 0.0026245691552877837
+            }
+        },
+        "corridor33": {
+            "name": "corridor33",
+            "longitude": 53.46724499138267,
+            "latitude": -2.234036028919793,
+            "list_of_neighbours": {
+                "corridor34": 0.002737970795396323,
+                "corridor63": 0.0031549723867918874,
+                "corridor31": 0.005619164567768112
+            }
+        },
+        "corridor34": {
+            "name": "corridor34",
+            "longitude": 53.467238072516565,
+            "latitude": -2.234057705031328,
+            "list_of_neighbours": {
+                "corridor33": 0.002737970795396323,
+                "corridor35": 0.006302843880430781
+            }
+        },
+        "corridor35": {
+            "name": "corridor35",
+            "longitude": 53.46720831647553,
+            "latitude": -2.234031113382498,
+            "list_of_neighbours": {
+                "corridor34": 0.006302843880430781,
+                "corridor36": 0.008890302744211747
+            }
+        },
+        "corridor36": {
+            "name": "corridor36",
+            "longitude": 53.467185463836834,
+            "latitude": -2.234101144329633,
+            "list_of_neighbours": {
+                "corridor37": 0.003212158560317628,
+                "corridor35": 0.008890302744211747,
+                "Student Support Office": 0.0012046521836564968
+            }
+        },
+        "corridor37": {
+            "name": "corridor37",
+            "longitude": 53.4671703866256,
+            "latitude": -2.234087319290104,
+            "list_of_neighbours": {
+                "corridor38": 0.000926962174622403,
+                "corridor36": 0.003212158560317628
+            }
+        },
+        "corridor38": {
+            "name": "corridor38",
+            "longitude": 53.467168012968344,
+            "latitude": -2.234094629553767,
+            "list_of_neighbours": {
+                "corridor37": 0.000926962174622403,
+                "LF22": 0.00223244587839318
+            }
+        },
+        "corridor39": {
+            "name": "corridor39",
+            "longitude": 53.467112357305645,
+            "latitude": -2.234107101786254,
+            "list_of_neighbours": {
+                "corridor40": 0.0032855687763642845,
+                "LF23": 0.0007896523206793171
+            }
+        },
+        "corridor40": {
+            "name": "corridor40",
+            "longitude": 53.46712082480048,
+            "latitude": -2.23408124079402,
+            "list_of_neighbours": {
+                "corridor39": 0.0032855687763642845,
+                "corridor41": 0.007720017864951291,
+                "LF24": 0.0019156662013661914
+            }
+        },
+        "corridor41": {
+            "name": "corridor41",
+            "longitude": 53.467140724871896,
+            "latitude": -2.234020479773904,
+            "list_of_neighbours": {
+                "corridor42": 0.007727196469274388,
+                "corridor40": 0.007720017864951291,
+                "LF25": 0.001883455347128349
+            }
+        },
+        "corridor42": {
+            "name": "corridor42",
+            "longitude": 53.4671606600179,
+            "latitude": -2.233959677585632,
+            "list_of_neighbours": {
+                "corridor43": 0.0029956554228518476,
+                "corridor44": 0.007673501841814592,
+                "corridor41": 0.007727196469274388,
+                "LF26": 0.0018621422466949462
+            }
+        },
+        "corridor43": {
+            "name": "corridor43",
+            "longitude": 53.467168370973006,
+            "latitude": -2.233936089872756,
+            "list_of_neighbours": {
+                "corridor42": 0.0029956554228518476,
+                "corridor44": 0.004677849134139538,
+                "corridor50": 0.006127449219181379
+            }
+        },
+        "corridor44": {
+            "name": "corridor44",
+            "longitude": 53.46718044976142,
+            "latitude": -2.23389929154544,
+            "list_of_neighbours": {
+                "corridor42": 0.007673501841814592,
+                "corridor43": 0.004677849134139538,
+                "corridor45": 0.007843511822412587,
+                "LF27": 0.0018351451877747552
+            }
+        },
+        "corridor45": {
+            "name": "corridor45",
+            "longitude": 53.46720068168602,
+            "latitude": -2.23383757108358,
+            "list_of_neighbours": {
+                "corridor44": 0.007843511822412587,
+                "corridor46": 0.007703912624626346,
+                "LF28": 0.0018065214013127159
+            }
+        },
+        "corridor46": {
+            "name": "corridor46",
+            "longitude": 53.467220540625014,
+            "latitude": -2.233776937209036,
+            "list_of_neighbours": {
+                "corridor45": 0.007703912624626346,
+                "corridor60": 0.005368604466936401,
+                "LF29": 0.0017600304965854597
+            }
+        },
+        "corridor47": {
+            "name": "corridor47",
+            "longitude": 53.46724774832794,
+            "latitude": -2.233693903527344,
+            "list_of_neighbours": {
+                "corridor61": 0.005549697827205878,
+                "corridor60": 0.00518245842864225
+            }
+        },
+        "corridor48": {
+            "name": "corridor48",
+            "longitude": 53.46729816463898,
+            "latitude": -2.233738607729023,
+            "list_of_neighbours": {
+                "corridor61": 0.005111090908492073,
+                "corridor62": 0.007075678783211271
+            }
+        },
+        "corridor49": {
+            "name": "corridor49",
+            "longitude": 53.46732964332781,
+            "latitude": -2.233641214219205,
+            "list_of_neighbours": {
+                "corridor62": 0.005261126865317883,
+                "LF40": 0.0009199072614627365
+            }
+        },
+        "corridor50": {
+            "name": "corridor50",
+            "longitude": 53.467197293756115,
+            "latitude": -2.233961958068105,
+            "list_of_neighbours": {
+                "corridor51": 0.00848957607028239,
+                "corridor43": 0.006127449219181379
+            }
+        },
+        "corridor51": {
+            "name": "corridor51",
+            "longitude": 53.46723733562104,
+            "latitude": -2.233997894801715,
+            "list_of_neighbours": {
+                "corridor28": 0.008885211085250713,
+                "corridor50": 0.00848957607028239
+            }
+        },
+        "corridor52": {
+            "name": "corridor52",
+            "longitude": 53.46725528096915,
+            "latitude": -2.234110551923717,
+            "list_of_neighbours": {
+                "corridor30": 0.006250843752825089,
+                "corridor31": 0.0064118468482147585,
+                "corridor32": 0.0066552160643471815
+            }
+        },
+        "corridor53": {
+            "name": "corridor53",
+            "longitude": 53.467313325010416,
+            "latitude": -2.23406383888388,
+            "list_of_neighbours": {
+                "corridor27": 0.007106276917177095,
+                "corridor26": 0.006719705739758338
+            }
+        },
+        "corridor54": {
+            "name": "corridor54",
+            "longitude": 53.467384894983425,
+            "latitude": -2.234128093515007,
+            "list_of_neighbours": {
+                "corridor26": 0.008455576372766383,
+                "corridor25": 0.004661756011647884,
+                "corridor24": 0.008208631344129696
+            }
+        },
+        "corridor55": {
+            "name": "corridor55",
+            "longitude": 53.467447345851085,
+            "latitude": -2.234184177034706,
+            "list_of_neighbours": {
+                "corridor16": 0.00474761654398403,
+                "corridor24": 0.005033941931968401
+            }
+        },
+        "corridor56": {
+            "name": "corridor56",
+            "longitude": 53.46755631160021,
+            "latitude": -2.234358855035102,
+            "list_of_neighbours": {
+                "corridor64": 0.003947830952210746,
+                "corridor2": 0.007505780594079445,
+                "corridor3": 0.008257493468728358
+            }
+        },
+        "corridor57": {
+            "name": "corridor57",
+            "longitude": 53.46750692771526,
+            "latitude": -2.234407613283239,
+            "list_of_neighbours": {
+                "corridor20": 0.005249190948019249,
+                "corridor1": 0.005644679872818331
+            }
+        },
+        "corridor58": {
+            "name": "corridor58",
+            "longitude": 53.46766608401808,
+            "latitude": -2.234372896835974,
+            "list_of_neighbours": {
+                "corridor6": 0.005848941072709119,
+                "corridor7": 0.006281680620833102
+            }
+        },
+        "corridor59": {
+            "name": "corridor59",
+            "longitude": 53.46771197578071,
+            "latitude": -2.234347879421184,
+            "list_of_neighbours": {
+                "corridor7": 0.006460449047981966,
+                "corridor8": 0.005723311098752321
+            }
+        },
+        "corridor60": {
+            "name": "corridor60",
+            "longitude": 53.4672343987357,
+            "latitude": -2.233734701090292,
+            "list_of_neighbours": {
+                "corridor47": 0.00518245842864225,
+                "corridor46": 0.005368604466936401
+            }
+        },
+        "corridor61": {
+            "name": "corridor61",
+            "longitude": 53.467274009511755,
+            "latitude": -2.233717124626824,
+            "list_of_neighbours": {
+                "corridor47": 0.005549697827205878,
+                "corridor48": 0.005111090908492073
+            }
+        },
+        "corridor62": {
+            "name": "corridor62",
+            "longitude": 53.46731621899859,
+            "latitude": -2.23368274844009,
+            "list_of_neighbours": {
+                "corridor48": 0.007075678783211271,
+                "corridor49": 0.005261126865317883
+            }
+        },
+        "corridor63": {
+            "name": "corridor63",
+            "longitude": 53.46725987708015,
+            "latitude": -2.234049368339781,
+            "list_of_neighbours": {
+                "corridor33": 0.0031549723867918874,
+                "corridor31": 0.0024641926665480707,
+                "LF21 Student Research Centre": 0.00012978810520738231
+            }
+        },
+        "corridor64": {
+            "name": "corridor64",
+            "longitude": 53.467546423853975,
+            "latitude": -2.23439018857884,
+            "list_of_neighbours": {
+                "corridor0": 0.008955479436407206,
+                "corridor1": 0.00514720121239024,
+                "corridor56": 0.003947830952210746
+            }
+        },
+        "corridor65": {
+            "name": "corridor65",
+            "longitude": 53.46751602746938,
+            "latitude": -2.234245980312904,
+            "list_of_neighbours": {
+                "corridor17": 0.004686808399992224,
+                "corridor19": 0.004647396253721464
+            }
+        },
+        "corridor66": {
+            "name": "corridor66",
+            "longitude": 53.46746590222773,
+            "latitude": -2.234215772553899,
+            "list_of_neighbours": {
+                "corridor68": 0.0064565161205063,
+                "corridor16": 0.0014621531330662044,
+                "LF9 Tooltill 0": 6.362794435199602e-5
+            }
+        },
+        "corridor67": {
+            "name": "corridor67",
+            "longitude": 53.46742655078168,
+            "latitude": -2.234336715812449,
+            "list_of_neighbours": {
+                "corridor68": 0.008886723772673853,
+                "corridor69": 0.006063381183650972
+            }
+        },
+        "corridor68": {
+            "name": "corridor68",
+            "longitude": 53.4674493941584,
+            "latitude": -2.234266713119898,
+            "list_of_neighbours": {
+                "corridor67": 0.008886723772673853,
+                "corridor66": 0.0064565161205063,
+                "corridor16": 0.007918578272514314
+            }
+        },
+        "corridor69": {
+            "name": "corridor69",
+            "longitude": 53.46745525282987,
+            "latitude": -2.234362053578992,
+            "list_of_neighbours": {
+                "corridor20": 0.00566426277778815,
+                "corridor67": 0.006063381183650972
+            }
+        },
+        "corridor70": {
+            "name": "corridor70",
+            "longitude": 53.46767021525136,
+            "latitude": -2.234091675251787,
+            "list_of_neighbours": {
+                "corridor14": 0.005757020826278942,
+                "corridor10": 0.0039747091652470486
+            }
+        },
+        "LF8 Quiet Lab": {
+            "name": "LF8 Quiet Lab",
+            "longitude": 53.467638555488655,
+            "latitude": -2.234348830525885,
+            "list_of_neighbours": {
+                "corridor6": 4.5667243824963646e-5
+            }
+        },
+        "Lecture Theatre 1.1": {
+            "name": "Lecture Theatre 1.1",
+            "longitude": 53.46753498220116,
+            "latitude": -2.234471322463394,
+            "list_of_neighbours": {
+                "corridor0": 0.0023075615958939736
+            }
+        },
+        "LF11": {
+            "name": "LF11",
+            "longitude": 53.467482637117655,
+            "latitude": -2.23443268775159,
+            "list_of_neighbours": {
+                "corridor23": 0.0001262103557108098
+            }
+        },
+        "LF10": {
+            "name": "LF10",
+            "longitude": 53.46747635061426,
+            "latitude": -2.23440375952861,
+            "list_of_neighbours": {
+                "corridor21": 6.194486152689993e-5
+            }
+        },
+        "LF9 Tooltill 0": {
+            "name": "LF9 Tooltill 0",
+            "longitude": 53.46746588646261,
+            "latitude": -2.234216343519573,
+            "list_of_neighbours": {
+                "corridor66": 6.362794435199602e-5
+            }
+        },
+        "LF16 Tooltill 1": {
+            "name": "LF16 Tooltill 1",
+            "longitude": 53.4673588199621,
+            "latitude": -2.234120956211795,
+            "list_of_neighbours": {
+                "corridor25": 0.001596235340428974
+            }
+        },
+        "LF15 PGR Lab": {
+            "name": "LF15 PGR Lab",
+            "longitude": 53.467251177144036,
+            "latitude": -2.234170465071359,
+            "list_of_neighbours": {
+                "corridor30": 0.002468723310829615
+            }
+        },
+        "LF17 PGR Space": {
+            "name": "LF17 PGR Space",
+            "longitude": 53.46728454808347,
+            "latitude": -2.23406883424985,
+            "list_of_neighbours": {
+                "corridor32": 0.0026245691552877837
+            }
+        },
+        "Student Support Office": {
+            "name": "Student Support Office",
+            "longitude": 53.46718226049124,
+            "latitude": -2.234110533100442,
+            "list_of_neighbours": {
+                "corridor36": 0.0012046521836564968
+            }
+        },
+        "LF21 Student Research Centre": {
+            "name": "LF21 Student Research Centre",
+            "longitude": 53.46725925824284,
+            "latitude": -2.23404884048371,
+            "list_of_neighbours": {
+                "corridor63": 0.00012978810520738231
+            }
+        },
+        "LF22": {
+            "name": "LF22",
+            "longitude": 53.46715748528997,
+            "latitude": -2.234085173635155,
+            "list_of_neighbours": {
+                "corridor38": 0.00223244587839318
+            }
+        },
+        "LF23": {
+            "name": "LF23",
+            "longitude": 53.46710906503172,
+            "latitude": -2.234111543772979,
+            "list_of_neighbours": {
+                "corridor39": 0.0007896523206793171
+            }
+        },
+        "LF24": {
+            "name": "LF24",
+            "longitude": 53.467111808466505,
+            "latitude": -2.234073071915781,
+            "list_of_neighbours": {
+                "corridor40": 0.0019156662013661914
+            }
+        },
+        "LF6": {
+            "name": "LF6",
+            "longitude": 53.46761702968775,
+            "latitude": -2.234302435481429,
+            "list_of_neighbours": {
+                "corridor5": 0.00223621085951978
+            }
+        },
+        "LF5": {
+            "name": "LF5",
+            "longitude": 53.467629889695026,
+            "latitude": -2.234261703651391,
+            "list_of_neighbours": {
+                "corridor9": 0.0022326322344459314
+            }
+        },
+        "LF7 Research Lab": {
+            "name": "LF7 Research Lab",
+            "longitude": 53.46772634077979,
+            "latitude": -2.234301935205021,
+            "list_of_neighbours": {
+                "corridor8": 5.387103738980037e-5
+            }
+        },
+        "LF1 Research Lab": {
+            "name": "LF1 Research Lab",
+            "longitude": 53.46773939066656,
+            "latitude": -2.233994130146678,
+            "list_of_neighbours": {
+                "corridor12": 0.003823415593455703
+            }
+        },
+        "Byte Cafe": {
+            "name": "Byte Cafe",
+            "longitude": 53.46756872908503,
+            "latitude": -2.234276891767398,
+            "list_of_neighbours": {
+                "corridor18": 0.0016338127453907482
+            }
+        },
+        "LF39 Collab 1": {
+            "name": "LF39 Collab 1",
+            "longitude": 53.4674470902384,
+            "latitude": -2.234090215566638,
+            "list_of_neighbours": {
+                "corridor24": 0.009198024531368896
+            }
+        },
+        "LF34 Collab 2": {
+            "name": "LF34 Collab 2",
+            "longitude": 53.46736855760321,
+            "latitude": -2.234020012615589,
+            "list_of_neighbours": {
+                "corridor26": 0.009173019023228667
+            }
+        },
+        "LF25": {
+            "name": "LF25",
+            "longitude": 53.46713188731428,
+            "latitude": -2.234012364200778,
+            "list_of_neighbours": {
+                "corridor41": 0.001883455347128349
+            }
+        },
+        "LF26": {
+            "name": "LF26",
+            "longitude": 53.467151973608615,
+            "latitude": -2.233951498658242,
+            "list_of_neighbours": {
+                "corridor42": 0.0018621422466949462
+            }
+        },
+        "LF27": {
+            "name": "LF27",
+            "longitude": 53.46717184384108,
+            "latitude": -2.233891368948275,
+            "list_of_neighbours": {
+                "corridor44": 0.0018351451877747552
+            }
+        },
+        "LF28": {
+            "name": "LF28",
+            "longitude": 53.46719221489164,
+            "latitude": -2.233829757086963,
+            "list_of_neighbours": {
+                "corridor45": 0.0018065214013127159
+            }
+        },
+        "LF29": {
+            "name": "LF29",
+            "longitude": 53.46721230618585,
+            "latitude": -2.23376928026332,
+            "list_of_neighbours": {
+                "corridor46": 0.0017600304965854597
+            }
+        },
+        "LF31": {
+            "name": "LF31",
+            "longitude": 53.46727653638147,
+            "latitude": -2.233995382833422,
+            "list_of_neighbours": {
+                "corridor29": 0.0025545198352590563
+            }
+        },
+        "LF40": {
+            "name": "LF40",
+            "longitude": 53.46733394188747,
+            "latitude": -2.233637196197131,
+            "list_of_neighbours": {
+                "corridor49": 0.0009199072614627365
+            }
+        }
+    }
+}

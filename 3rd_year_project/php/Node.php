@@ -7,7 +7,7 @@ namespace App\PHP;
         public $latitude;
         //list of neighbours is a dictionary, where the key is the name of the neighbour and the value is the distance to it
         public $list_of_neighbours;
-        public static $INT_MAX = 999999;
+        public static $INT_MAX = 99999;
 
         function __construct($name, $latitude, $longitude){
             $this->name = $name;

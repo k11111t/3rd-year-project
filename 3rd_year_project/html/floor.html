@@ -14,7 +14,7 @@
 <body onload="onLoadWeekPicker()">
     <!-- navbar -->
     <div id="navbar"></div>
-    <div>
+    <div style="width:100%" class="pt-5 mt-2">
         <div class="container bg-light mt-4 p-4">
             <center><h3 id="floor_name_title"></h3></center>
             <!-- map div -->
@@ -26,10 +26,9 @@
                 </div>
             </div>
 
-
             <div id="main_div">
-                <div class="mt-2">
-                    <h5>Select Room and Date</h5>
+                <div class="mt-3">
+                    <h5>Show timetable for a room</h5>
                     <div class="btn-group" role="group" aria-label="show Timetable">
                         <select class="form-select bg-light text-black" aria-label="Pick Semester" style="width:auto;" id="semester_picker" onchange="onChangeSemesterPicker()">
                             <option value="1">Semester 1</option>
@@ -50,8 +49,8 @@
                 </div>
 
                 <!-- shortest path selector -->
-                <div class="mt-2">
-                    <h5>Find Shortest path</h5>
+                <div class="mt-3">
+                    <h5>Find shortest path</h5>
                     <div class="btn-group" role="group" aria-label="Search path">
                         <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="start_position">
                         </select>
@@ -59,14 +58,15 @@
                         <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="end_position" >
                         </select>
                     </div>
-                    <div class="btn-group" role="group" aria-label="show Timetable">
+                    <div class="btn-group" role="group" aria-label="Search path">
                         <button type="button" class="btn btn-outline-dark" id="find_path">
                             Find Path
                         </button>
+                        
                     </div>
                 </div>
 
-                <div class="mt-2">
+                <div class="mt-3">
                     <h5>Show Currently Unavailable rooms</h5>
                     <div class="btn-group" role="group" aria-label="show Timetable">
                         <button type="button" class="btn btn-outline-dark" id="toggle_availability">
@@ -115,7 +115,7 @@
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalLabel1">Message</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
             </div>
             <div class="modal-body">
                 All of the rooms are avaiable!
