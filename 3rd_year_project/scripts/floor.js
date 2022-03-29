@@ -889,9 +889,9 @@ function onClickFindPath(map){
         loading_icon.className = "spinner-border spinner-border-sm";
         loading_icon.role = "status";
 
-        find_path_button.disabled = true;
-        find_path_button.innerHTML = "Loading...";
-        find_path_button.appendChild(loading_icon);
+        // find_path_button.disabled = true;
+        // find_path_button.innerHTML = "Loading...";
+        // find_path_button.appendChild(loading_icon);
         
         const floor_name = getFloorName();
         const start_node = document.getElementById("start_position").value;
@@ -999,13 +999,13 @@ function onClickToggleAvailability(map){
 }
 
 function openModal() {
-    // document.getElementById("backdrop").style.display = "block"
+    document.getElementById("backdrop").style.display = "block"
     document.getElementById("unavailable_rooms_modal").style.display = "block"
     document.getElementById("unavailable_rooms_modal").classList.add("show")
 }
 
 function closeModal() {
-    // document.getElementById("backdrop").style.display = "none"
+    document.getElementById("backdrop").style.display = "none"
     document.getElementById("unavailable_rooms_modal").style.display = "none"
     document.getElementById("unavailable_rooms_modal").classList.remove("show")
 }
@@ -1046,7 +1046,7 @@ function getUnavailableRooms(func){
     var today = getWeekByIndex(current_day_id);
 
     //hard coded the values for demonstration:
-    current_week_num = 69;
+    current_week_num = 6;
     today = "Tuesday";
     current_hour = 10;
 

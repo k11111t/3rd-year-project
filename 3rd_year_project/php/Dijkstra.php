@@ -194,6 +194,9 @@
         }
 
         function getDistanceBetween2NodesFast($node_1_name, $node_2_name){
+            if(!array_key_exists($node_1_name, (array) $this->list_of_nodes) || !array_key_exists($node_2_name, (array) $this->list_of_nodes)){
+                return 999999;
+            }
             $lat1 = $this->list_of_nodes->$node_1_name->latitude;
             $lon1 = $this->list_of_nodes->$node_1_name->longitude;
             $lat2 = $this->list_of_nodes->$node_2_name->latitude;
@@ -204,6 +207,9 @@
         }
 
         function getDistanceBetween2NodesAccurate($node_1_name, $node_2_name){
+            if(!array_key_exists($node_1_name, (array) $this->list_of_nodes) || !array_key_exists($node_2_name, (array) $this->list_of_nodes)){
+                return 999999;
+            }
             $lat1 = $this->list_of_nodes->$node_1_name->latitude;
             $lon1 = $this->list_of_nodes->$node_1_name->longitude;
             $lat2 = $this->list_of_nodes->$node_2_name->latitude;
@@ -220,6 +226,9 @@
         }
 
         function getDistanceBetween2NodesReallyFast($node_1_name, $node_2_name){
+            if(!array_key_exists($node_1_name, (array) $this->list_of_nodes) || !array_key_exists($node_2_name, (array) $this->list_of_nodes)){
+                return 999999;
+            }
             $lat1 = $this->list_of_nodes->$node_1_name->latitude;
             $lon1 = $this->list_of_nodes->$node_1_name->longitude;
             $lat2 = $this->list_of_nodes->$node_2_name->latitude;
