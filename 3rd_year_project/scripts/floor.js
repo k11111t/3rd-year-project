@@ -637,9 +637,13 @@ function setUpAfterLoadMap(map){
 
     //makes sure that the modal is closed when clicked on the window
     var modal = document.getElementById('message_modal');
+    var timetable_modal = document.getElementById('timetableModal');
     window.onclick = function(event) {
         if (event.target == modal) {
           closeModal();
+        }
+        if(event.target == timetable_modal){
+            closeModal();
         }
     }
 }
@@ -650,7 +654,7 @@ function onRoomClick(map){
     map.on('click', layer_rooms_name, async (e) => {
         //update the selected room
         const selected_room_name = e.features[0].properties.name;
-        console.log(selected_room_name);
+        // console.log(selected_room_name);
         
         //update the room selector
         var room_picker = document.getElementById("room_picker");
@@ -929,7 +933,7 @@ function onClickFindPath(map){
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
             var geojson_obj = this.responseText;
-            console.log(geojson_obj);
+            // console.log(geojson_obj);
             geojson_obj = JSON.parse(geojson_obj);
             find_path_button.disabled = false;
             find_path_button.innerHTML = "Find Path";
@@ -1006,7 +1010,7 @@ function onClickToggleAvailability(map){
 
                 if(unavailable_rooms === undefined || unavailable_rooms.length == 0 || match == false){
                     map.setFilter(layer_name, false);
-                    openModal("All of the rooms are avaiable!");
+                    openModal("All of the rooms are available!");
                     availability_visibile = false;
                 }
                 else{
@@ -1076,10 +1080,10 @@ function getUnavailableRooms(func){
     var current_hour = d.getUTCHours();
     var today = getWeekByIndex(current_day_id);
 
-    //hard coded the values for demonstration:
-    current_week_num = 6;
-    today = "Tuesday";
-    current_hour = 10;
+    // HARD CODED the values for demonstration:
+    // current_week_num = 6;
+    // today = "Tuesday";
+    // current_hour = 10;
 
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
