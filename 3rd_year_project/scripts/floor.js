@@ -642,13 +642,16 @@ function onRoomClick(map){
     map.on('click', layer_rooms_name, async (e) => {
         //update the selected room
         const selected_room_name = e.features[0].properties.name;
+        console.log(selected_room_name);
         
         //update the room selector
         var room_picker = document.getElementById("room_picker");
+        var start_position_picker = document.getElementById("start_position");
         var counter = 0;
         for(var option of room_picker.options){
             if(option.value === selected_room_name){
                 room_picker.selectedIndex = counter;
+                start_position_picker.selectedIndex = counter;
                 break;
             }
             room_picker.selectedIndex = 0;

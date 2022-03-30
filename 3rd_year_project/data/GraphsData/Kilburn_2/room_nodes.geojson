@@ -80,7 +80,7 @@
 { "type": "Feature", "properties": { "id": 75, "name": "2.53" }, "geometry": { "type": "Point", "coordinates": [ -2.234054653373853, 53.467251983992107 ] } },
 { "type": "Feature", "properties": { "id": 76, "name": "2.55" }, "geometry": { "type": "Point", "coordinates": [ -2.23403968057646, 53.467235568213376 ] } },
 { "type": "Feature", "properties": { "id": 77, "name": "2.61" }, "geometry": { "type": "Point", "coordinates": [ -2.234001609323775, 53.467220781665475 ] } },
-{ "type": "Feature", "properties": { "id": 78, "name": "2.61" }, "geometry": { "type": "Point", "coordinates": [ -2.233886595544673, 53.467258652381211 ] } },
+{ "type": "Feature", "properties": { "id": 78, "name": "2.63" }, "geometry": { "type": "Point", "coordinates": [ -2.233886595544673, 53.467258652381211 ] } },
 { "type": "Feature", "properties": { "id": 79, "name": "2.65" }, "geometry": { "type": "Point", "coordinates": [ -2.23381255244832, 53.467282801753676 ] } },
 { "type": "Feature", "properties": { "id": 80, "name": "Spinnaker 2.67" }, "geometry": { "type": "Point", "coordinates": [ -2.233848480044891, 53.467301896249694 ] } },
 { "type": "Feature", "properties": { "id": 81, "name": "2.67A" }, "geometry": { "type": "Point", "coordinates": [ -2.233805015677613, 53.467316292873434 ] } },

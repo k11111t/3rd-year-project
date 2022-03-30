@@ -25,11 +25,11 @@
         $dijkstra = new Dijkstra($start_node, $end_node, $graph);
 
         //change these thresholds accordingly
-        $threshold_big = 0.06;
+        $threshold_big = 0.05;
         $threshold_small = 0.025;
         $distance = $dijkstra->getDistanceBetween2NodesAccurate($start_node, $end_node);
         //check the distance between the 2 nodes, check if they are more than 50m apart, if it is do special case
-        //echo($distance);
+        // echo($distance);
 
         if($floor == "Kilburn_2" && $distance > $threshold_big){
             $junction_top = "corridor89"; $junction_bot = "corridor35"; $junction_mid = "corridor109"; $junction_right = "corridor68"; $junction_left = "corridor13";
@@ -47,9 +47,9 @@
 
             //find if there are any junctions in proximity of rooms, save the distances
             $start_node_junction_proximity = NULL;
-            $junction_1_distance = 0;
+            $start_to_junction_distance = 0;
             $end_node_junction_proximity = NULL;
-            $junction_2_distance = 0;
+            $end_to_junction_distance = 0;
             //assumes that a point cannot be part of 2 different junctions - not possible
             foreach($junction_array as $junction_name){
                 $dist_1 = $dijkstra->getDistanceBetween2NodesAccurate($start_node, $junction_name);
@@ -57,24 +57,23 @@
 
                 if($dist_1 < $threshold_small){
                     $start_node_junction_proximity = $junction_name;
-                    $junction_1_distance = $dist_1;
+                    $start_to_junction_distance = $dist_1;
                 }
                 if($dist_2 < $threshold_small){
                     $end_node_junction_proximity = $junction_name;
-                    $junction_2_distance = $dist_2;
+                    $end_to_junction_distance = $dist_2;
                 }
             }
 
-            //check if 1 node is near a junction - dont use that junction point
+            //check if 1 node is near a junction - decrease the change of picking that junction node
             if($start_node_junction_proximity == NULL xor $end_node_junction_proximity == NULL){
-                if($end_node_junction_proximity == NULL){
-                    if($start_node_junction_proximity != $junction_mid)
-                        $junction_weights[$start_node_junction_proximity] *= 9;
+                $junction_node = $start_node_junction_proximity == NULL ? $end_node_junction_proximity : $start_node_junction_proximity;
+                if($junction_node != $junction_mid){
+                    $junction_weights[$junction_node] *= 1.3;
+                }else{
+                    $junction_weights[$junction_node] *= 0.1;
                 }
-                else if ($start_node_junction_proximity == NULL){
-                    if($end_node_junction_proximity != $junction_mid)
-                        $junction_weights[$end_node_junction_proximity] *= 9;
-                }
+                    
             }
 
             //check if 2 nodes are near a junction - use one of the junction points
@@ -82,48 +81,96 @@
                 //if they are left and right
                 if(($start_node_junction_proximity == $junction_left && $end_node_junction_proximity == $junction_right) || 
                     ($end_node_junction_proximity == $junction_left && $start_node_junction_proximity == $junction_right)){
-                    $junction_weights[$start_node_junction_proximity] *= 9;
-                    $junction_weights[$end_node_junction_proximity] *= 9;
-                    $junction_weights[$junction_mid] *= 9;
+                    $junction_weights[$start_node_junction_proximity] *= 10;
+                    $junction_weights[$end_node_junction_proximity] *= 10;
+                    $junction_weights[$junction_mid] *= 10;
                 }
                 else{
                     //use one of the junctions
-                    if($junction_1_distance < $junction_2_distance){
-                        $junction_weights[$start_node_junction_proximity] *= 0.1;
-                        $junction_weights[$end_node_junction_proximity] *= 9;
+                    if($start_to_junction_distance > $end_to_junction_distance){
+                        
+                        // if($start_node_junction_proximity != $junction_mid){
+                            $junction_weights[$start_node_junction_proximity] *= 0.1;
+                            // $junction_weights[$end_node_junction_proximity] *= 10;
+                        }
+                        else {
+                            $junction_weights[$end_node_junction_proximity] *= 0.1;
+                            // $junction_weights[$start_node_junction_proximity] *= 10;
+                        // }
                     }
-                    else{
-                        $junction_weights[$end_node_junction_proximity] *= 0.1;
-                        $junction_weights[$start_node_junction_proximity] *= 9;
-                    }
+                    
                 }
             }
 
             //change weight for each junction
             foreach($junction_distances as $junction_name => $distance){
+                //echo($junction_name . " " . $junction_weights[$junction_name] . "\n");
                 $junction_distances[$junction_name] *= $junction_weights[$junction_name];
             }
 
             $min = 99999;
             $min_key = $junction_mid;
+            $min_2 = 99999;
+            $min_2_key = $junction_mid;
 
             foreach($junction_distances as $key => $value){
                 //check the distance of the nodes from the junction
                 //if the point is too close then it defeats the purpose
+                
                 if($min > $value){
+                    $min_2 = $min;
+                    $min_2_key = $min_key;
                     $min = $value;
                     $min_key = $key;
                 }
+                else if($min_2 > $value and $min_2 != $min){
+                    $min_2 = $value;
+                    $min_2_key = $key;
+                }
             }
-            //die($min_key);
 
-            //call 2x dijkstra to the nearest junction and concatenate the output
-            $dijkstra1 = new Dijkstra($start_node, $min_key, $graph);
+            //check if the difference is too small - then prefer the other path
+            // die($min - $min_2);
+            $min_diff = 0.004;
+            if(abs($min - $min_2) < $min_diff and $min_key == $junction_mid){
+                $min_key = $min_2_key;
+            }
+
+            // print($min_key."\n");
+            // return;
+
+            //call dijkstra to the nearest junction from start node and end node
+            $dijkstra1 = new Dijkstra($min_key, $start_node, $graph);
             $dijkstra2 = new Dijkstra($min_key, $end_node, $graph);
             $shortest_path1 = $dijkstra1->executeDijkstra();
             $shortest_path2 = $dijkstra2->executeDijkstra();
 
-            $merged_array = array_merge($shortest_path2, $shortest_path1);
+            // print_r($shortest_path1);
+            // print_r($shortest_path2);
+
+            //checks if there are duplicate entries - the junction makes the path too long -> remove the redundant bit
+            $i = 1;
+            $end_connector = $min_key;
+            if(!empty($shortest_path1) and!empty($shortest_path2) ){
+                while($shortest_path1[count($shortest_path1) - $i] == $shortest_path2[count($shortest_path2) - $i]){
+                    $end_connector = $shortest_path1[count($shortest_path1) - $i];
+                    array_splice($shortest_path1, count($shortest_path1) - $i, 1);
+                    array_splice($shortest_path2, count($shortest_path2) - $i, 1);
+                }
+
+                // print_r($shortest_path1);
+                // print_r($shortest_path2);
+
+                if((count($shortest_path1) >= 1 and count($shortest_path2) >= 1) and 
+                    (count($shortest_path1) != 2 and count($shortest_path2) != 2)){
+                    array_push($shortest_path1, $end_connector);
+                    array_push($shortest_path2, $end_connector);
+                }
+            }
+
+            //concatenate the 2 shortest paths
+            $merged_array = array_merge($shortest_path1, array_reverse($shortest_path2));
+
             
             $coordinates_array = $dijkstra->getCoordinatesFromPath($merged_array);
             $mapbox_obj = Dijkstra::createGeoJSONStringLineObject($coordinates_array);

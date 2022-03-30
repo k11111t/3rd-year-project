@@ -87,6 +87,7 @@
     
                 // //include this only when there is PQ implementation
                 if($current_node_name == $this->end_node_name){
+
                     //there is path
                     break;
                 }
@@ -159,10 +160,12 @@
         }
 
         static function returnPathFromPredecessorMap($start_node_name, $end_node_name, $predecessor_map){
+            // print_r($predecessor_map);
             $path = array();
             array_push($path, $end_node_name);
             $current_node_name = $predecessor_map[$end_node_name];
             while($current_node_name != $start_node_name){
+                
                 if(in_array($current_node_name, $path)){
                     //there is cycle
                     return [];
@@ -195,7 +198,7 @@
 
         function getDistanceBetween2NodesFast($node_1_name, $node_2_name){
             if(!array_key_exists($node_1_name, (array) $this->list_of_nodes) || !array_key_exists($node_2_name, (array) $this->list_of_nodes)){
-                return 999999;
+                return 9999999;
             }
             $lat1 = $this->list_of_nodes->$node_1_name->latitude;
             $lon1 = $this->list_of_nodes->$node_1_name->longitude;
