@@ -913,9 +913,9 @@ function onClickFindPath(map){
         loading_icon.className = "spinner-border spinner-border-sm";
         loading_icon.role = "status";
 
-        // find_path_button.disabled = true;
-        // find_path_button.innerHTML = "Loading...";
-        // find_path_button.appendChild(loading_icon);
+        find_path_button.disabled = true;
+        find_path_button.innerHTML = "Loading...";
+        find_path_button.appendChild(loading_icon);
         
         const floor_name = getFloorName();
         const start_node = document.getElementById("start_position").value;
