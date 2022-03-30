@@ -25,14 +25,14 @@
         $dijkstra = new Dijkstra($start_node, $end_node, $graph);
 
         //change these thresholds accordingly
-        $threshold_big = 0.05;
-        $threshold_small = 0.025;
+        $threshold_big = 0.04;
+        $threshold_small = 0.02;
         $distance = $dijkstra->getDistanceBetween2NodesAccurate($start_node, $end_node);
         //check the distance between the 2 nodes, check if they are more than 50m apart, if it is do special case
-        // echo($distance);
+        // die($distance);
 
         if($floor == "Kilburn_2" && $distance > $threshold_big){
-            $junction_top = "corridor89"; $junction_bot = "corridor35"; $junction_mid = "corridor109"; $junction_right = "corridor68"; $junction_left = "corridor13";
+            $junction_top = "corridor89"; $junction_bot = "corridor36"; $junction_mid = "corridor109"; $junction_right = "corridor68"; $junction_left = "corridor13";
 
             $junction_array = [$junction_top, $junction_bot, $junction_mid, $junction_left, $junction_right];
             $junction_weights = [$junction_top => 1, $junction_bot => 1, $junction_mid => 1, $junction_left => 1, $junction_right => 1];
@@ -65,12 +65,16 @@
                 }
             }
 
+            $points_near_junction = FALSE;
+
             //check if 1 node is near a junction - decrease the change of picking that junction node
             if($start_node_junction_proximity == NULL xor $end_node_junction_proximity == NULL){
+                $points_near_junction = TRUE;
                 $junction_node = $start_node_junction_proximity == NULL ? $end_node_junction_proximity : $start_node_junction_proximity;
                 if($junction_node != $junction_mid){
                     $junction_weights[$junction_node] *= 1.3;
                 }else{
+                    //prefer mid if one of them is mid junction
                     $junction_weights[$junction_node] *= 0.1;
                 }
                     
@@ -79,6 +83,7 @@
             //check if 2 nodes are near a junction - use one of the junction points
             if($start_node_junction_proximity != NULL and $end_node_junction_proximity != NULL){
                 //if they are left and right
+                $points_near_junction = TRUE;
                 if(($start_node_junction_proximity == $junction_left && $end_node_junction_proximity == $junction_right) || 
                     ($end_node_junction_proximity == $junction_left && $start_node_junction_proximity == $junction_right)){
                     $junction_weights[$start_node_junction_proximity] *= 10;
@@ -86,26 +91,36 @@
                     $junction_weights[$junction_mid] *= 10;
                 }
                 else{
-                    //use one of the junctions
-                    if($start_to_junction_distance > $end_to_junction_distance){
-                        
-                        // if($start_node_junction_proximity != $junction_mid){
+                    //if one of the junctions is a mid junction, then do not use either of the junction
+                    //prefer the top and bot junction
+                    if($start_node_junction_proximity == $junction_mid or $end_node_junction_proximity == $junction_mid){
+                        $junction_weights[$start_node_junction_proximity] *= 10;
+                        $junction_weights[$end_node_junction_proximity] *= 10;
+                        $junction_weights[$junction_top] *= 0.1;
+                        $junction_weights[$junction_bot] *= 0.1;
+                    }
+                    //if none of the junctions are the mid junctions, then use one of the junctions - the one that is further away
+                    else{
+                        if($start_to_junction_distance > $end_to_junction_distance){
                             $junction_weights[$start_node_junction_proximity] *= 0.1;
-                            // $junction_weights[$end_node_junction_proximity] *= 10;
                         }
                         else {
                             $junction_weights[$end_node_junction_proximity] *= 0.1;
-                            // $junction_weights[$start_node_junction_proximity] *= 10;
-                        // }
+                        }
                     }
-                    
                 }
+            }
+
+            //if the points are not near junction, then prefer the mid junction
+            if($points_near_junction == FALSE){
+                $junction_weights[$junction_mid] *= 0.95;
             }
 
             //change weight for each junction
             foreach($junction_distances as $junction_name => $distance){
-                //echo($junction_name . " " . $junction_weights[$junction_name] . "\n");
+                // echo($junction_name . " " . $junction_weights[$junction_name] . "\n");
                 $junction_distances[$junction_name] *= $junction_weights[$junction_name];
+                // echo($junction_name . " " . $junction_distances[$junction_name] . "\n");
             }
 
             $min = 99999;
@@ -131,13 +146,15 @@
 
             //check if the difference is too small - then prefer the other path
             // die($min - $min_2);
-            $min_diff = 0.004;
-            if(abs($min - $min_2) < $min_diff and $min_key == $junction_mid){
+            //prefer the non mid point
+            $min_diff = 0.005;
+            if(abs($min - $min_2) < $min_diff 
+                and $min_key == $junction_mid 
+                and $points_near_junction == TRUE){
                 $min_key = $min_2_key;
             }
 
-            // print($min_key."\n");
-            // return;
+            // die($min_key."\n");
 
             //call dijkstra to the nearest junction from start node and end node
             $dijkstra1 = new Dijkstra($min_key, $start_node, $graph);
@@ -145,26 +162,28 @@
             $shortest_path1 = $dijkstra1->executeDijkstra();
             $shortest_path2 = $dijkstra2->executeDijkstra();
 
-            // print_r($shortest_path1);
-            // print_r($shortest_path2);
+            // print_r($shortest_path1); print_r($shortest_path2);
 
             //checks if there are duplicate entries - the junction makes the path too long -> remove the redundant bit
             $i = 1;
-            $end_connector = $min_key;
+            $counter = 0;
+            $end_connector = "random_key";
             if(!empty($shortest_path1) and!empty($shortest_path2) ){
                 while($shortest_path1[count($shortest_path1) - $i] == $shortest_path2[count($shortest_path2) - $i]){
                     $end_connector = $shortest_path1[count($shortest_path1) - $i];
                     array_splice($shortest_path1, count($shortest_path1) - $i, 1);
                     array_splice($shortest_path2, count($shortest_path2) - $i, 1);
+                    $counter++;
                 }
 
-                // print_r($shortest_path1);
-                // print_r($shortest_path2);
+                // print($counter);print_r($shortest_path1); print_r($shortest_path2);
 
-                if((count($shortest_path1) >= 1 and count($shortest_path2) >= 1) and 
-                    (count($shortest_path1) != 2 and count($shortest_path2) != 2)){
-                    array_push($shortest_path1, $end_connector);
-                    array_push($shortest_path2, $end_connector);
+                if(
+                    ($end_connector == $min_key and $counter == 1) or 
+                    // ($end_connector == $min_key and $counter == 1) or
+                    (count($shortest_path1) == 1 or count($shortest_path2) == 1)){
+                        array_push($shortest_path1, $end_connector);
+                        array_push($shortest_path2, $end_connector);
                 }
             }
 

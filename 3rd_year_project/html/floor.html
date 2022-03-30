@@ -42,7 +42,7 @@
                         </select>  
                     </div>               
                     <div class="btn-group" role="group" aria-label="show Timetable">
-                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#timetableModal" onclick="onChangeRoomPicker()">
+                        <button type="button" class="btn btn-outline-dark" id="show_info" onclick="onClickShowInfo()">
                             Show info
                         </button>   
                     </div>
@@ -91,34 +91,34 @@
     </div>
 
     <!-- Modal for timetable -->
-    <div class="modal fade" id="timetableModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="timetableModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="modalLabel">Room information</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
             </div>
             <div class="modal-body p-4">
                 <div id="timetable">
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
             </div>
           </div>
         </div>
     </div>
 
     <!-- Modal for other stuff -->
-    <div class="modal fade" id="unavailable_rooms_modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="message_modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalLabel1">Message</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
             </div>
-            <div class="modal-body">
-                All of the rooms are avaiable!
+            <div class="modal-body" id="message_modal_body">
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>

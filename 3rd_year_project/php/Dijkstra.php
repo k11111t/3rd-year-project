@@ -85,9 +85,11 @@
                     return [];
                 }
     
-                // //include this only when there is PQ implementation
-                if($current_node_name == $this->end_node_name){
-
+                //include this only when there is PQ implementation
+                // make sure === is used, since 2.4 == 2.40 is true in PHP >:(
+                if(strval($current_node_name) === strval($this->end_node_name)){
+                    // print($current_node_name . "\n");
+                    // print($this->end_node_name . "\n");
                     //there is path
                     break;
                 }
@@ -116,10 +118,6 @@
                 }
 
                 if(!$this->finished_nodes[$neighbour_name]){
-                    //check if the neighbour is already in the unfinished nodes!!
-                    // if(in_array($neighbour_name, iterator_to_array($this->unfinished_nodes))){
-                    //     continue;
-                    // }
                     $heuristic = $this->tentative_distances[$neighbour_name] + $this->getDistanceBetween2NodesFast($neighbour_name, $this->end_node_name);
                     $this->unfinished_nodes->insert($neighbour_name, $heuristic);
                 }
@@ -164,7 +162,7 @@
             $path = array();
             array_push($path, $end_node_name);
             $current_node_name = $predecessor_map[$end_node_name];
-            while($current_node_name != $start_node_name){
+            while($current_node_name !== $start_node_name){
                 
                 if(in_array($current_node_name, $path)){
                     //there is cycle

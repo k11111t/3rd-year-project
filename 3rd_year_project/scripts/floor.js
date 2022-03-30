@@ -634,6 +634,14 @@ function setUpAfterLoadMap(map){
     onChangeIconSize(map);
     onChangeRoomColour(map);
     onResetSettings();
+
+    //makes sure that the modal is closed when clicked on the window
+    var modal = document.getElementById('message_modal');
+    window.onclick = function(event) {
+        if (event.target == modal) {
+          closeModal();
+        }
+    }
 }
 
 function onRoomClick(map){
@@ -655,6 +663,7 @@ function onRoomClick(map){
                 break;
             }
             room_picker.selectedIndex = 0;
+            start_position_picker.selectedIndex = 0;
             counter++;
         }
 
@@ -702,6 +711,7 @@ async function insertDataIntoRoomPickers(map){
     list_of_rooms.push("");
     list_of_rooms.sort();
 
+    //room picker for timetable
     for(var room_name of list_of_rooms){
         var room_option = document.createElement("option");
         room_option.value = room_name;
@@ -709,6 +719,7 @@ async function insertDataIntoRoomPickers(map){
         room_picker.appendChild(room_option);
     }
 
+    //rom picker for start position
     for(var room_name of list_of_rooms){
         var room_option = document.createElement("option");
         room_option.value = room_name;
@@ -716,6 +727,7 @@ async function insertDataIntoRoomPickers(map){
         start_room_picker.appendChild(room_option);
     }
 
+    //room picker for end position
     for(var room_name of list_of_rooms){
         var room_option = document.createElement("option");
         room_option.value = room_name;
@@ -763,6 +775,15 @@ async function onChangeWeekPicker(){
 
 async function onChangeRoomPicker(){
     await updateTimetableContents();
+}
+
+function onClickShowInfo(){
+    if(document.getElementById("room_picker").value == ""){
+        openModal("Please select a valid room");
+    }
+    else{
+        openTimetableModal();
+    }
 }
 
 function addMapButtons(map, initial_map_attributes){
@@ -901,6 +922,10 @@ function onClickFindPath(map){
         const end_node = document.getElementById("end_position").value;
         const path_to_root= "../"
 
+        if(start_node == end_node || start_node == "" || end_node==""){
+            openModal("Please select a valid path");
+        }
+
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
             var geojson_obj = this.responseText;
@@ -981,7 +1006,7 @@ function onClickToggleAvailability(map){
 
                 if(unavailable_rooms === undefined || unavailable_rooms.length == 0 || match == false){
                     map.setFilter(layer_name, false);
-                    openModal();
+                    openModal("All of the rooms are avaiable!");
                     availability_visibile = false;
                 }
                 else{
@@ -992,25 +1017,28 @@ function onClickToggleAvailability(map){
            
         }
     };
-
-    var modal = document.getElementById('unavailable_rooms_modal');
-    window.onclick = function(event) {
-        if (event.target == modal) {
-          closeModal();
-        }
-    }
+    
 }
 
-function openModal() {
+function openTimetableModal(){
     document.getElementById("backdrop").style.display = "block"
-    document.getElementById("unavailable_rooms_modal").style.display = "block"
-    document.getElementById("unavailable_rooms_modal").classList.add("show")
+    document.getElementById("timetableModal").style.display = "block"
+    document.getElementById("timetableModal").classList.add("show")
+}
+
+function openModal(message) {
+    document.getElementById("backdrop").style.display = "block"
+    document.getElementById("message_modal").style.display = "block"
+    document.getElementById("message_modal").classList.add("show")
+    document.getElementById("message_modal_body").innerHTML = message
 }
 
 function closeModal() {
     document.getElementById("backdrop").style.display = "none"
-    document.getElementById("unavailable_rooms_modal").style.display = "none"
-    document.getElementById("unavailable_rooms_modal").classList.remove("show")
+    document.getElementById("timetableModal").style.display = "none"
+    document.getElementById("timetableModal").classList.remove("show")
+    document.getElementById("message_modal").style.display = "none"
+    document.getElementById("message_modal").classList.remove("show")
 }
 
 function getCurrentWeek(){
