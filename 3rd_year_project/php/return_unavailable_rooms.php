@@ -41,11 +41,34 @@
 
     function getUnavailableRooms($connection, $week_num, $day, $hour){
         $str_hour = $hour.":00:00";
-        if($hour == 23){
-            $str_hour_end = ($hour+1).":00:00";
+        $str_hour_plus_one = "";
+        $str_hour_minus_one = "";
+        if($hour <=9){
+            $str_hour = "0".$str_hour;
+        }
+
+        if($hour+1 == 24){
+            $str_hour_plus_one = "00:00:00";
         }
         else{
-            $str_hour_end = "00:00:00";
+            if($hour+1 <= 9){
+                $str_hour_plus_one = "0".($hour+1).":00:00";
+            }
+            else{
+                $str_hour_plus_one = ($hour+1).":00:00";
+            }
+        }
+
+        if($hour-1 == -1){
+            $str_hour_minus_one = "23:00:00";
+        }
+        else{
+            if($hour-1 <= 9){
+                $str_hour_minus_one = "0".($hour-1).":00:00";
+            }
+            else{
+                $str_hour_minus_one = ($hour-1).":00:00";
+            }
         }
 
         $get_activities_and_rooms_sql = 
@@ -59,8 +82,12 @@
                 ON (timetables.activity_id = activities.activity_id 
                     AND timetables.week_number = $week_num 
                     AND activities.week_day = '$day'
-                    AND (activities.start_time = '$str_hour'
-                    OR activities.end_time = '$str_hour_end')
+                    AND 
+                    (
+                        activities.start_time = '$str_hour'
+                        OR activities.end_time = '$str_hour_plus_one'
+                        OR activities.start_time = '$str_hour_minus_one'
+                    )
                     )
                 )";
 

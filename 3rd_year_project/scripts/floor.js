@@ -146,6 +146,7 @@ function createMap(initial_map_attributes){
          bearing : initial_map_attributes["rotation_angle"],
          pitch : 0});
     
+    // map.scrollZoom.disable();
     return map;
 }
 
@@ -269,8 +270,12 @@ async function loadMap(map){
                         'fill-color': ['match', ['get', 'type'],
                                         'corridor', '#A9A9A9',
                                         'wall', '#484848',
-                                        '#484848'], 
-                        'fill-opacity': 1
+                                        '#484848'
+                                        ], 
+                        'fill-opacity': ['match', ['get', 'type'],
+                                            'roof', 0.5,
+                                            1
+                                        ]
                     }
                 });
             }else{
@@ -358,47 +363,12 @@ async function loadMap(map){
                     },
                     'paint': {
                         'fill-color': "#660099",
-                        'fill-opacity': 1,
+                        'fill-opacity': ['match', ['get', 'name'],
+                                        'Courtyard', 0.8,
+                                        1
+                                        ]
                     },
                 });
-            }else{
-                ready_state = false;
-            }
-
-            //layer to show availability
-            const unavailable_rooms_layer_name = floor_name.concat("_rooms_avaiability");
-            if(map.getLayer(unavailable_rooms_layer_name) == null){
-                map.addLayer({
-                    'id' : unavailable_rooms_layer_name,
-                    'type' : 'fill',
-                    'source' : rooms_data_source,
-                    'layout' : {
-                        'visibility' : 'none'
-                    },
-                    'paint' : {
-                        'fill-color' : 'red',
-                        'fill-opacity' : 1
-                    }
-                });
-            }else{
-                ready_state = false;
-            }
-
-            //layer that highlights the searched rooms
-            const search_layer_rooms_name = floor_name.concat("_rooms_search");
-            if(map.getLayer(search_layer_rooms_name) == null){
-                map.addLayer({
-                    'id': search_layer_rooms_name,
-                    'type': 'fill',
-                    'source': rooms_data_source, // reference the data source
-                    'layout': {
-                        'visibility' : "none"
-                    },
-                    'paint': {
-                        'fill-color': '#FFCC33',
-                        'fill-opacity': 1
-                    }
-                });  
             }else{
                 ready_state = false;
             }
@@ -507,6 +477,46 @@ async function loadMap(map){
             }
         }
 
+        //add search and availability layers
+        {
+            //layer to show availability
+            const unavailable_rooms_layer_name = floor_name.concat("_rooms_avaiability");
+            if(map.getLayer(unavailable_rooms_layer_name) == null){
+                map.addLayer({
+                    'id' : unavailable_rooms_layer_name,
+                    'type' : 'line',
+                    'source' : rooms_data_source,
+                    'layout' : {
+                        'visibility' : 'none'
+                    },
+                    'paint' : {
+                        'line-color' : 'red',
+                        'line-width': 5
+                    }
+                });
+            }else{
+                ready_state = false;
+            }
+
+            //layer that highlights the searched rooms
+            const search_layer_rooms_name = floor_name.concat("_rooms_search");
+            if(map.getLayer(search_layer_rooms_name) == null){
+                map.addLayer({
+                    'id': search_layer_rooms_name,
+                    'type': 'line',
+                    'source': rooms_data_source, // reference the data source
+                    'layout': {
+                        'visibility' : "none"
+                    },
+                    'paint': {
+                        'line-color': '#FFCC33',
+                        'line-width': 5
+                    }
+                });  
+            }else{
+                ready_state = false;
+            }
+        }
         //add layer for labels and icons
         {
             //adds layer for labels of structures
@@ -545,7 +555,6 @@ async function loadMap(map){
                         //'text-rotate' : -28.55
                     },
                     "paint":{
-                        "icon-color" : "white" ,
                         "text-color" : "white"
                     }
                 });
@@ -574,6 +583,7 @@ async function loadMap(map){
                         //rotation of the text can be locked
                         'text-rotation-alignment' : "viewport", 
                         //'text-rotate' : -28.55
+                        'text-font' : ["Open Sans Regular","Arial Unicode MS Regular"]
                     },
                     'paint':{
                         'text-color' : "white"
@@ -633,6 +643,7 @@ function setUpAfterLoadMap(map){
     onChangeFontSize(map);
     onChangeIconSize(map);
     onChangeRoomColour(map);
+    onChangeFontBoldness(map);
     onResetSettings();
 
     //makes sure that the modal is closed when clicked on the window
@@ -651,10 +662,30 @@ function setUpAfterLoadMap(map){
 function onRoomClick(map){
     //on click shows the name
     const layer_rooms_name = getFloorName().concat("_rooms");
+    const layer_search_name = getFloorName().concat("_rooms_search");
     map.on('click', layer_rooms_name, async (e) => {
-        //update the selected room
         const selected_room_name = e.features[0].properties.name;
-        // console.log(selected_room_name);
+        const rooms_source = map.getSource(getFloorName().concat("_label_data"));
+
+        //center on a selected room
+        var list_of_features = rooms_source._data.features;
+        for(var feature of list_of_features){
+            const room_name = feature.properties.name;
+            if(room_name == selected_room_name && room_name != ".") {
+                map.flyTo({
+                    center: feature.geometry.coordinates,
+                    speed: 0.5,
+                    zoom: 19.5,
+                    essential: true
+                });
+
+                document.getElementById("search_bar").value = room_name;
+                map.getLayer(layer_search_name).visibility = "visible";
+                map.setFilter(layer_search_name, false);
+                map.setFilter(layer_search_name, ["==", room_name.toLowerCase(), ["downcase", ["get", "name"]]]);
+                break;
+            }
+        }
         
         //update the room selector
         var room_picker = document.getElementById("room_picker");
@@ -671,7 +702,7 @@ function onRoomClick(map){
             counter++;
         }
 
-        //show the timetable
+        document.getElementById("search_result").innerHTML = "";
         await updateTimetableContents();
     });
 
@@ -690,14 +721,115 @@ function onKeyUpSearchBar(map){
     search_bar.onkeyup = function (){
         const input_text = search_bar.value;
         map.getLayer(layer_name).visibility = "visible";
+
+        showSearchResults(map, input_text)
         if(input_text == "" || input_text == "."){
             map.setFilter(layer_name, false);
             return;
         }
+        
         map.setFilter(layer_name, false);
         map.setFilter(layer_name, ["in", input_text.toLowerCase(), ["downcase", ["get", "name"]]]);
     }
 }
+
+function autocompleteMatch(map, input) {
+    var rooms_source = map.getSource(getFloorName().concat("_label_data"));
+    var list_of_features = rooms_source._data.features;
+ 
+    var list_of_rooms = [];
+    for(var f of list_of_features){
+        const room_name = f.properties.name;
+        if(room_name != ".") list_of_rooms.push(room_name);
+    }
+    list_of_rooms.sort();
+
+    if (input == '') {
+      return [];
+    }
+
+    var reg = new RegExp(input, "i")
+    return list_of_rooms.filter(function(term) {
+        if (term.match(reg)) {
+            // console.log(term);
+          return term;
+        }
+    });
+  }
+   
+  function showSearchResults(map, search_input) {
+    res = document.getElementById("search_result");
+    res.innerHTML = '';
+    let matching_results = autocompleteMatch(map, search_input);
+
+    //if the list of results is too long, then shorten it
+    const max_num_of_elements = 15;
+    if(matching_results.length > max_num_of_elements){
+        matching_results = matching_results.slice(0, max_num_of_elements);
+    }
+    if(matching_results.length == 1 && matching_results[0] == document.getElementById("search_bar").value){
+        return;
+    }
+
+    var list_of_items = document.createElement("ul");
+
+    for (i=0; i<matching_results.length; i++) {
+        const list_item = document.createElement("li");
+        list_item.innerHTML = matching_results[i];
+        list_item.onclick = function(){
+            replaceResult(map, list_item.innerHTML);
+        }
+        list_of_items.appendChild(list_item);
+    }
+
+    res.appendChild(list_of_items);
+  }
+
+  function replaceResult(map, selected_room_name){
+    const rooms_source = map.getSource(getFloorName().concat("_label_data"));
+
+    //center on a selected room
+    var list_of_features = rooms_source._data.features;
+    for(var feature of list_of_features){
+        const room_name = feature.properties.name;
+        if(room_name == selected_room_name && room_name != ".") {
+            map.flyTo({
+                center: feature.geometry.coordinates,
+                speed: 0.5,
+                zoom: 19.5,
+                essential: true
+            });
+
+            document.getElementById("search_bar").value = room_name;
+            document.getElementById("search_bar").onkeyup();
+
+            
+            const layer_search_name = getFloorName().concat("_rooms_search");
+            map.getLayer(layer_search_name).visibility = "visible";
+            map.setFilter(layer_search_name, false);
+            map.setFilter(layer_search_name, ["==", room_name.toLowerCase(), ["downcase", ["get", "name"]]]);
+            break;
+        }
+    }
+
+    //update the room selector
+    var room_picker = document.getElementById("room_picker");
+    var start_position_picker = document.getElementById("start_position");
+    var counter = 0;
+    for(var option of room_picker.options){
+        if(option.value === selected_room_name){
+            room_picker.selectedIndex = counter;
+            start_position_picker.selectedIndex = counter;
+            break;
+        }
+        room_picker.selectedIndex = 0;
+        start_position_picker.selectedIndex = 0;
+        counter++;
+    }
+    updateTimetableContents();
+    
+    document.getElementById("search_result").innerHTML = "";
+  }
 
 async function insertDataIntoRoomPickers(map){
     var room_picker = document.getElementById("room_picker");
@@ -708,7 +840,7 @@ async function insertDataIntoRoomPickers(map){
     var list_of_features = rooms_source._data.features;
  
     var list_of_rooms = [];
-    for(var f of list_of_features){
+    for(const f of list_of_features){
         const room_name = f.properties.name;
         if(room_name != ".") list_of_rooms.push(room_name);
     }
@@ -716,38 +848,61 @@ async function insertDataIntoRoomPickers(map){
     list_of_rooms.sort();
 
     //room picker for timetable
-    for(var room_name of list_of_rooms){
-        var room_option = document.createElement("option");
+    for(const room_name of list_of_rooms){
+        const room_option = document.createElement("option");
         room_option.value = room_name;
         room_option.innerHTML = room_name;
         room_picker.appendChild(room_option);
     }
 
     //rom picker for start position
-    for(var room_name of list_of_rooms){
-        var room_option = document.createElement("option");
+    for(const room_name of list_of_rooms){
+        const room_option = document.createElement("option");
         room_option.value = room_name;
         room_option.innerHTML = room_name;
         start_room_picker.appendChild(room_option);
     }
 
     //room picker for end position
-    for(var room_name of list_of_rooms){
-        var room_option = document.createElement("option");
+    for(const room_name of list_of_rooms){
+        const room_option = document.createElement("option");
         room_option.value = room_name;
         room_option.innerHTML = room_name;
         end_room_picker.appendChild(room_option);
     }
 }
 
-function onLoadWeekPicker(){
+function onLoadWeekAndSemesterPicker(){
     var week_picker = document.getElementById("week_picker");
-    for(var i=1; i<= SEM_1_NUM_WEEKS; i++){
+    var semester_picker = document.getElementById("semester_picker");
+    var current_week = getCurrentWeek()
+
+    //set the semester number
+    var semester_num_weeks = SEM_1_NUM_WEEKS;
+    if(current_week - SEMESTER_OFFSET > 0){
+        semester_num_weeks = SEM_2_NUM_WEEKS
+        semester_picker.value = 2
+    }
+
+    //set the week number
+    real_week_num = 1;
+    for(var i=1; i<= semester_num_weeks; i++){
         var week_num = document.createElement("option");
         week_num.value = i;
         week_num.innerHTML = "week " + i;
         week_picker.appendChild(week_num);
+        if(semester_picker.value == 1){
+            if(i == current_week){
+                real_week_num = i
+            }
+        }
+        else if(semester_picker.value == 2){
+            if(i == current_week - SEMESTER_OFFSET){
+                real_week_num = i
+            }
+        }
     }
+    week_picker.value = real_week_num;
 }
 
 async function onChangeSemesterPicker(){
@@ -796,6 +951,7 @@ function addMapButtons(map, initial_map_attributes){
     addNavigationControl(map, buttons_position);
     addResetPositionButton(map, buttons_position, initial_map_attributes);
     addToggle3DViewButton(map, buttons_position);
+    map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
 }
 
 function addFullscreenButton(map, buttons_position){
@@ -892,6 +1048,28 @@ function onChangeRoomColour(map){
     }
 }
 
+function onChangeFontBoldness(map){
+    var font_boldness_slider = document.getElementById("font_boldness");
+
+    font_boldness_slider.onchange = function(){
+        //values from 0 to 2
+        var font = ["Open Sans Regular","Arial Unicode MS Regular"]
+        switch(parseInt(font_boldness_slider.value)){
+            case 0: font = ["Open Sans Regular","Arial Unicode MS Regular"]
+            break;
+            case 1: font = ["Open Sans Semibold","Arial Unicode MS Regular"]
+            break;
+            case 2: font = ["Open Sans Bold","Arial Unicode MS Regular"]
+            break;
+        }
+
+        const floor_name = getFloorName();
+        const layer_name = floor_name.concat("_room_labels");
+        map.setLayoutProperty(layer_name, 'text-font', font);
+        
+    }
+}
+
 function onResetSettings(){
     document.getElementById("reset_settings").onclick = function(){
         var colour_picker = document.getElementById("font_colour");
@@ -906,6 +1084,9 @@ function onResetSettings(){
         var room_colour_picker = document.getElementById("room_colour");
         room_colour_picker.value = "#660099";
         room_colour_picker.onchange();
+        var font_boldness_picker = document.getElementById("font_boldness");
+        font_boldness_picker.value = 0;
+        font_boldness_picker.onchange();
     }
 }
 
@@ -913,14 +1094,6 @@ function onClickFindPath(map){
     //get floor name
     const find_path_button = document.getElementById("find_path");
     find_path_button.onclick = function(){
-        var loading_icon = document.createElement("span");
-        loading_icon.className = "spinner-border spinner-border-sm";
-        loading_icon.role = "status";
-
-        find_path_button.disabled = true;
-        find_path_button.innerHTML = "Loading...";
-        find_path_button.appendChild(loading_icon);
-        
         const floor_name = getFloorName();
         const start_node = document.getElementById("start_position").value;
         const end_node = document.getElementById("end_position").value;
@@ -929,6 +1102,15 @@ function onClickFindPath(map){
         if(start_node == end_node || start_node == "" || end_node==""){
             openModal("Please select a valid path");
         }
+
+        //set the button to loading
+        var loading_icon = document.createElement("span");
+        loading_icon.className = "spinner-border spinner-border-sm";
+        loading_icon.role = "status";
+
+        find_path_button.disabled = true;
+        find_path_button.innerHTML = "Loading...";
+        find_path_button.appendChild(loading_icon);
 
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
@@ -1010,7 +1192,7 @@ function onClickToggleAvailability(map){
 
                 if(unavailable_rooms === undefined || unavailable_rooms.length == 0 || match == false){
                     map.setFilter(layer_name, false);
-                    openModal("All of the rooms are available!");
+                    openModal("All rooms are available!");
                     availability_visibile = false;
                 }
                 else{
@@ -1077,13 +1259,15 @@ function getUnavailableRooms(func){
     var current_week_num = getCurrentWeek();
     var d = new Date();
     var current_day_id = d.getUTCDay();
-    var current_hour = d.getUTCHours();
+    //this works only when we are in the UK
+    var current_hour = d.getUTCHours() - d.getTimezoneOffset()/60;
+
     var today = getWeekByIndex(current_day_id);
 
     // HARD CODED the values for demonstration:
-    // current_week_num = 6;
-    // today = "Tuesday";
-    // current_hour = 10;
+    // current_week_num = 28;
+    // today = "Wednesday";
+    // current_hour = 11;
 
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
@@ -1095,6 +1279,8 @@ function getUnavailableRooms(func){
     xmlhttp.open("GET", path_to_root + "php/return_unavailable_rooms.php?week_num="+current_week_num+"&day="+today+"&hour="+current_hour);
     xmlhttp.send();
 }
+
+
 
 
 class MapboxMapButtonControl {

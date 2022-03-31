@@ -28,6 +28,10 @@
         $threshold_big = 0.04;
         $threshold_small = 0.02;
         $distance = $dijkstra->getDistanceBetween2NodesAccurate($start_node, $end_node);
+    
+        if($distance >= 999999){
+            die(Dijkstra::createGeoJSONStringLineObject([]));
+        }
         //check the distance between the 2 nodes, check if they are more than 50m apart, if it is do special case
         // die($distance);
 

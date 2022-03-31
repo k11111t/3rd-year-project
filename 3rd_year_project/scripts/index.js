@@ -83,6 +83,7 @@ function addMapButtons(map, initial_map_attributes){
     addFullscreenButton(map, buttons_position);
     addNavigationControl(map, buttons_position);
     addResetPositionButton(map, buttons_position, initial_map_attributes);
+    map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
 }
 
 function addFullscreenButton(map, buttons_position){
@@ -231,10 +232,13 @@ function loadMap(map, all_floor_names){
                         },
                         'paint': {
                             'fill-color': ['match', ['get', 'type'],
-                                            'corridor', '#808080',
+                                            'corridor', '#A9A9A9',
                                             'wall', '#484848',
                                             '#484848'], 
-                            'fill-opacity': 1
+                            'fill-opacity': ['match', ['get', 'type'],
+                            'roof', 0.5,
+                            1
+                        ]
                         }
                     });
                 }else{
@@ -276,7 +280,7 @@ function loadMap(map, all_floor_names){
                             'fill-color': ['match', ['get', 'type'],
                                             'IT Services', 'transparent',
                                             'exit', 'transparent',
-                                            '#585858'], 
+                                            '#696969'], 
                             'fill-opacity': 1
                         }
                     });
@@ -320,7 +324,11 @@ function loadMap(map, all_floor_names){
                         },
                         'paint': {
                             'fill-color': '#660099', 
-                            'fill-opacity': 1
+                            
+                            'fill-opacity': ['match', ['get', 'name'],
+                                        'Courtyard', 0.8,
+                                        1
+                                        ]
                         }
                     });
                 }else{
@@ -444,6 +452,7 @@ function setUpAfterLoadMap(map, all_floor_names){
     onChangeFontSize(map, all_floor_names);
     onChangeRoomColour(map, all_floor_names);
     onChangeIconSize(map, all_floor_names);
+    onChangeFontBoldness(map, all_floor_names);
     onResetSettings();
 }
 
@@ -558,12 +567,35 @@ function onChangeRoomColour(map, all_floor_names){
 }
 
 function onChangeIconSize(map, all_floor_names){
-    var font_size_slider = document.getElementById("icon_size");
+    var icon_size_slider = document.getElementById("icon_size");
     
-    font_size_slider.onchange = function(){
+    icon_size_slider.onchange = function(){
         for(const floor_name of all_floor_names){
             const layer_name = floor_name.concat("_structure_labels");
-            map.setLayoutProperty(layer_name, 'icon-size', parseInt(font_size_slider.value)/10);
+            map.setLayoutProperty(layer_name, 'icon-size', parseInt(icon_size_slider.value)/10);
+        }
+        
+    }
+}
+
+function onChangeFontBoldness(map, all_floor_names){
+    var font_boldness_slider = document.getElementById("font_boldness");
+
+    font_boldness_slider.onchange = function(){
+        //values from 0 to 2
+        var font = ["Open Sans Regular","Arial Unicode MS Regular"]
+        switch(parseInt(font_boldness_slider.value)){
+            case 0: font = ["Open Sans Regular","Arial Unicode MS Regular"]
+            break;
+            case 1: font = ["Open Sans Semibold","Arial Unicode MS Regular"]
+            break;
+            case 2: font = ["Open Sans Bold","Arial Unicode MS Regular"]
+            break;
+        }
+
+        for(const floor_name of all_floor_names){
+            const layer_name = floor_name.concat("_room_labels");
+            map.setLayoutProperty(layer_name, 'text-font', font);
         }
         
     }
@@ -583,6 +615,9 @@ function onResetSettings(){
         var room_colour_picker = document.getElementById("room_colour");
         room_colour_picker.value = "#660099";
         room_colour_picker.onchange();
+        var font_boldness_picker = document.getElementById("font_boldness");
+        font_boldness_picker.value = 0;
+        font_boldness_picker.onchange();
     }
 }
 
