@@ -326,7 +326,7 @@ function loadMap(map, all_floor_names){
                             'fill-color': '#660099', 
                             
                             'fill-opacity': ['match', ['get', 'name'],
-                                        'Courtyard', 0.8,
+                                        'Courtyard', 0.75,
                                         1
                                         ]
                         }
@@ -485,7 +485,7 @@ function addMapMenuButtons(map, all_floor_names){
                 link.className = "active";
             }
 
-            console.log("on click set for ", id);
+            // console.log("on click set for ", id);
             // Show or hide layer when the toggle is clicked.
             link.onclick = function (e) {
                 //_layer, outline, labels

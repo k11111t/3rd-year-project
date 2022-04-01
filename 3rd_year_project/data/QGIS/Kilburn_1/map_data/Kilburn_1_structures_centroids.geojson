@@ -1,0 +1,24 @@
+{
+"type": "FeatureCollection",
+"name": "Kilburn_1_structures_centroids",
+"features": [
+{ "type": "Feature", "properties": { "fid": 1, "id": null, "type": "mens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -248630.011833347118227, 7069917.217623783275485 ] } },
+{ "type": "Feature", "properties": { "fid": 2, "id": null, "type": "womens_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -248635.456052164081484, 7069922.262410256080329 ] } },
+{ "type": "Feature", "properties": { "fid": 3, "id": null, "type": "accessible_bathroom" }, "geometry": { "type": "Point", "coordinates": [ -248633.543533536110772, 7069925.852290213108063 ] } },
+{ "type": "Feature", "properties": { "fid": 4, "id": null, "type": "lift" }, "geometry": { "type": "Point", "coordinates": [ -248644.009742123569595, 7069908.102358317002654 ] } },
+{ "type": "Feature", "properties": { "fid": 5, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248649.003904602606781, 7069907.727243693545461 ] } },
+{ "type": "Feature", "properties": { "fid": 6, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -248647.802610128972447, 7069903.590588886290789 ] } },
+{ "type": "Feature", "properties": { "fid": 7, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248620.66957733349409, 7069924.065537058748305 ] } },
+{ "type": "Feature", "properties": { "fid": 8, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248611.187226430454757, 7069923.001779514364898 ] } },
+{ "type": "Feature", "properties": { "fid": 9, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248713.595413717062911, 7069964.916713145561516 ] } },
+{ "type": "Feature", "properties": { "fid": 10, "id": null, "type": "accessible_lift" }, "geometry": { "type": "Point", "coordinates": [ -248686.276775239530252, 7069982.496431056410074 ] } },
+{ "type": "Feature", "properties": { "fid": 11, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248685.442253551125759, 7069986.258087025955319 ] } },
+{ "type": "Feature", "properties": { "fid": 12, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248679.394566940143704, 7069989.374312086962163 ] } },
+{ "type": "Feature", "properties": { "fid": 13, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248671.407025454507675, 7069988.38133149407804 ] } },
+{ "type": "Feature", "properties": { "fid": 14, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248673.897445621318184, 7069981.021135961636901 ] } },
+{ "type": "Feature", "properties": { "fid": 15, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -248705.343284084665356, 7069994.524932090193033 ] } },
+{ "type": "Feature", "properties": { "fid": 16, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -248616.383623455127236, 7069916.167513622902334 ] } },
+{ "type": "Feature", "properties": { "fid": 17, "id": null, "type": "exit" }, "geometry": { "type": "Point", "coordinates": [ -248633.697572408302221, 7070004.113642296753824 ] } },
+{ "type": "Feature", "properties": { "fid": 18, "id": null, "type": "stairs" }, "geometry": { "type": "Point", "coordinates": [ -248680.736167424125597, 7069983.203948082402349 ] } }
+]
+}

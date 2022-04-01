@@ -40,7 +40,7 @@
                         <select class="form-select bg-light text-black" aria-label="Pick Week" style="width:auto;" id="week_picker" onchange="onChangeWeekPicker()" >
                         </select>
                     </div>
-                    <div class="btn-group" role="group" aria-label="Search path">
+                    <div class="btn-group" role="group" aria-label="show Timetable">
                         <select class="form-select bg-light text-black" aria-label="Pick Room" style="width:auto;" id="room_picker" onchange="onChangeRoomPicker()" >
                         </select>  
                     </div>               
@@ -72,7 +72,7 @@
 
                 <div class="mt-3">
                     <h5>Show currently unavailable rooms</h5>
-                    <div class="btn-group" role="group" aria-label="show Timetable">
+                    <div class="btn-group" role="group" aria-label="show availability">
                         <button type="button" class="btn btn-outline-dark" id="toggle_availability">
                             Show
                         </button>
@@ -85,17 +85,12 @@
     </div>
     <div class="container">
         <footer class="my-4 pt-4 text-muted text-center text-small">
-            <!-- <p class="mb-1">© 2021-2022 University of Manchester </p> -->
-            <!-- <ul class="list-inline">
-                <li class="list-inline-item"><a href="#">Privacy</a></li>
-                <li class="list-inline-item"><a href="#">Terms</a></li>
-                <li class="list-inline-item"><a href="#">Support</a></li>
-              </ul> -->
+
         </footer>
     </div>
 
     <!-- Modal for timetable -->
-    <div class="modal fade" id="timetableModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="timetableModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
@@ -114,7 +109,7 @@
     </div>
 
     <!-- Modal for other stuff -->
-    <div class="modal fade" id="message_modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="message_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">

@@ -1,0 +1,28 @@
+{
+"type": "FeatureCollection",
+"name": "Kilburn_1_door_nodes",
+"features": [
+{ "type": "Feature", "properties": { "id": 0, "name": "Lecture Theatre 1.5" }, "geometry": { "type": "Point", "coordinates": [ -248643.519593991251895, 7070003.035760831087828 ] } },
+{ "type": "Feature", "properties": { "id": 1, "name": "Lecture Theatre 1.4" }, "geometry": { "type": "Point", "coordinates": [ -248654.631635867117438, 7069997.279345533810556 ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "Lecture Theatre 1.3" }, "geometry": { "type": "Point", "coordinates": [ -248657.491510190622648, 7069995.750995574519038 ] } },
+{ "type": "Feature", "properties": { "id": 3, "name": "Computer Cluster 1.8" }, "geometry": { "type": "Point", "coordinates": [ -248642.462970936321653, 7069996.694326025433838 ] } },
+{ "type": "Feature", "properties": { "id": 4, "name": "1.12 Quiet Area" }, "geometry": { "type": "Point", "coordinates": [ -248639.914907924074214, 7069964.717786157503724 ] } },
+{ "type": "Feature", "properties": { "id": 5, "name": "1.10 Meeting Room" }, "geometry": { "type": "Point", "coordinates": [ -248639.908795689902036, 7069964.702778499573469 ] } },
+{ "type": "Feature", "properties": { "id": 6, "name": "1.15" }, "geometry": { "type": "Point", "coordinates": [ -248639.924435658904258, 7069964.739084382541478 ] } },
+{ "type": "Feature", "properties": { "id": 7, "name": "1.14" }, "geometry": { "type": "Point", "coordinates": [ -248639.920031174347969, 7069964.727222012355924 ] } },
+{ "type": "Feature", "properties": { "id": 8, "name": "1.17 Research Lab" }, "geometry": { "type": "Point", "coordinates": [ -248628.600787305447739, 7069943.8010114422068 ] } },
+{ "type": "Feature", "properties": { "id": 9, "name": "1.18A Atlas 1" }, "geometry": { "type": "Point", "coordinates": [ -248614.663477013149532, 7069940.543602608144283 ] } },
+{ "type": "Feature", "properties": { "id": 10, "name": "1.18B Atlas 2" }, "geometry": { "type": "Point", "coordinates": [ -248608.582265058590565, 7069929.298399616964161 ] } },
+{ "type": "Feature", "properties": { "id": 11, "name": "1.19 Mercury" }, "geometry": { "type": "Point", "coordinates": [ -248610.882017653348157, 7069922.283051383681595 ] } },
+{ "type": "Feature", "properties": { "id": 12, "name": "1.20" }, "geometry": { "type": "Point", "coordinates": [ -248631.475811314303428, 7069928.784403719939291 ] } },
+{ "type": "Feature", "properties": { "id": 13, "name": "1.25" }, "geometry": { "type": "Point", "coordinates": [ -248641.026578933437122, 7069915.022038634866476 ] } },
+{ "type": "Feature", "properties": { "id": 14, "name": "1.24A" }, "geometry": { "type": "Point", "coordinates": [ -248652.685274462332018, 7069912.552629818208516 ] } },
+{ "type": "Feature", "properties": { "id": 15, "name": "1.24" }, "geometry": { "type": "Point", "coordinates": [ -248647.218317607505014, 7069921.385370067320764 ] } },
+{ "type": "Feature", "properties": { "id": 16, "name": "1.23 Senior Common Room" }, "geometry": { "type": "Point", "coordinates": [ -248631.341702261328464, 7069940.268412378616631 ] } },
+{ "type": "Feature", "properties": { "id": 17, "name": "Turing Lounge" }, "geometry": { "type": "Point", "coordinates": [ -248684.183644056669436, 7069964.609898767434061 ] } },
+{ "type": "Feature", "properties": { "id": 18, "name": "Courtyard" }, "geometry": { "type": "Point", "coordinates": [ -248674.284082430705894, 7069969.944197005592287 ] } },
+{ "type": "Feature", "properties": { "id": 19, "name": "LF1" }, "geometry": { "type": "Point", "coordinates": [ -248685.102161465358222, 7069991.323744888417423 ] } },
+{ "type": "Feature", "properties": { "id": 20, "name": "Rear Entrance to Lecture Theatre 1.1" }, "geometry": { "type": "Point", "coordinates": [ -248717.334801114688162, 7069977.797626330517232 ] } },
+{ "type": "Feature", "properties": { "id": 23, "name": "Lecture Theatre 1.1" }, "geometry": { "type": "Point", "coordinates": [ -248727.909655349416425, 7069960.880961570888758 ] } }
+]
+}

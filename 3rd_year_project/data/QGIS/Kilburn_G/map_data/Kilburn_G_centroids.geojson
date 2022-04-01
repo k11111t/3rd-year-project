@@ -1,0 +1,28 @@
+{
+"type": "FeatureCollection",
+"name": "Kilburn_G_centroids",
+"features": [
+{ "type": "Feature", "properties": { "fid": 1, "id": "0", "name": "G16" }, "geometry": { "type": "Point", "coordinates": [ -248755.143913052190328, 7069967.421850370243192 ] } },
+{ "type": "Feature", "properties": { "fid": 2, "id": "1", "name": "G18" }, "geometry": { "type": "Point", "coordinates": [ -248751.915766306745354, 7069961.345923807471991 ] } },
+{ "type": "Feature", "properties": { "fid": 3, "id": "2", "name": "G20" }, "geometry": { "type": "Point", "coordinates": [ -248748.972639548766892, 7069955.842409131117165 ] } },
+{ "type": "Feature", "properties": { "fid": 4, "id": "3", "name": "G21" }, "geometry": { "type": "Point", "coordinates": [ -248746.399068061000435, 7069951.029867549426854 ] } },
+{ "type": "Feature", "properties": { "fid": 5, "id": "4", "name": "G33a" }, "geometry": { "type": "Point", "coordinates": [ -248733.999124910507817, 7069946.926348290406168 ] } },
+{ "type": "Feature", "properties": { "fid": 6, "id": "5", "name": "G14" }, "geometry": { "type": "Point", "coordinates": [ -248746.12920059543103, 7069972.114366018213332 ] } },
+{ "type": "Feature", "properties": { "fid": 7, "id": "6", "name": "G13" }, "geometry": { "type": "Point", "coordinates": [ -248741.074639038881287, 7069974.734397190622985 ] } },
+{ "type": "Feature", "properties": { "fid": 8, "id": "7", "name": "G12" }, "geometry": { "type": "Point", "coordinates": [ -248736.156935384700773, 7069977.272287796251476 ] } },
+{ "type": "Feature", "properties": { "fid": 9, "id": "8", "name": "G11" }, "geometry": { "type": "Point", "coordinates": [ -248730.992777216626564, 7069979.944721823558211 ] } },
+{ "type": "Feature", "properties": { "fid": 10, "id": "9", "name": "G10" }, "geometry": { "type": "Point", "coordinates": [ -248725.753773247968638, 7069982.665418325923383 ] } },
+{ "type": "Feature", "properties": { "fid": 11, "id": "10", "name": "G7" }, "geometry": { "type": "Point", "coordinates": [ -248720.885012399376137, 7069985.216605814173818 ] } },
+{ "type": "Feature", "properties": { "fid": 12, "id": "11", "name": "G6" }, "geometry": { "type": "Point", "coordinates": [ -248717.057484658493195, 7069987.224297015927732 ] } },
+{ "type": "Feature", "properties": { "fid": 13, "id": "12", "name": "G23 Computer Cluster" }, "geometry": { "type": "Point", "coordinates": [ -248724.491018740751315, 7069960.059222590178251 ] } },
+{ "type": "Feature", "properties": { "fid": 14, "id": "13", "name": "G35" }, "geometry": { "type": "Point", "coordinates": [ -248712.789505696971901, 7069946.597171577624977 ] } },
+{ "type": "Feature", "properties": { "fid": 15, "id": "14", "name": "G37" }, "geometry": { "type": "Point", "coordinates": [ -248708.217655139800627, 7069949.024642996490002 ] } },
+{ "type": "Feature", "properties": { "fid": 16, "id": "15", "name": "G36" }, "geometry": { "type": "Point", "coordinates": [ -248706.693432111060247, 7069941.205261909402907 ] } },
+{ "type": "Feature", "properties": { "fid": 17, "id": "16", "name": "G41 Collaborative Space" }, "geometry": { "type": "Point", "coordinates": [ -248706.46859740986838, 7069926.934739872813225 ] } },
+{ "type": "Feature", "properties": { "fid": 18, "id": "17", "name": "G105 IT Services" }, "geometry": { "type": "Point", "coordinates": [ -248693.214220245106844, 7069945.107026394456625 ] } },
+{ "type": "Feature", "properties": { "fid": 19, "id": "18", "name": "G33 Research Lab" }, "geometry": { "type": "Point", "coordinates": [ -248728.101040105597349, 7069936.016760458238423 ] } },
+{ "type": "Feature", "properties": { "fid": 20, "id": "19", "name": "." }, "geometry": { "type": "Point", "coordinates": [ -248634.687295803625602, 7069908.832486122846603 ] } },
+{ "type": "Feature", "properties": { "fid": 21, "id": "20", "name": "G17 Kitchen" }, "geometry": { "type": "Point", "coordinates": [ -248742.626773566589691, 7069962.963648113422096 ] } },
+{ "type": "Feature", "properties": { "fid": 22, "id": "21", "name": "R2 Document Store" }, "geometry": { "type": "Point", "coordinates": [ -248702.194207010295941, 7069958.008578992448747 ] } }
+]
+}

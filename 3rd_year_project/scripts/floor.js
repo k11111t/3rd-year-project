@@ -96,13 +96,12 @@ function getSelectedRoom(){
 }
 
 function getDBname(selected_room_name, func){
-    const path_to_root = "../";
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function(){
         const db_name = this.responseText;
         func(db_name);
     }
-    xmlhttp.open("GET", path_to_root + "php/return_DB_mapping.php?room_name=" + selected_room_name);
+    xmlhttp.open("GET", "http://localhost/3rd_year_project/app/php/return_DB_mapping.php?room_name=" + selected_room_name);
     xmlhttp.send();
 }
 
@@ -118,7 +117,6 @@ async function updateTimetableContents(){
     }
     
     //find the correct name in the json file
-    const path_to_root = "../";
 
     //wrapper function
     getDBname(selected_room_name, function(db_name){
@@ -127,7 +125,7 @@ async function updateTimetableContents(){
             xhttp.onload = function(){
                 document.getElementById("timetable").innerHTML = this.responseText;
             }
-            xhttp.open("GET", path_to_root + "php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + selected_room_name);
+            xhttp.open("GET", "http://localhost/3rd_year_project/app/php/print_timetable.php?room=" + db_name + "&week_number=" + week_number + "&room_name=" + selected_room_name);
             xhttp.send();   
         }
     );
@@ -151,7 +149,6 @@ function createMap(initial_map_attributes){
 }
 
 function getMapboxEncoding(func){
-    const path_to_root = "../";
     const floor_name = getFloorName();
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
@@ -159,7 +156,7 @@ function getMapboxEncoding(func){
         mapbox_encodings = JSON.parse(mapbox_encodings);
         func(mapbox_encodings);
     }
-    xmlhttp.open("GET", path_to_root + "php/return_mapbox_encodings.php?floor_name="+floor_name);
+    xmlhttp.open("GET", "http://localhost/3rd_year_project/app/php/return_mapbox_encodings.php?floor_name="+floor_name);
     xmlhttp.send();
 }
 
@@ -364,7 +361,7 @@ async function loadMap(map){
                     'paint': {
                         'fill-color': "#660099",
                         'fill-opacity': ['match', ['get', 'name'],
-                                        'Courtyard', 0.8,
+                                        'Courtyard', 0.75,
                                         1
                                         ]
                     },
@@ -1097,7 +1094,6 @@ function onClickFindPath(map){
         const floor_name = getFloorName();
         const start_node = document.getElementById("start_position").value;
         const end_node = document.getElementById("end_position").value;
-        const path_to_root= "../"
 
         if(start_node == end_node || start_node == "" || end_node==""){
             openModal("Please select a valid path");
@@ -1121,7 +1117,7 @@ function onClickFindPath(map){
             find_path_button.innerHTML = "Find Path";
             drawPath(map, geojson_obj);
         }
-        xmlhttp.open("GET", path_to_root + "php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
+        xmlhttp.open("GET", "http://localhost/3rd_year_project/app/php/return_shortest_path.php?floor="+floor_name+ "&start=" + start_node + "&end=" + end_node);
         xmlhttp.send();
     }
 }
@@ -1254,7 +1250,6 @@ function getWeekByIndex(id){
 }
 
 function getUnavailableRooms(func){
-    const path_to_root = "../";
     //issue, find a way to decode this
     var current_week_num = getCurrentWeek();
     var d = new Date();
@@ -1276,7 +1271,7 @@ function getUnavailableRooms(func){
         //console.log(unavailable_rooms);
         func(unavailable_rooms);
     }
-    xmlhttp.open("GET", path_to_root + "php/return_unavailable_rooms.php?week_num="+current_week_num+"&day="+today+"&hour="+current_hour);
+    xmlhttp.open("GET", "http://localhost/3rd_year_project/app/php/return_unavailable_rooms.php?week_num="+current_week_num+"&day="+today+"&hour="+current_hour);
     xmlhttp.send();
 }
 

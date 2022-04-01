@@ -1,0 +1,28 @@
+{
+"type": "FeatureCollection",
+"name": "Kilburn_G_doors_nodes",
+"features": [
+{ "type": "Feature", "properties": { "fid": 1, "id": "0", "name": "G16" }, "geometry": { "type": "Point", "coordinates": [ -248750.919543826050358, 7069966.654887555167079 ] } },
+{ "type": "Feature", "properties": { "fid": 2, "id": "1", "name": "G18" }, "geometry": { "type": "Point", "coordinates": [ -248749.821006480895448, 7069964.571628306061029 ] } },
+{ "type": "Feature", "properties": { "fid": 3, "id": "2", "name": "G20" }, "geometry": { "type": "Point", "coordinates": [ -248745.063030704273842, 7069955.756022537127137 ] } },
+{ "type": "Feature", "properties": { "fid": 4, "id": "3", "name": "G21" }, "geometry": { "type": "Point", "coordinates": [ -248743.992898225347744, 7069953.755081117153168 ] } },
+{ "type": "Feature", "properties": { "fid": 5, "id": "4", "name": "G33a" }, "geometry": { "type": "Point", "coordinates": [ -248733.844248464913107, 7069940.576566603966057 ] } },
+{ "type": "Feature", "properties": { "fid": 6, "id": "5", "name": "G14" }, "geometry": { "type": "Point", "coordinates": [ -248747.692481855367078, 7069968.407039244659245 ] } },
+{ "type": "Feature", "properties": { "fid": 7, "id": "6", "name": "G13" }, "geometry": { "type": "Point", "coordinates": [ -248738.457893461920321, 7069971.808294809423387 ] } },
+{ "type": "Feature", "properties": { "fid": 8, "id": "7", "name": "G12" }, "geometry": { "type": "Point", "coordinates": [ -248736.065585676551564, 7069973.050196715630591 ] } },
+{ "type": "Feature", "properties": { "fid": 9, "id": "8", "name": "G11" }, "geometry": { "type": "Point", "coordinates": [ -248727.606775097752688, 7069977.418967683799565 ] } },
+{ "type": "Feature", "properties": { "fid": 10, "id": "9", "name": "G10" }, "geometry": { "type": "Point", "coordinates": [ -248723.748764702089829, 7069979.456681173294783 ] } },
+{ "type": "Feature", "properties": { "fid": 11, "id": "10", "name": "G7" }, "geometry": { "type": "Point", "coordinates": [ -248720.429678831715137, 7069981.234362662769854 ] } },
+{ "type": "Feature", "properties": { "fid": 12, "id": "11", "name": "G6" }, "geometry": { "type": "Point", "coordinates": [ -248716.07444325776305, 7069983.533902361989021 ] } },
+{ "type": "Feature", "properties": { "fid": 13, "id": "12", "name": "G23 Computer Cluster" }, "geometry": { "type": "Point", "coordinates": [ -248711.442755352414679, 7069959.068276802077889 ] } },
+{ "type": "Feature", "properties": { "fid": 14, "id": "13", "name": "G35" }, "geometry": { "type": "Point", "coordinates": [ -248712.216382763668662, 7069943.001620046794415 ] } },
+{ "type": "Feature", "properties": { "fid": 15, "id": "14", "name": "G37" }, "geometry": { "type": "Point", "coordinates": [ -248707.959461658989312, 7069945.272214451804757 ] } },
+{ "type": "Feature", "properties": { "fid": 16, "id": "15", "name": "G36" }, "geometry": { "type": "Point", "coordinates": [ -248703.647632840904407, 7069946.391591304913163 ] } },
+{ "type": "Feature", "properties": { "fid": 17, "id": "16", "name": "G41 Collaborative Space" }, "geometry": { "type": "Point", "coordinates": [ -248699.282127016835148, 7069941.276580833829939 ] } },
+{ "type": "Feature", "properties": { "fid": 18, "id": "17", "name": "G105 IT Services" }, "geometry": { "type": "Point", "coordinates": [ -248701.049606085347477, 7069947.51712853088975 ] } },
+{ "type": "Feature", "properties": { "fid": 19, "id": "18", "name": "G33 Research Lab" }, "geometry": { "type": "Point", "coordinates": [ -248738.96548782257014, 7069947.20347539614886 ] } },
+{ "type": "Feature", "properties": { "fid": 20, "id": "19", "name": "hvn" }, "geometry": { "type": "Point", "coordinates": [ -248637.079595489252824, 7069909.891326608136296 ] } },
+{ "type": "Feature", "properties": { "fid": 21, "id": "20", "name": "G17 Kitchen" }, "geometry": { "type": "Point", "coordinates": [ -248742.432233255036408, 7069959.656446989625692 ] } },
+{ "type": "Feature", "properties": { "fid": 22, "id": "21", "name": "R2 Document Store" }, "geometry": { "type": "Point", "coordinates": [ -248705.672491263016127, 7069956.102679979987442 ] } }
+]
+}
