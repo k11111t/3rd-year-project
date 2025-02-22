@@ -1,5 +1,9 @@
 # 3rd year project
  My final year project for my university degree.
+
+ Tech Stack:
+ Frontend: HTML | JS | CSS | MapboxAPI
+ Backend: PHP | SQL | JSON
  
  Web application displays the map of the Kilburn building (Computer Science building on the University of Manchester campus). 
  
