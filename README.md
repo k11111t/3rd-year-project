@@ -1,11 +1,11 @@
-# 3rd year project
- My final year project for my university degree.
+# Virtual map of Kilburn
+ My final year project for my BSc in Computer Science at University of Manchester - dissertation.
 
  ## Tech Stack:
  - Frontend: HTML | JS | CSS | MapboxAPI
  - Backend: PHP | SQL | JSON
 
-## Decscription
+## Description
  
  Web application displays the map of the Kilburn building (Computer Science building on the University of Manchester campus). 
  
