@@ -1,7 +1,7 @@
 # 3rd year project
  My final year project for my university degree.
 
- Tech Stack:
+ ## Tech Stack:
  - Frontend: HTML | JS | CSS | MapboxAPI
  - Backend: PHP | SQL | JSON
  
@@ -20,12 +20,12 @@ Preview of how the floor layout was modelled:
 Preview of how the traversible path was modelled:
 ![image](https://github.com/k11111t/3rd-year-project/assets/68909530/ea2c2474-80d3-473b-9f1c-c18c67d2deae)
 
-Main page:
+## Main page:
 - user can browse through the different floors of the Kilburn building
 - they can move, rotate, zoom on the map
 ![Screenshot 2025-05-17 222635](https://github.com/user-attachments/assets/16495636-8ba1-4dc9-9d83-c651093d5f36)
 
-Specific Floor page:
+## Specific Floor page:
 - user can search for a room by its name
 - the matching rooms are highlighted
 ![Screenshot 2025-05-17 224201-cropped](https://github.com/user-attachments/assets/dac8d4fb-ff6b-4ebf-98f3-28c8391ce691)
