@@ -4,6 +4,8 @@
  ## Tech Stack:
  - Frontend: HTML | JS | CSS | MapboxAPI
  - Backend: PHP | SQL | JSON
+
+## Decscription
  
  Web application displays the map of the Kilburn building (Computer Science building on the University of Manchester campus). 
  
@@ -14,24 +16,26 @@
 - Created relational SQL databases and shortest path search algorithm on the back end and managed asynchronous calls to the Mapbox API and the database on the front end.
 - Applied unit testing to verify the algorithm’s correctness and user testing to ensure the optimal User Experience
 
-Preview of how the floor layout was modelled:
-![image](https://github.com/k11111t/3rd-year-project/assets/68909530/6029d309-72f7-47e3-b04a-40c2adb53b33)
+## Data modelling
 
-Preview of how the traversible path was modelled:
-![image](https://github.com/k11111t/3rd-year-project/assets/68909530/ea2c2474-80d3-473b-9f1c-c18c67d2deae)
+- Preview of how the floor layout was modelled:<br>
+<img src='https://github.com/k11111t/3rd-year-project/assets/68909530/6029d309-72f7-47e3-b04a-40c2adb53b33' width='80%' />
+
+- Preview of how the traversible path was modelled:
+<img src='https://github.com/k11111t/3rd-year-project/assets/68909530/ea2c2474-80d3-473b-9f1c-c18c67d2deae' width='80%' />
 
 ## Main page:
 - user can browse through the different floors of the Kilburn building
-- they can move, rotate, zoom on the map
-![Screenshot 2025-05-17 222635](https://github.com/user-attachments/assets/16495636-8ba1-4dc9-9d83-c651093d5f36)
+- they can move, rotate, zoom on the map 
+<img src='https://github.com/user-attachments/assets/16495636-8ba1-4dc9-9d83-c651093d5f36' width='80%' />
 
 ## Specific Floor page:
 - user can search for a room by its name
-- the matching rooms are highlighted
-![Screenshot 2025-05-17 224201-cropped](https://github.com/user-attachments/assets/dac8d4fb-ff6b-4ebf-98f3-28c8391ce691)
-- they can also look at the timetable and availability of the rooms
-![Screenshot 2025-05-17 222745-cropped](https://github.com/user-attachments/assets/4143e402-04e5-441f-bf12-75b4331ab96d)
-- user can find a shortest path between 2 rooms
-![Screenshot 2025-05-17 222843-cropped](https://github.com/user-attachments/assets/9e2e2306-9a89-4955-95bb-a5c13c3817a1)
-- the user can also change the attributes of the map, to accomodate their accessibility needs
-![Screenshot 2025-05-17 223004-cropped](https://github.com/user-attachments/assets/79c76ef4-51c2-4e80-b92b-9c70424bb8c3)
+- the matching rooms are highlighted <br>
+<img src='https://github.com/user-attachments/assets/dac8d4fb-ff6b-4ebf-98f3-28c8391ce691' width='80%' /> <br>
+- they can also look at the timetable and availability of the rooms <br>
+<img src='https://github.com/user-attachments/assets/4143e402-04e5-441f-bf12-75b4331ab96d' width='80%' /> <br>
+- user can find a shortest path between 2 rooms <br>
+<img src='https://github.com/user-attachments/assets/9e2e2306-9a89-4955-95bb-a5c13c3817a1' width='80%' /> <br>
+- the user can also change the attributes of the map, to accomodate their accessibility needs <br>
+<img src='https://github.com/user-attachments/assets/79c76ef4-51c2-4e80-b92b-9c70424bb8c3' width='70%' /> <br>
