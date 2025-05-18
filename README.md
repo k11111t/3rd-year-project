@@ -38,4 +38,4 @@
 - user can find a shortest path between 2 rooms <br>
 <img src='https://github.com/user-attachments/assets/9e2e2306-9a89-4955-95bb-a5c13c3817a1' width='80%' /> <br>
 - the user can also change the attributes of the map, to accomodate their accessibility needs <br>
-<img src='https://github.com/user-attachments/assets/79c76ef4-51c2-4e80-b92b-9c70424bb8c3' width='70%' /> <br>
+<img src='https://github.com/user-attachments/assets/79c76ef4-51c2-4e80-b92b-9c70424bb8c3' width='80%' /> <br>
