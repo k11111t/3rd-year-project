@@ -27,15 +27,16 @@
 ## Main page:
 - user can browse through the different floors of the Kilburn building
 - they can move, rotate, zoom on the map 
-<img src='https://github.com/user-attachments/assets/16495636-8ba1-4dc9-9d83-c651093d5f36' width='80%' />
+<img src='https://github.com/user-attachments/assets/764d4ca7-231a-4c97-9eb6-e8527b0feb76' width='80%' />
 
 ## Specific Floor page:
 - user can search for a room by its name
 - the matching rooms are highlighted <br>
-<img src='https://github.com/user-attachments/assets/dac8d4fb-ff6b-4ebf-98f3-28c8391ce691' width='80%' /> <br>
+<img src='https://github.com/user-attachments/assets/760b0091-c4e0-4f54-b402-d8aa46fdb8ed' width='80%' /> <br>
+
 - they can also look at the timetable and availability of the rooms <br>
 <img src='https://github.com/user-attachments/assets/4143e402-04e5-441f-bf12-75b4331ab96d' width='80%' /> <br>
 - user can find a shortest path between 2 rooms <br>
-<img src='https://github.com/user-attachments/assets/9e2e2306-9a89-4955-95bb-a5c13c3817a1' width='80%' /> <br>
+<img src='https://github.com/user-attachments/assets/47c7e6e6-e3d0-4f8d-8ac6-c75b6de2aa55' width='80%' /> <br>
 - the user can also change the attributes of the map, to accomodate their accessibility needs <br>
-<img src='https://github.com/user-attachments/assets/79c76ef4-51c2-4e80-b92b-9c70424bb8c3' width='80%' /> <br>
+<img src='https://github.com/user-attachments/assets/5fab0e42-4e3d-4ba2-9b16-1e671a5facc4' width='80%' /> <br>
